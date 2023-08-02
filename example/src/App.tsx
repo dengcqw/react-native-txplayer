@@ -1,15 +1,44 @@
 import * as React from 'react';
+import { StyleSheet, View, Pressable, Text, Dimensions } from 'react-native';
+import TxplayerView from 'react-native-txplayer';
 
-import { StyleSheet, View } from 'react-native';
-import { TxplayerView } from 'react-native-txplayer';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-export default function App() {
+const RootStack = createNativeStackNavigator<any>();
+
+const screenSize = Dimensions.get('window');
+const url = 'http://1304755944.vod2.myqcloud.com/272c7433vodsh1304755944/a05d8bde3270835009213675516/vbKvtvlpRrQA.mp4';
+
+const RootStackScreen = () => {
+  return (
+    <NavigationContainer>
+      <RootStack.Navigator>
+        <RootStack.Screen name="App" component={App} />
+      </RootStack.Navigator>
+    </NavigationContainer>
+  );
+};
+
+function App() {
+  const playerRef = React.useRef();
+
   return (
     <View style={styles.container}>
-      <TxplayerView color="#32a852" style={styles.box} />
+      <TxplayerView ref={playerRef} videoURL={url} style={styles.box} />
+      <Pressable
+        style={styles.pressable}
+        onPress={() => {
+          playerRef.current.startPlay();
+        }}
+      >
+        <Text>start</Text>
+      </Pressable>
     </View>
   );
 }
+
+export default RootStackScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -18,8 +47,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   box: {
-    width: 60,
-    height: 60,
+    width: '100%',
+    height: 300,
     marginVertical: 20,
+  },
+  pressable: {
+    width: 100,
+    height: 50,
+    backgroundColor: 'gray',
   },
 });

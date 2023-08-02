@@ -28,6 +28,12 @@ end
 target 'TxplayerExample' do
   config = use_native_modules!
 
+  # react-native-config
+  ENVFILES = {
+    'Debug' => '$(PODS_ROOT)/../../.env.dev',
+    'Release' => '$(PODS_ROOT)/../../.env.prod',
+  }
+
   # Flags change depending on the env values.
   flags = get_default_flags()
 
@@ -44,6 +50,8 @@ target 'TxplayerExample' do
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
+  
+  pod 'JTPlayerKit', :path => "/Users/dengjinlong/Documents/jitu/ios-tencent-video" , :configurations => ['Debug']
 
   target 'TxplayerExampleTests' do
     inherit! :complete
@@ -58,5 +66,13 @@ target 'TxplayerExample' do
       :mac_catalyst_enabled => false
     )
     __apply_Xcode_12_5_M1_post_install_workaround(installer)
+
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        if target.name == 'react-native-config'
+          config.build_settings['ENVFILE'] = ENVFILES[config.name]
+        end
+      end
+    end
   end
 end
