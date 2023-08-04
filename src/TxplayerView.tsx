@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { findNodeHandle, UIManager, NativeSyntheticEvent } from 'react-native';
+import { findNodeHandle, UIManager, type NativeSyntheticEvent } from 'react-native';
 import { TxplayerViewNative, Commands } from './TxplayerViewManager';
 
 export enum SuperPlayerState {
@@ -77,7 +77,6 @@ const TxplayerView = React.forwardRef<TxplayerViewApi, TxplayerViewProps>((props
   return (
     <TxplayerViewNative
       ref={(ref) => {
-        //console.log('----> msg', ref);
         nativeRef.current = ref;
       }}
       {...props}
@@ -85,4 +84,4 @@ const TxplayerView = React.forwardRef<TxplayerViewApi, TxplayerViewProps>((props
   );
 });
 
-export default TxplayerView;
+export default TxplayerView

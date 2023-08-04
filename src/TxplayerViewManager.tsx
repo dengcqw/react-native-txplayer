@@ -14,14 +14,14 @@ const LINKING_ERROR =
 type TxplayerProps = {
   color: string;
   style: ViewStyle;
-};
+} & ViewProps;
 
 const ComponentName = 'TxplayerView';
 
 export const Commands = {
-  startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay,
-  stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay,
-  addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku
+  startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay as number,
+  stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay as number,
+  addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku as number,
 }
 
 export const TxplayerViewNative =
