@@ -1,9 +1,9 @@
 import TxplayerView, {
-  PlayTimeType,
-  SuperPlayerState,
-  SuperPlayType,
-  TxplayerViewApi,
-  TxplayerViewProps,
+  type PlayTimeType,
+  type SuperPlayerState,
+  type SuperPlayType,
+  type TxplayerViewApi,
+  type TxplayerViewProps,
 } from './TxplayerView';
-export { PlayTimeType, SuperPlayerState, SuperPlayType, TxplayerViewApi, TxplayerViewProps };
+export type { PlayTimeType, SuperPlayerState, SuperPlayType, TxplayerViewApi, TxplayerViewProps };
 export default TxplayerView;

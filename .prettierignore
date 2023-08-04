@@ -1,0 +1,18 @@
+**/.git
+**/.svn
+**/.hg
+**/node_modules
+
+# Ignore artifacts:
+build
+coverage
+android
+ios
+scripts
+web
+.bundle
+src/assets
+
+# Ignore all HTML files:
+*.html
+

@@ -1,5 +1,5 @@
 {
-  "name": "react-native-txplayer",
+  "name": "@jtreact/react-native-txplayer",
   "version": "0.1.0",
   "description": "封装腾讯云视频播放器superplayer",
   "main": "lib/commonjs/index",
@@ -50,9 +50,6 @@
     "url": "https://github.com/dengcqw/react-native-txplayer/react-native-txplayer/issues"
   },
   "homepage": "https://github.com/dengcqw/react-native-txplayer/react-native-txplayer#readme",
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
   "devDependencies": {
     "@commitlint/config-conventional": "^17.0.2",
     "@evilmartians/lefthook": "^1.2.2",
@@ -94,6 +91,7 @@
       "<rootDir>/lib/"
     ]
   },
+"  publishConfig": { "@jtreact:registry":"http://code.jms.com/api/v4/projects/7824/packages/npm/" },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
@@ -103,9 +101,6 @@
     "git": {
       "commitMessage": "chore: release ${version}",
       "tagName": "v${version}"
-    },
-    "npm": {
-      "publish": true
     },
     "github": {
       "release": true

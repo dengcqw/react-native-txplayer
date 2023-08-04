@@ -1,6 +1,12 @@
 import * as React from 'react';
-import { findNodeHandle, UIManager, type NativeSyntheticEvent } from 'react-native';
-import { TxplayerViewNative, Commands } from './TxplayerViewManager';
+import { findNodeHandle, UIManager, requireNativeComponent, type NativeSyntheticEvent } from 'react-native';
+
+const ComponentName = 'TxplayerView';
+const Commands = {
+  startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay as number,
+  stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay as number,
+  addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku as number,
+};
 
 export enum SuperPlayerState {
   StateFailed, // 播放失败
@@ -55,8 +61,10 @@ export type TxplayerViewProps = {
   onDownload: () => void;
 };
 
-const TxplayerView = React.forwardRef<TxplayerViewApi, TxplayerViewProps>((props, ref) => {
-  const nativeRef = React.useRef();
+const TxplayerViewNative = requireNativeComponent<TxplayerViewProps>(ComponentName);
+
+const TxplayerView = React.forwardRef<TxplayerViewProps, TxplayerViewApi>((props, ref) => {
+  const nativeRef = React.useRef<typeof TxplayerViewNative>();
 
   React.useImperativeHandle<any, TxplayerViewApi>(
     ref,
@@ -74,14 +82,8 @@ const TxplayerView = React.forwardRef<TxplayerViewApi, TxplayerViewProps>((props
     []
   );
 
-  return (
-    <TxplayerViewNative
-      ref={(ref) => {
-        nativeRef.current = ref;
-      }}
-      {...props}
-    />
-  );
+  // @ts-ignore
+  return <TxplayerViewNative {...props} ref={nativeRef} />;
 });
 
-export default TxplayerView
+export default TxplayerView;
