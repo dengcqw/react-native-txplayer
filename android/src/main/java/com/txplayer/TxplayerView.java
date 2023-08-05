@@ -1,7 +1,14 @@
 package com.txplayer;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.Choreographer;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
@@ -23,9 +30,6 @@ public class TxplayerView extends FrameLayout {
   private TxPlayerViewCallBack playerViewCallback     = null;
 
   private long lastTime = 0;
-
-  private int                position               = -1;
-  private boolean            playWithModelIsSuccess = false;
 
   private String videoURL;
   private String videoName;
@@ -99,23 +103,35 @@ public class TxplayerView extends FrameLayout {
   }
 
   private void initViews() {
-    this.setLayoutParams(new LinearLayout.LayoutParams(
-      LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+    setupLayoutHack();
     superPlayerView = new SuperPlayerView(getContext());
+    ColorDrawable colorDrawable = new ColorDrawable();
+    colorDrawable.setColor(Color.BLACK);
+    superPlayerView.setBackground(colorDrawable);
+
+    // 防止崩溃
+    SuperPlayerModel model = new SuperPlayerModel();
+    model.url = "";
+    superPlayerView.playWithModelNeedLicence(model);
+
+    addView(superPlayerView);
     superPlayerView.showOrHideBackBtn(false);
     superPlayerView.setPlayerViewCallback(new SuperPlayerView.OnSuperPlayerViewCallback() {
       @Override
       public void onStartFullScreenPlay() {
-        if (playerViewCallback != null) {
-          playerViewCallback.onStartFullScreenPlay();
-        }
+//        if (playerViewCallback != null) {
+//          playerViewCallback.onStartFullScreenPlay();
+//        }
+        removeFeedPlayFromItem();
+        rootView().addView(superPlayerView , new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT , ViewGroup.LayoutParams.MATCH_PARENT));
       }
 
       @Override
       public void onStopFullScreenPlay() {
-        if (playerViewCallback != null) {
-          playerViewCallback.onStopFullScreenPlay();
-        }
+//        if (playerViewCallback != null) {
+//          playerViewCallback.onStopFullScreenPlay();
+//        }
+          addFeedPlayToItem();
       }
 
       @Override
@@ -137,11 +153,6 @@ public class TxplayerView extends FrameLayout {
 
       @Override
       public void onPlaying() {
-//                if (feedPlayerManager != null) {
-//                    feedPlayerManager.setPlayingFeedPlayerView(FeedPlayerView.this, position);
-//                }
-        // 开始播放后，重置播放开始时间
-//        superPlayerView.setStartTime(0);
         if (playerViewCallback != null) {
           playerViewCallback.onPlayStateChange(getId(), SuperPlayerDef.PlayerState.PLAYING.ordinal());
         }
@@ -157,11 +168,6 @@ public class TxplayerView extends FrameLayout {
 
       @Override
       public void onError(int code) {
-//                if (SuperPlayerCode.VOD_REQUEST_FILE_ID_FAIL == code) {
-//                }
-//                if (feedPlayerManager != null) {
-//                    feedPlayerManager.removePlayingFeedPlayerView(position);
-//                }
       }
 
       @Override
@@ -196,7 +202,6 @@ public class TxplayerView extends FrameLayout {
         }
       }
     });
-    addView(superPlayerView);
   }
 
   private void  playTimeDidChange(Boolean isFinish) {
@@ -267,70 +272,13 @@ public class TxplayerView extends FrameLayout {
     return playerViewCallback;
   }
 
-//    public void preparePlayVideo(int position, VideoModel videoModel) {
-//        this.position = position;
-//        this.videoModel = videoModel;
-//        SuperPlayerModel playerModel = FeedVodListLoader.conversionModel(videoModel);
-//        if (playerModel != null && superPlayerView != null) {
-//            playerModel.playAction = SuperPlayerModel.PLAY_ACTION_MANUAL_PLAY;
-//            playWithModelIsSuccess = false;
-//            superPlayerView.playWithModelNeedLicence(playerModel);
-//            superPlayerView.showOrHideBackBtn(false);
-//        }
-//    }
-
-//    public void preLoad() {
-//        if (null != videoModel && position > 0 && !playWithModelIsSuccess) {
-//            SuperPlayerModel playerModel = FeedVodListLoader.conversionModel(videoModel);
-//            playerModel.playAction = SuperPlayerModel.PLAY_ACTION_PRELOAD;
-//            playWithModelIsSuccess = true;
-//            superPlayerView.playWithModelNeedLicence(playerModel);
-//            superPlayerView.showOrHideBackBtn(false);
-//        }
-//    }
-
-//    public void play(SuperPlayerModel videoModel) {
-//        if (playerModel != null && superPlayerView != null) {
-//            playerModel.playAction = SuperPlayerModel.PLAY_ACTION_PRELOAD;
-//            playWithModelIsSuccess = true;
-//            superPlayerView.playWithModelNeedLicence(playerModel);
-//            superPlayerView.showOrHideBackBtn(false);
-//            superPlayerView.onResume();
-//        }
-//    }
-
-  public void resume() {
-    if (superPlayerView != null) {
-      if (playWithModelIsSuccess) {
-        superPlayerView.onResume();
-      } else {
-//                play(videoModel);
-      }
-    }
-  }
-
-  public void pause() {
-    if (superPlayerView != null) {
-      superPlayerView.onPause();
-    }
-  }
-
   public void stop() {
     if (superPlayerView != null) {
-      position = -1;
       superPlayerView.stopPlay();
     }
   }
 
-  public void reset() {
-    position = -1;
-    if (superPlayerView != null) {
-      superPlayerView.revertUI();
-    }
-  }
-
   public void destroy() {
-    reset();
     if (superPlayerView != null) {
       superPlayerView.setPlayerViewCallback(null);
       superPlayerView.resetPlayer();
@@ -347,16 +295,8 @@ public class TxplayerView extends FrameLayout {
     return superPlayerView.getPlayerMode() == SuperPlayerDef.PlayerMode.FULLSCREEN;
   }
 
-  public void setWindowPlayMode() {
-    superPlayerView.switchPlayMode(SuperPlayerDef.PlayerMode.WINDOW);
-  }
-
   public boolean isEnd() {
     return superPlayerView.getPlayerState() == SuperPlayerDef.PlayerState.END;
-  }
-
-  public int getPosition() {
-    return position;
   }
 
   public interface TxPlayerViewCallBack {
@@ -371,15 +311,48 @@ public class TxplayerView extends FrameLayout {
     void onDownload(int viewId);
   }
 
-//  public void onRequestPermissionsResult(int requestCode, @NonNull int[] grantResults) {
-//    superPlayerView.onRequestPermissionsResult(requestCode,grantResults);
-//  }
-//
-//  public void setStartTime(int progress) {
-//    superPlayerView.setStartTime(progress);
-//  }
-//
-  public long getProgress() {
-    return superPlayerView.getProgress();
+  @Override
+  protected void onDetachedFromWindow() {
+    super.onDetachedFromWindow();
+    stopPlay();
+  }
+
+  // 定时计算child layout，RN只计算自己管理的view？
+  private void setupLayoutHack() {
+    Choreographer.getInstance().postFrameCallback(new Choreographer.FrameCallback() {
+      @Override
+      public void doFrame(long frameTimeNanos) {
+        manuallyLayoutChildren();
+        getViewTreeObserver().dispatchOnGlobalLayout();
+        Choreographer.getInstance().postFrameCallbackDelayed(this, 200);
+      }
+    });
+  }
+
+  private void manuallyLayoutChildren() {
+    // Log.i("djl", "manuallyLayoutChildren");
+    for (int i = 0; i < getChildCount(); i++) {
+      View child = getChildAt(i);
+      child.measure(MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.EXACTLY),
+        MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.EXACTLY));
+      child.layout(0, 0, child.getMeasuredWidth(), child.getMeasuredHeight());
+    }
+  }
+
+  // 退出全屏
+  public void addFeedPlayToItem() {
+    ((ViewGroup) superPlayerView.getParent()).removeView(superPlayerView);
+    addView(superPlayerView, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT , ViewGroup.LayoutParams.MATCH_PARENT));
+  }
+
+  public void removeFeedPlayFromItem() {
+    if (superPlayerView.getParent() != null) {
+      ((ViewGroup)superPlayerView.getParent()).removeView(superPlayerView);
+    }
+  }
+
+  private ViewGroup rootView() {
+    Activity act = (Activity)getContext();
+    return (ViewGroup)act.findViewById(android.R.id.content);
   }
 }

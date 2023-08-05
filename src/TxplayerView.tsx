@@ -3,9 +3,9 @@ import { findNodeHandle, UIManager, requireNativeComponent, type NativeSynthetic
 
 const ComponentName = 'TxplayerView';
 const Commands = {
-  startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay as number,
-  stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay as number,
-  addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku as number,
+  startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay.toString(),
+  stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay.toString(),
+  addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku.toString(),
 };
 
 export enum SuperPlayerState {

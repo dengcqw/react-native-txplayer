@@ -45,6 +45,12 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
     return new TxplayerView(reactContext.getCurrentActivity());
   }
 
+  @Override
+  public void onDropViewInstance(TxplayerView view) {
+    super.onDropViewInstance(view);
+    view.stopPlay();
+  }
+
   @Nullable
   @Override
   public Map<String, Integer> getCommandsMap() {
@@ -62,7 +68,6 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
     @Nullable ReadableArray args
   ) {
     super.receiveCommand(root, commandId, args);
-    int reactNativeViewId = args.getInt(0);
     int commandIdInt = Integer.parseInt(commandId);
 
     switch (commandIdInt) {

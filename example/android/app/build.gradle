@@ -86,11 +86,11 @@ android {
 
     namespace "com.txplayerexample"
     defaultConfig {
-        applicationId "com.txplayerexample"
+        applicationId "com.jtexpress.sandstalk"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         // For react-native-config
-        resValue "string", "build_config_package", "com.txplayerexample"
+        resValue "string", "build_config_package", "com.jtexpress.sandstalk"
         versionCode 1
         versionName "1.0"
     }
