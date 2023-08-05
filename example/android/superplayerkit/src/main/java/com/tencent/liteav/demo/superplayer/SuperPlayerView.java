@@ -963,6 +963,10 @@ public class SuperPlayerView extends RelativeLayout
          * 下载页面，点击了缓存列表按钮
          */
         void onShowCacheListClick();
+
+        // sandstalk
+        void onPlayProgress(long current, long duration, long playable);
+        void superPlayerDidChangeState(Integer state);
     }
 
     public void release() {
@@ -1033,6 +1037,10 @@ public class SuperPlayerView extends RelativeLayout
         public void onPlayPrepare() {
             mWindowPlayer.updatePlayState(SuperPlayerDef.PlayerState.INIT);
             mFullScreenPlayer.updatePlayState(SuperPlayerDef.PlayerState.INIT);
+            if (mPlayerViewCallback != null) {
+              mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.INIT.ordinal());
+            }
+
             actonOfPreloadOnPlayPrepare();
             // 清空关键帧和视频打点信息
             if (mWatcher != null) {
@@ -1044,7 +1052,10 @@ public class SuperPlayerView extends RelativeLayout
         public void onPlayBegin(String name) {
             mWindowPlayer.updatePlayState(SuperPlayerDef.PlayerState.PLAYING);
             mFullScreenPlayer.updatePlayState(SuperPlayerDef.PlayerState.PLAYING);
-            updateTitle(name);
+          if (mPlayerViewCallback != null) {
+            mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.PLAYING.ordinal());
+          }
+          updateTitle(name);
             mWindowPlayer.hideBackground();
             if (mDanmuView != null && mDanmuView.isPrepared() && mDanmuView.isPaused()) {
                 mDanmuView.resume();
@@ -1059,6 +1070,9 @@ public class SuperPlayerView extends RelativeLayout
         public void onPlayPause() {
             mWindowPlayer.updatePlayState(SuperPlayerDef.PlayerState.PAUSE);
             mFullScreenPlayer.updatePlayState(SuperPlayerDef.PlayerState.PAUSE);
+          if (mPlayerViewCallback != null) {
+            mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.PAUSE.ordinal());
+          }
         }
 
         @Override
@@ -1071,6 +1085,9 @@ public class SuperPlayerView extends RelativeLayout
             } else {
                 mWindowPlayer.updatePlayState(SuperPlayerDef.PlayerState.END);
                 mFullScreenPlayer.updatePlayState(SuperPlayerDef.PlayerState.END);
+              if (mPlayerViewCallback != null) {
+                mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.END.ordinal());
+              }
                 // 清空关键帧和视频打点信息
                 if (mWatcher != null) {
                     mWatcher.stop();
@@ -1086,12 +1103,18 @@ public class SuperPlayerView extends RelativeLayout
                 if (isCallResume) {
                     mWindowPlayer.updatePlayState(SuperPlayerDef.PlayerState.LOADING);
                     mFullScreenPlayer.updatePlayState(SuperPlayerDef.PlayerState.LOADING);
+                    if (mPlayerViewCallback != null) {
+                      mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.LOADING.ordinal());
+                    }
                 }
             } else {
                 mWindowPlayer.updatePlayState(SuperPlayerDef.PlayerState.LOADING);
                 mFullScreenPlayer.updatePlayState(SuperPlayerDef.PlayerState.LOADING);
+                if (mPlayerViewCallback != null) {
+                  mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.LOADING.ordinal());
+                }
             }
-            if (mWatcher != null) {
+          if (mWatcher != null) {
                 mWatcher.enterLoading();
             }
         }
@@ -1104,6 +1127,10 @@ public class SuperPlayerView extends RelativeLayout
             mWindowPlayer.updateVideoProgress(current, duration,playable);
             mFullScreenPlayer.updateVideoProgress(current, duration,playable);
             mFloatPlayer.updateVideoProgress(current, duration,playable);
+            // sandstalk
+            if (mPlayerViewCallback != null) {
+              mPlayerViewCallback.onPlayProgress(current, duration, playable);
+            }
         }
 
         @Override
@@ -1354,7 +1381,7 @@ public class SuperPlayerView extends RelativeLayout
     public long getProgress() {
         return mProgress;
     }
-    
+
     @Override
     public void onClickPIPPlay() {
         mSuperPlayer.resume();

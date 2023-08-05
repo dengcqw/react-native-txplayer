@@ -17,6 +17,6 @@ public class TxplayerPackage implements ReactPackage {
 
   @Override
   public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-    return Arrays.<ViewManager>asList(new TxplayerViewManager());
+    return Arrays.<ViewManager>asList(new TxplayerViewManager(reactContext));
   }
 }
