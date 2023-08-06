@@ -10,6 +10,7 @@ import android.view.Choreographer;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ import com.tencent.liteav.demo.superplayer.SuperPlayerDef;
 import com.tencent.liteav.demo.superplayer.SuperPlayerModel;
 import com.tencent.liteav.demo.superplayer.SuperPlayerVideoId;
 import com.tencent.liteav.demo.superplayer.SuperPlayerView;
+import com.tencent.liteav.demo.superplayer.ui.player.FullScreenPlayer;
 
 
 public class TxplayerView extends FrameLayout {
@@ -116,21 +118,16 @@ public class TxplayerView extends FrameLayout {
 
     addView(superPlayerView);
     superPlayerView.showOrHideBackBtn(false);
+
     superPlayerView.setPlayerViewCallback(new SuperPlayerView.OnSuperPlayerViewCallback() {
       @Override
       public void onStartFullScreenPlay() {
-//        if (playerViewCallback != null) {
-//          playerViewCallback.onStartFullScreenPlay();
-//        }
         removeFeedPlayFromItem();
         rootView().addView(superPlayerView , new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT , ViewGroup.LayoutParams.MATCH_PARENT));
       }
 
       @Override
       public void onStopFullScreenPlay() {
-//        if (playerViewCallback != null) {
-//          playerViewCallback.onStopFullScreenPlay();
-//        }
           addFeedPlayToItem();
       }
 
@@ -141,9 +138,6 @@ public class TxplayerView extends FrameLayout {
 
       @Override
       public void onClickSmallReturnBtn() {
-        if (playerViewCallback != null) {
-          playerViewCallback.onClickSmallReturnBtn();
-        }
       }
 
       @Override
@@ -220,11 +214,13 @@ public class TxplayerView extends FrameLayout {
     SuperPlayerModel model = new SuperPlayerModel();
     if (videoURL != null) {
       model.url = videoURL;
+      superPlayerView.setQualityVisible(false);
     } else {
       model.appId = Integer.valueOf(appId);
       model.videoId = new SuperPlayerVideoId();
       model.videoId.fileId = fileId;
       model.videoId.pSign = psign;
+      superPlayerView.setQualityVisible(true);
     }
 
     if (playType == 0) {
@@ -235,8 +231,14 @@ public class TxplayerView extends FrameLayout {
       model.playAction = SuperPlayerModel.PLAY_ACTION_MANUAL_PLAY;
     }
 
+    FullScreenPlayer fullscreenPlayer = superPlayerView.getFullscreenPlayer();
+    View mIvSnapshot = fullscreenPlayer.findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_iv_snapshot);
+    mIvSnapshot.setVisibility(View.GONE);
+
     model.title = videoName;
     model.coverPictureUrl = videoCoverURL;
+
+    superPlayerView.showPIPIV(false);
     superPlayerView.setStartTime(playStartTime);
     superPlayerView.playWithModelNeedLicence(model);
   }
@@ -300,12 +302,6 @@ public class TxplayerView extends FrameLayout {
   }
 
   public interface TxPlayerViewCallBack {
-    void onStartFullScreenPlay();
-
-    void onStopFullScreenPlay();
-
-    void onClickSmallReturnBtn();
-
     void onPlayStateChange(int viewId, Integer state);
     void onPlayTimeChange(int videwId, WritableMap map);
     void onDownload(int viewId);

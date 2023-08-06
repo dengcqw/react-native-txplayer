@@ -139,28 +139,28 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
     view.setPsign(psign);
   }
   @ReactProp(name = "enableSlider")
-  public void setEnableSlider(TxplayerView view, String enableSlider) {
-    view.setEnableSlider(Boolean.valueOf(enableSlider));
+  public void setEnableSlider(TxplayerView view, Boolean enableSlider) {
+    view.setEnableSlider(enableSlider);
   }
   @ReactProp(name = "enableMorePanel")
-  public void setEnableMorePanel(TxplayerView view, String enableMorePanel) {
-    view.setEnableMorePanel(Boolean.valueOf(enableMorePanel));
+  public void setEnableMorePanel(TxplayerView view, Boolean enableMorePanel) {
+    view.setEnableMorePanel(enableMorePanel);
   }
   @ReactProp(name = "enableDownload")
-  public void setEnableDownload(TxplayerView view, String enableDownload) {
-    view.setEnableDownload(Boolean.valueOf(enableDownload));
+  public void setEnableDownload(TxplayerView view, Boolean enableDownload) {
+    view.setEnableDownload(enableDownload);
   }
   @ReactProp(name = "enableDanmaku")
-  public void setEnableDanmaku(TxplayerView view, String enableDanmaku) {
-    view.setEnableDanmaku(Boolean.valueOf(enableDanmaku));
+  public void setEnableDanmaku(TxplayerView view, Boolean enableDanmaku) {
+    view.setEnableDanmaku(enableDanmaku);
   }
   @ReactProp(name = "enableFullScreen")
-  public void setEnableFullScreen(TxplayerView view, String enableFullScreen) {
-    view.setEnableFullScreen(Boolean.valueOf(enableFullScreen));
+  public void setEnableFullScreen(TxplayerView view, Boolean enableFullScreen) {
+    view.setEnableFullScreen(enableFullScreen);
   }
   @ReactProp(name = "playType")
-  public void setPlayType(TxplayerView view, String playType) {
-    view.setPlayType(Integer.valueOf(playType));
+  public void setPlayType(TxplayerView view, Integer playType) {
+    view.setPlayType(playType);
   }
   @ReactProp(name = "playStartTime")
   public void setPlayStartTime(TxplayerView view, String playStartTime) {
@@ -169,21 +169,6 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   @ReactProp(name = "language")
   public void setLanguage(TxplayerView view, String language) {
     view.setLanguage(language);
-  }
-
-  @Override
-  public void onStartFullScreenPlay() {
-
-  }
-
-  @Override
-  public void onStopFullScreenPlay() {
-
-  }
-
-  @Override
-  public void onClickSmallReturnBtn() {
-
   }
 
   @Override

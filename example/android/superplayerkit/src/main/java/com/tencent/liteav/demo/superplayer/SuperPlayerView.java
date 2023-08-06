@@ -1416,4 +1416,8 @@ public class SuperPlayerView extends RelativeLayout
         mWindowPlayer.showPIPIV(isShow);
     }
 
+    public FullScreenPlayer getFullscreenPlayer() {
+      return mFullScreenPlayer;
+    }
+
 }

@@ -105,11 +105,13 @@ const NSInteger kProgressUpdateTime = 250;
     SuperPlayerModel *model = [[SuperPlayerModel alloc] init];
     if(self.videoURL != nil && self.videoURL.length > 0) {
         model.videoURL          = self.videoURL;
+        [self.playerView.controlView setResolutionViewState: NO];
     } else {
         model.appId             = [self.appId longLongValue];
         model.videoId           = [[SuperPlayerVideoId alloc] init];
         model.videoId.fileId    = self.fileId;
         model.videoId.psign     = self.psign;
+        [self.playerView.controlView setResolutionViewState: YES];
     }
     
     if (self.playType.intValue == 0) {
