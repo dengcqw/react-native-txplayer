@@ -13,6 +13,7 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.common.MapBuilder;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
@@ -42,7 +43,9 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   @Override
   @NonNull
   public TxplayerView createViewInstance(ThemedReactContext reactContext) {
-    return new TxplayerView(reactContext.getCurrentActivity());
+    TxplayerView txplayerView = new TxplayerView(reactContext.getCurrentActivity());
+    txplayerView.setFeedPlayerCallBack(this);
+    return txplayerView;
   }
 
   @Override
@@ -175,23 +178,24 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   public void onPlayStateChange(int viewId, Integer state) {
     WritableMap event = Arguments.createMap();
     event.putInt("state", state);
-    context
-      .getJSModule(RCTEventEmitter.class)
-      .receiveEvent(viewId, "onPlayStateChange", event);
+    sendEvent(viewId,"onPlayStateChange", event);
+
   }
 
   @Override
   public void onPlayTimeChange(int viewId, WritableMap map) {
-    context
-      .getJSModule(RCTEventEmitter.class)
-      .receiveEvent(viewId, "onPlayTimeChange", map);
+    sendEvent(viewId,"onPlayTimeChange", map);
   }
 
   @Override
   public void onDownload(int viewId) {
-    WritableMap event = Arguments.createMap();
-    context
-      .getJSModule(RCTEventEmitter.class)
-      .receiveEvent(viewId, "onDownload", event);
+    sendEvent(viewId,"onDownload", Arguments.createMap());
+  }
+
+  private void sendEvent(int viewId, String eventName, @Nullable WritableMap params) {
+    context.getJSModule(RCTEventEmitter.class).receiveEvent(
+      viewId,
+      eventName,
+      params);
   }
 }

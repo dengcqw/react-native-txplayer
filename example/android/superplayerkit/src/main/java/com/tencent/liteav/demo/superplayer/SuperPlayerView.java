@@ -117,6 +117,8 @@ public class SuperPlayerView extends RelativeLayout
     private long                       mProgress;                       // 进度
     private boolean                    mIsPlayInit;                     // 防止mSuperPlayer.stop()继续调用playNextVideo的变量
     private boolean                    isCallResume = false;            //resume方法时候被调用，在预加载模式使用
+
+    private boolean                    mNeedMultiSoundTrack = false;            //是否需要多种音轨切换
     private LinearLayout               mDynamicWatermarkLayout;
     private DynamicWatermarkView       mDynamicWatermarkView;
     private ISuperPlayerListener       mSuperPlayerListener;
@@ -286,9 +288,9 @@ public class SuperPlayerView extends RelativeLayout
     }
 
     private void playWithModelInner(SuperPlayerModel model, boolean needChangeUI) {
-        if (needChangeUI) {
+        /*if (needChangeUI) {
             mWindowPlayer.showPIPIV(model.vipWatchMode == null);
-        }
+        }*/
         mPlayAction = mCurrentSuperPlayerModel.playAction;
         if (mPlayAction == PLAY_ACTION_AUTO_PLAY || mPlayAction == PLAY_ACTION_PRELOAD) {
             mSuperPlayer.play(model);
@@ -299,7 +301,7 @@ public class SuperPlayerView extends RelativeLayout
         mWindowPlayer.preparePlayVideo(model);
 
         // 播放本地缓存视频的时候/视频没有fileId的时候(不支持url视频)，右上角不显示下载菜单
-        boolean isShowDownloadView = model.isEnableCache && (model.videoId != null || model.videoIdV2 != null);
+        boolean isShowDownloadView = model.isEnableCache;
         mFullScreenPlayer.updateDownloadViewShow(isShowDownloadView);
         mFullScreenPlayer.setVipWatchModel(model.vipWatchMode);
         mWindowPlayer.setVipWatchModel(model.vipWatchMode);
@@ -479,7 +481,7 @@ public class SuperPlayerView extends RelativeLayout
     public void showOrHideBackBtn(boolean isShow) {
         if (mWindowPlayer != null) {
             mWindowPlayer.showOrHideBackBtn(isShow);
-            mWindowPlayer.showPIPIV(false);
+//            mWindowPlayer.showPIPIV(false);
         }
     }
 
@@ -815,6 +817,13 @@ public class SuperPlayerView extends RelativeLayout
         public void onActionUp() {
             mSuperPlayer.revertSpeedRate();
         }
+
+        @Override
+        public void onClickDownload() {
+            if (mPlayerViewCallback != null) {
+                mPlayerViewCallback.onClickDownload();
+            }
+        }
     };
 
     private void handleResume() {
@@ -967,6 +976,11 @@ public class SuperPlayerView extends RelativeLayout
         // sandstalk
         void onPlayProgress(long current, long duration, long playable);
         void superPlayerDidChangeState(Integer state);
+
+        /**
+         * 点击下载
+         */
+        void onClickDownload();
     }
 
     public void release() {
@@ -1210,16 +1224,24 @@ public class SuperPlayerView extends RelativeLayout
         @Override
         public void onRcvTrackInformation(List<TXTrackInfo> infoList) {
             super.onRcvTrackInformation(infoList);
-            mFullScreenPlayer.setVodSelectionViewPositionAndData(infoList);
+            if (mNeedMultiSoundTrack) {
+                mFullScreenPlayer.setVodSelectionViewPositionAndData(infoList);
+            } else {
+                mFullScreenPlayer.setVodSelectionViewPositionAndData(new ArrayList<>());
+            }
         }
-
 
         @Override
         public void onRcvSubTitleTrackInformation(List<TXTrackInfo> infoList) {
             super.onRcvSubTitleTrackInformation(infoList);
             mFullScreenPlayer.setVodSubtitlesViewPositionAndData(infoList);
         }
+
     };
+
+    public void setNeedMultiSoundTrack(boolean needMultiSoundTrack) {
+        mNeedMultiSoundTrack = needMultiSoundTrack;
+    }
 
     private void showToast(String message) {
         Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();

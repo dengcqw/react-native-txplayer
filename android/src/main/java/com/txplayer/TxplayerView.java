@@ -5,25 +5,21 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Choreographer;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
-import com.tencent.liteav.demo.superplayer.SuperPlayerCode;
 import com.tencent.liteav.demo.superplayer.SuperPlayerDef;
 import com.tencent.liteav.demo.superplayer.SuperPlayerModel;
 import com.tencent.liteav.demo.superplayer.SuperPlayerVideoId;
 import com.tencent.liteav.demo.superplayer.SuperPlayerView;
 import com.tencent.liteav.demo.superplayer.ui.player.FullScreenPlayer;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 
 public class TxplayerView extends FrameLayout {
@@ -110,11 +106,14 @@ public class TxplayerView extends FrameLayout {
     ColorDrawable colorDrawable = new ColorDrawable();
     colorDrawable.setColor(Color.BLACK);
     superPlayerView.setBackground(colorDrawable);
+    superPlayerView.showPIPIV(false);
 
     // 防止崩溃
     SuperPlayerModel model = new SuperPlayerModel();
     model.url = "";
     superPlayerView.playWithModelNeedLicence(model);
+    superPlayerView.setNeedMultiSoundTrack(false);
+
 
     addView(superPlayerView);
     superPlayerView.showOrHideBackBtn(false);
@@ -195,6 +194,13 @@ public class TxplayerView extends FrameLayout {
           playerViewCallback.onPlayStateChange(getId(), state);
         }
       }
+
+      @Override
+      public void onClickDownload() {
+        if (playerViewCallback != null) {
+          playerViewCallback.onDownload(getId());
+        }
+      }
     });
   }
 
@@ -237,6 +243,7 @@ public class TxplayerView extends FrameLayout {
 
     model.title = videoName;
     model.coverPictureUrl = videoCoverURL;
+    model.isEnableCache = true;
 
     superPlayerView.showPIPIV(false);
     superPlayerView.setStartTime(playStartTime);

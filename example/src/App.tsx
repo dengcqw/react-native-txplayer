@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StyleSheet, View, Pressable, Text, Dimensions } from 'react-native';
-import TxplayerView from 'react-native-txplayer';
+import TxplayerView from '@jtreact/react-native-txplayer';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -25,7 +25,9 @@ function App() {
 
   return (
     <View style={styles.container}>
-      <TxplayerView ref={playerRef} videoURL={url} style={styles.box} />
+      <TxplayerView ref={playerRef} videoURL={url} style={styles.box} onDownload={() => {
+        console.warn('download');
+      }}  />
       <Pressable
         style={styles.pressable}
         onPress={() => {

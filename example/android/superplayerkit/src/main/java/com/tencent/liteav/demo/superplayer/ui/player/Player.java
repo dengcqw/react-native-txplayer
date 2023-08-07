@@ -309,5 +309,10 @@ public interface Player {
          */
         void onActionUp();
 
+        /**
+         * 点击下载
+         */
+        void onClickDownload();
+
     }
 }

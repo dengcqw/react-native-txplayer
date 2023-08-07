@@ -832,7 +832,10 @@ public class FullScreenPlayer extends AbsPlayer implements View.OnClickListener,
                 mControllerCallback.playNext();
             }
         } else if (i == R.id.superplayer_iv_download) {  // 下载按钮
-            showCacheList();
+            if (mControllerCallback != null) {
+                mControllerCallback.onClickDownload();
+            }
+//            showCacheList();
         } else if (i == R.id.superplayer_iv_sound_track) {
             showSoundTrackView();
         } else if (i == R.id.superplayer_iv_subtitle) {
@@ -1195,7 +1198,7 @@ public class FullScreenPlayer extends AbsPlayer implements View.OnClickListener,
         } else {
             mIvDownload.setVisibility(GONE);
         }
-        mDownloadMenuView.dismiss();
+//        mDownloadMenuView.dismiss();
     }
 
     public void setVodSelectionViewPositionAndData(List<TXTrackInfo> models) {
