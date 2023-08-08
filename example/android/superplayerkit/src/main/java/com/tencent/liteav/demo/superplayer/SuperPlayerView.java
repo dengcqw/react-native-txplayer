@@ -128,6 +128,8 @@ public class SuperPlayerView extends RelativeLayout
     private PictureInPictureHelper     mPictureInPictureHelper;
     private long                       mPlayAble;
 
+    private SuperPlayerDef.PlayerMode currPlayerMode = SuperPlayerDef.PlayerMode.WINDOW;
+
     public SuperPlayerView(Context context) {
         super(context);
         initialize(context);
@@ -602,6 +604,10 @@ public class SuperPlayerView extends RelativeLayout
     }
 
     private void handleSwitchPlayMode(SuperPlayerDef.PlayerMode playerMode) {
+        if (currPlayerMode == playerMode) {
+            return;
+        }
+        currPlayerMode = playerMode;
         fullScreen(playerMode == SuperPlayerDef.PlayerMode.FULLSCREEN);
         mFullScreenPlayer.hide();
         mWindowPlayer.hide();
@@ -896,6 +902,12 @@ public class SuperPlayerView extends RelativeLayout
                 break;
             case PORTRAIT:
                 ((Activity) mContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                // 三秒后置为不锁定
+                getHandler().postDelayed(() -> {
+                    if (mContext != null) {
+                        ((Activity) mContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                    }
+                }, 3000);
                 break;
         }
     }
@@ -1303,10 +1315,6 @@ public class SuperPlayerView extends RelativeLayout
         }
     }
 
-    private void toggleDanmiVisible(boolean show) {
-
-    }
-
     public void setDanmuData(List<String> danmuList) {
         mDanmuView.setDanmuDataList(danmuList);
         SuperPlayerDef.PlayerState playerState = mSuperPlayer.getPlayerState();
@@ -1315,6 +1323,10 @@ public class SuperPlayerView extends RelativeLayout
           playerState == SuperPlayerDef.PlayerState.PAUSE) {
             mDanmuView.run();
         }
+    }
+
+    public void switchToLandscape() {
+        handleSwitchPlayMode(SuperPlayerDef.PlayerMode.FULLSCREEN);
     }
 
     public static void save2MediaStore(Context context, Bitmap image) {

@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { StyleSheet, View, Pressable, Text, Dimensions } from 'react-native';
 import TxplayerView from '@jtreact/react-native-txplayer';
+import Orientation from '@hortau/react-native-orientation-locker'
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {useEffect} from "react";
 
 const RootStack = createNativeStackNavigator<any>();
 
@@ -22,6 +24,17 @@ const RootStackScreen = () => {
 
 function App() {
   const playerRef = React.useRef();
+  useEffect(() => {
+    const callback = (orientationState) => {
+      if (orientationState.toLowerCase().startsWith('landscape')) {
+        playerRef.current?.switchToLandscape?.();
+      }
+    };
+    Orientation.addOrientationListener(callback);
+    return () => {
+      Orientation.removeOrientationListener(callback)
+    }
+  }, [])
 
   return (
     <View style={styles.container}>

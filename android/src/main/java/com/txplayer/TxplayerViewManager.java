@@ -31,6 +31,9 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   public final int COMMAND_STARTPLAY = 1;
   public final int COMMAND_STOPPLAY = 2;
   public final int COMMAND_ADDDanmuk = 3;
+  public final int COMMAND_SWITCH_TO_LANDSCAPE = 4;
+
+
 
   public TxplayerViewManager(ReactApplicationContext reactContext) {
     this.context = reactContext;
@@ -62,7 +65,8 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
     return MapBuilder.of(
       "startPlay", COMMAND_STARTPLAY,
       "stopPlay", COMMAND_STOPPLAY,
-      "addDanmaku", COMMAND_ADDDanmuk
+      "addDanmaku", COMMAND_ADDDanmuk,
+      "switchToLandscape", COMMAND_SWITCH_TO_LANDSCAPE
       );
   }
 
@@ -91,6 +95,9 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
       case COMMAND_ADDDanmuk:
         handleAddDanmuList(root, args);
         break;
+      case COMMAND_SWITCH_TO_LANDSCAPE:
+        switchToLandscape(root);
+        break;
       default: {}
     }
   }
@@ -105,6 +112,10 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
       danmuContentList.add(String.valueOf(strObj));
     }
     root.addDanmukInfo(danmuContentList);
+  }
+
+  private void switchToLandscape(TxplayerView root) {
+    root.switchToLandscape();
   }
 
   public Map getExportedCustomBubblingEventTypeConstants() {

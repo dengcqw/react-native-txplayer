@@ -268,6 +268,10 @@ public class TxplayerView extends FrameLayout {
     superPlayerView.setDanmuData(danmuContentList);
   }
 
+  public void switchToLandscape() {
+    superPlayerView.switchToLandscape();
+  }
+
   /**
    * 设置播放器管理类
    *

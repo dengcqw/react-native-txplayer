@@ -58,7 +58,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="20dp"
                 android:gravity="right"
-                android:src="@drawable/superplayer_ic_danmuku_off" />
+                android:src="@drawable/superplayer_ic_danmuku_on" />
 
             <ImageView
                 android:id="@+id/superplayer_iv_snapshot"

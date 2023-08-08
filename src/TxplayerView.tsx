@@ -6,6 +6,7 @@ const Commands = {
   startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay.toString(),
   stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay.toString(),
   addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku.toString(),
+  switchToLandscape: UIManager.getViewManagerConfig(ComponentName).Commands.switchToLandscape.toString(),
 };
 
 export enum SuperPlayerState {
@@ -28,6 +29,7 @@ export type TxplayerViewApi = {
   startPlay: () => void;
   stopPlay: () => void;
   addDanmaku: (contents: string[]) => void;
+  switchToLandscape: () => void;
 };
 
 export type PlayTimeType = {
@@ -77,6 +79,9 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, TxplayerViewApi>((props
       },
       addDanmaku: (contents: string[]) => {
         UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.addDanmaku, [contents]);
+      },
+      switchToLandscape: () => {
+        UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.switchToLandscape, []);
       },
     }),
     []

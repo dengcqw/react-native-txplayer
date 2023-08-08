@@ -123,7 +123,7 @@ public class FullScreenPlayer extends AbsPlayer implements View.OnClickListener,
     private Bitmap                         mWaterMarkBmp;                          // 水印图
     private float                          mWaterMarkBmpX;                         // 水印x坐标
     private float                          mWaterMarkBmpY;                         // 水印y坐标
-    private boolean                        mBarrageOn;                             // 弹幕是否开启
+    private boolean                        mBarrageOn = true;                             // 弹幕是否开启
     private boolean                        mLockScreen;                            // 是否锁屏
     private TXImageSprite                  mTXImageSprite;                         // 雪碧图信息
     private List<PlayKeyFrameDescInfo>     mTXPlayKeyFrameDescInfoList;            // 关键帧信息
