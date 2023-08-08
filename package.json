@@ -1,6 +1,6 @@
 {
   "name": "@jtreact/react-native-txplayer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "封装腾讯云视频播放器superplayer",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",

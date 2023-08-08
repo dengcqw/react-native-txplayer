@@ -1,13 +1,17 @@
 import * as React from 'react';
-import { findNodeHandle, UIManager, requireNativeComponent, type NativeSyntheticEvent } from 'react-native';
+import { findNodeHandle, UIManager, requireNativeComponent, type NativeSyntheticEvent, Platform } from 'react-native';
 
 const ComponentName = 'TxplayerView';
-const Commands = {
-  startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay.toString(),
-  stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay.toString(),
-  addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku.toString(),
+const Commands = Platform.OS === 'ios' ? {
+  startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay,
+  stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay,
+  addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku,
+}: {
+  startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay!.toString(),
+  stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay!.toString(),
+  addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku!.toString(),
   switchToLandscape: UIManager.getViewManagerConfig(ComponentName).Commands.switchToLandscape.toString(),
-};
+}
 
 export enum SuperPlayerState {
   StateFailed, // 播放失败
