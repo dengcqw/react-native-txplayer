@@ -49,6 +49,8 @@ public class DanmuView extends DanmakuView {
     // 是否已被结束(视频播放完了)
     private boolean terminated;
 
+    private boolean hide;
+
     public DanmuView(Context context) {
         super(context);
         init(context);
@@ -109,7 +111,8 @@ public class DanmuView extends DanmakuView {
     public void run() {
         // 如果当前有正在执行的任务, 不要重复发起
         if ((mDanmuHandler != null && mDanmuHandler.isRunning) ||
-          mDanmuDataList.size() == 0
+          mDanmuDataList.size() == 0 ||
+          hide
 //          terminated
         ) {
             return;
@@ -206,11 +209,11 @@ public class DanmuView extends DanmakuView {
         if (mDanmuHandler == null) {
             return;
         }
+        hide = !on;
         if (on) {
-            mDanmuHandler.sendEmptyMessageAtTime(DanmuHandler.MSG_SEND_DANMU, 100);
+            run();
         } else {
-            mDanmuHandler.isRunning = false;
-            mDanmuHandler.removeMessages(DanmuHandler.MSG_SEND_DANMU);
+            clearHandler();
         }
     }
 

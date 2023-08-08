@@ -36,6 +36,14 @@ function App() {
       >
         <Text>start</Text>
       </Pressable>
+      <Pressable
+        style={styles.pressable}
+        onPress={() => {
+          playerRef.current.addDanmaku(['弹幕1', '弹幕2']);
+        }}
+      >
+        <Text>发送弹幕</Text>
+      </Pressable>
     </View>
   );
 }
