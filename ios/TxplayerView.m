@@ -98,7 +98,7 @@ const NSInteger kProgressUpdateTime = 250;
 @implementation TxplayerView
 
 - (void)dealloc {
-    [self.playerView resetPlayer];
+    [_playerView resetPlayer];
 }
 
 - (void)startPlay {
@@ -227,7 +227,6 @@ const NSInteger kProgressUpdateTime = 250;
 
 - (void)superPlayerFullScreenChanged:(SuperPlayerView *)player {
     [[UIApplication sharedApplication] setStatusBarHidden:false];
-    [self.playerView showOrHideBackBtn:player.isFullScreen];
 }
 
 - (void)superPlayerDidSelectDownload:(SuperPlayerView *)player{
@@ -238,6 +237,7 @@ const NSInteger kProgressUpdateTime = 250;
 
 -(void)fullScreenHookAction {
     self.playerView.disableGesture = NO;
+    [self.playerView showOrHideBackBtn:YES];
 
     FeedBaseFullScreenViewController *vc = [FeedBaseFullScreenViewController new];
     vc.playerView = self.playerView;
