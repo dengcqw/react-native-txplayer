@@ -19,6 +19,8 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class TxplayerViewManager extends SimpleViewManager<TxplayerView> implements TxplayerView.TxPlayerViewCallBack {
@@ -87,10 +89,22 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
         root.stopPlay();
         break;
       case COMMAND_ADDDanmuk:
-        root.addDanmukInfo();
+        handleAddDanmuList(root, args);
         break;
       default: {}
     }
+  }
+
+  private void handleAddDanmuList(TxplayerView root, ReadableArray args) {
+    if (args == null) {
+      return;
+    }
+    List<String> danmuContentList = new ArrayList<>();
+    ReadableArray danmuList = args.getArray(0);
+    for (Object strObj : danmuList.toArrayList()) {
+      danmuContentList.add(String.valueOf(strObj));
+    }
+    root.addDanmukInfo(danmuContentList);
   }
 
   public Map getExportedCustomBubblingEventTypeConstants() {

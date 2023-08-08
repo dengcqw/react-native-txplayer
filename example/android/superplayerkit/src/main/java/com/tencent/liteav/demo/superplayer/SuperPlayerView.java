@@ -1078,6 +1078,7 @@ public class SuperPlayerView extends RelativeLayout
                 mWatcher.exitLoading();
             }
             notifyCallbackPlaying();
+            startOrResumeDanmu();
         }
 
         @Override
@@ -1087,6 +1088,7 @@ public class SuperPlayerView extends RelativeLayout
           if (mPlayerViewCallback != null) {
             mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.PAUSE.ordinal());
           }
+          pauseDanmu();
         }
 
         @Override
@@ -1108,6 +1110,9 @@ public class SuperPlayerView extends RelativeLayout
                 }
             }
             notifyCallbackPlayEnd();
+            if (mSuperPlayerModelList.size() >= 1) {
+                stopDanmu();
+            }
         }
 
         @Override
@@ -1275,6 +1280,40 @@ public class SuperPlayerView extends RelativeLayout
     private void notifyCallbackPlayError(int code) {
         if (mPlayerViewCallback != null) {
             mPlayerViewCallback.onError(code);
+        }
+    }
+
+    private void startOrResumeDanmu() {
+        if (mDanmuView != null && mDanmuView.isPrepared() && mDanmuView.isPaused()) {
+            mDanmuView.resume();
+        } else if (mDanmuView != null) {
+            mDanmuView.run();
+        }
+    }
+
+    private void pauseDanmu() {
+        if (mDanmuView != null && mDanmuView.isPrepared()) {
+            mDanmuView.pause();
+        }
+    }
+
+    private void stopDanmu() {
+        if (mDanmuView != null) {
+            mDanmuView.stopDanmu();
+        }
+    }
+
+    private void toggleDanmiVisible(boolean show) {
+
+    }
+
+    public void setDanmuData(List<String> danmuList) {
+        mDanmuView.setDanmuDataList(danmuList);
+        SuperPlayerDef.PlayerState playerState = mSuperPlayer.getPlayerState();
+        // 仅处于播放/暂停, 才直接展示弹幕; 否则先将数据存起来
+        if (playerState == SuperPlayerDef.PlayerState.PLAYING ||
+          playerState == SuperPlayerDef.PlayerState.PAUSE) {
+            mDanmuView.run();
         }
     }
 

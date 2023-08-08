@@ -107,6 +107,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@drawable/superplayer_bottom_shadow"
+        android:paddingHorizontal="15dp"
         android:orientation="horizontal">
 
         <!--播放/暂停-->
@@ -115,7 +116,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20dp"
             android:src="@drawable/superplayer_ic_vod_pause_normal" />
         <!--播放位置-->
         <TextView

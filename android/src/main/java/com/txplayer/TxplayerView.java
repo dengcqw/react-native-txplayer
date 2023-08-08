@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Choreographer;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import com.tencent.liteav.demo.superplayer.SuperPlayerModel;
 import com.tencent.liteav.demo.superplayer.SuperPlayerVideoId;
 import com.tencent.liteav.demo.superplayer.SuperPlayerView;
 import com.tencent.liteav.demo.superplayer.ui.player.FullScreenPlayer;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -109,9 +112,9 @@ public class TxplayerView extends FrameLayout {
     superPlayerView.showPIPIV(false);
 
     // 防止崩溃
-    SuperPlayerModel model = new SuperPlayerModel();
+    /*SuperPlayerModel model = new SuperPlayerModel();
     model.url = "";
-    superPlayerView.playWithModelNeedLicence(model);
+    superPlayerView.playWithModelNeedLicence(model);*/
     superPlayerView.setNeedMultiSoundTrack(false);
 
 
@@ -252,11 +255,17 @@ public class TxplayerView extends FrameLayout {
 
   public void stopPlay() {
     if (superPlayerView == null) return;
+    Log.i("TxplayerView_TAG", "stopPlay");
     superPlayerView.stopPlay();
   }
 
-  public void addDanmukInfo() {
-    if (superPlayerView == null) return;
+  public void addDanmukInfo(List<String> danmuContentList) {
+    if (danmuContentList == null ||
+      danmuContentList.size() == 0 ||
+      superPlayerView == null) {
+      return;
+    }
+    superPlayerView.setDanmuData(danmuContentList);
   }
 
   /**
@@ -317,7 +326,7 @@ public class TxplayerView extends FrameLayout {
   @Override
   protected void onDetachedFromWindow() {
     super.onDetachedFromWindow();
-    stopPlay();
+//    stopPlay();
   }
 
   // 定时计算child layout，RN只计算自己管理的view？
