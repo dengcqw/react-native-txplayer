@@ -130,7 +130,7 @@ public class TxplayerView extends FrameLayout {
 
       @Override
       public void onStopFullScreenPlay() {
-          addFeedPlayToItem();
+        addFeedPlayToItem();
       }
 
       @Override
@@ -255,8 +255,9 @@ public class TxplayerView extends FrameLayout {
 
   public void stopPlay() {
     if (superPlayerView == null) return;
-    Log.i("TxplayerView_TAG", "stopPlay");
     superPlayerView.stopPlay();
+//    Log.i("TxplayerView_TAG", "stopPlay");
+    superPlayerView.releasePlayModel();
   }
 
   public void addDanmukInfo(List<String> danmuContentList) {

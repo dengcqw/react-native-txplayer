@@ -86,9 +86,9 @@ import java.util.List;
  * 4、退出播放释放内存{@link #resetPlayer()}
  */
 public class SuperPlayerView extends RelativeLayout
-        implements PermissionManager.OnStoragePermissionGrantedListener,
-        PictureInPictureHelper.OnPictureInPictureClickListener,
-        VolumeChangeHelper.VolumeChangeListener  {
+  implements PermissionManager.OnStoragePermissionGrantedListener,
+  PictureInPictureHelper.OnPictureInPictureClickListener,
+  VolumeChangeHelper.VolumeChangeListener  {
     private static final String TAG                    = "SuperPlayerView";
     private final        int    OP_SYSTEM_ALERT_WINDOW = 24;                      // 支持TYPE_TOAST悬浮窗的最高API版本
 
@@ -458,10 +458,10 @@ public class SuperPlayerView extends RelativeLayout
                     decorView.setSystemUiVisibility(View.GONE);
                 } else if (Build.VERSION.SDK_INT >= 19) {
                     int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
+                      | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
                     decorView.setSystemUiVisibility(uiOptions);
                     ((Activity) getContext()).getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                            WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                      WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 }
             } else {
                 View decorView = activity.getWindow().getDecorView();
@@ -576,7 +576,7 @@ public class SuperPlayerView extends RelativeLayout
             mWindowParams.type = WindowManager.LayoutParams.TYPE_PHONE;
         }
         mWindowParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-                | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+          | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         mWindowParams.format = PixelFormat.TRANSLUCENT;
         mWindowParams.gravity = Gravity.LEFT | Gravity.TOP;
 
@@ -769,7 +769,7 @@ public class SuperPlayerView extends RelativeLayout
 
         @Override
         public List<SuperPlayerModel> getPlayList() {
-            if (null == mSuperPlayerModelList || mSuperPlayerModelList.isEmpty()) {
+            if (mSuperPlayerModelList.isEmpty() && mCurrentSuperPlayerModel != null) {
                 return new ArrayList<SuperPlayerModel>() {{
                     add(mCurrentSuperPlayerModel);
                 }};
@@ -834,7 +834,7 @@ public class SuperPlayerView extends RelativeLayout
 
     private void handleResume() {
         if (mSuperPlayer.getPlayerState() == SuperPlayerDef.PlayerState.LOADING
-                && mPlayAction == PLAY_ACTION_PRELOAD) {
+          && mPlayAction == PLAY_ACTION_PRELOAD) {
             mSuperPlayer.resume();
         } else if (mSuperPlayer.getPlayerState() == SuperPlayerDef.PlayerState.INIT) {
             if (mPlayAction == PLAY_ACTION_PRELOAD) {
@@ -1064,7 +1064,7 @@ public class SuperPlayerView extends RelativeLayout
             mWindowPlayer.updatePlayState(SuperPlayerDef.PlayerState.INIT);
             mFullScreenPlayer.updatePlayState(SuperPlayerDef.PlayerState.INIT);
             if (mPlayerViewCallback != null) {
-              mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.INIT.ordinal());
+                mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.INIT.ordinal());
             }
 
             actonOfPreloadOnPlayPrepare();
@@ -1078,10 +1078,10 @@ public class SuperPlayerView extends RelativeLayout
         public void onPlayBegin(String name) {
             mWindowPlayer.updatePlayState(SuperPlayerDef.PlayerState.PLAYING);
             mFullScreenPlayer.updatePlayState(SuperPlayerDef.PlayerState.PLAYING);
-          if (mPlayerViewCallback != null) {
-            mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.PLAYING.ordinal());
-          }
-          updateTitle(name);
+            if (mPlayerViewCallback != null) {
+                mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.PLAYING.ordinal());
+            }
+            updateTitle(name);
             mWindowPlayer.hideBackground();
             if (mDanmuView != null && mDanmuView.isPrepared() && mDanmuView.isPaused()) {
                 mDanmuView.resume();
@@ -1097,10 +1097,10 @@ public class SuperPlayerView extends RelativeLayout
         public void onPlayPause() {
             mWindowPlayer.updatePlayState(SuperPlayerDef.PlayerState.PAUSE);
             mFullScreenPlayer.updatePlayState(SuperPlayerDef.PlayerState.PAUSE);
-          if (mPlayerViewCallback != null) {
-            mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.PAUSE.ordinal());
-          }
-          pauseDanmu();
+            if (mPlayerViewCallback != null) {
+                mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.PAUSE.ordinal());
+            }
+            pauseDanmu();
         }
 
         @Override
@@ -1113,18 +1113,22 @@ public class SuperPlayerView extends RelativeLayout
             } else {
                 mWindowPlayer.updatePlayState(SuperPlayerDef.PlayerState.END);
                 mFullScreenPlayer.updatePlayState(SuperPlayerDef.PlayerState.END);
-              if (mPlayerViewCallback != null) {
-                mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.END.ordinal());
-              }
+                if (mPlayerViewCallback != null) {
+                    mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.END.ordinal());
+                }
                 // 清空关键帧和视频打点信息
                 if (mWatcher != null) {
                     mWatcher.stop();
                 }
             }
-            notifyCallbackPlayEnd();
-            if (mSuperPlayerModelList.size() >= 1) {
+            if (mCurrentSuperPlayerModel != null) {
                 stopDanmu();
+                notifyCallbackPlayEnd();
+                Log.i("TxplayerView_TAG", "stopPlayCallback");
             }
+//            mCurrentSuperPlayerModel = null;
+//            Log.i("TxplayerView_TAG", "stopPlayCallback");
+
         }
 
         @Override
@@ -1135,17 +1139,17 @@ public class SuperPlayerView extends RelativeLayout
                     mWindowPlayer.updatePlayState(SuperPlayerDef.PlayerState.LOADING);
                     mFullScreenPlayer.updatePlayState(SuperPlayerDef.PlayerState.LOADING);
                     if (mPlayerViewCallback != null) {
-                      mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.LOADING.ordinal());
+                        mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.LOADING.ordinal());
                     }
                 }
             } else {
                 mWindowPlayer.updatePlayState(SuperPlayerDef.PlayerState.LOADING);
                 mFullScreenPlayer.updatePlayState(SuperPlayerDef.PlayerState.LOADING);
                 if (mPlayerViewCallback != null) {
-                  mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.LOADING.ordinal());
+                    mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.LOADING.ordinal());
                 }
             }
-          if (mWatcher != null) {
+            if (mWatcher != null) {
                 mWatcher.enterLoading();
             }
         }
@@ -1160,7 +1164,7 @@ public class SuperPlayerView extends RelativeLayout
             mFloatPlayer.updateVideoProgress(current, duration,playable);
             // sandstalk
             if (mPlayerViewCallback != null) {
-              mPlayerViewCallback.onPlayProgress(current, duration, playable);
+                mPlayerViewCallback.onPlayProgress(current, duration, playable);
             }
         }
 
@@ -1293,6 +1297,10 @@ public class SuperPlayerView extends RelativeLayout
         if (mPlayerViewCallback != null) {
             mPlayerViewCallback.onError(code);
         }
+    }
+
+    public void releasePlayModel() {
+        mCurrentSuperPlayerModel = null;
     }
 
     private void startOrResumeDanmu() {
@@ -1490,7 +1498,7 @@ public class SuperPlayerView extends RelativeLayout
     }
 
     public FullScreenPlayer getFullscreenPlayer() {
-      return mFullScreenPlayer;
+        return mFullScreenPlayer;
     }
 
 }

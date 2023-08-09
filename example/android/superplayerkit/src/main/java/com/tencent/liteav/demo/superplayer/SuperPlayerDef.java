@@ -10,9 +10,9 @@ public class SuperPlayerDef {
 
     public enum PlayerState {
         INIT,       //初始状态
-        PLAYING,    // 播放中
         PAUSE,      // 暂停中
         LOADING,    // 缓冲中
+        PLAYING,    // 播放中
         END         // 结束播放
     }
 

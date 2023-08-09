@@ -26,7 +26,6 @@ import java.util.Map;
 public class TxplayerViewManager extends SimpleViewManager<TxplayerView> implements TxplayerView.TxPlayerViewCallBack {
   public static final String REACT_CLASS = "TxplayerView";
   private final ReactApplicationContext context;
-  private TxplayerView currentPlayerView;
 
   public final int COMMAND_STARTPLAY = 1;
   public final int COMMAND_STOPPLAY = 2;
@@ -67,7 +66,7 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
       "stopPlay", COMMAND_STOPPLAY,
       "addDanmaku", COMMAND_ADDDanmuk,
       "switchToLandscape", COMMAND_SWITCH_TO_LANDSCAPE
-      );
+    );
   }
 
   @Override
@@ -81,13 +80,7 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
 
     switch (commandIdInt) {
       case COMMAND_STARTPLAY:
-        if (currentPlayerView != root) {
-          root.startPlay();
-          if (currentPlayerView != null) {
-            currentPlayerView.stopPlay();
-          }
-        }
-        currentPlayerView = root;
+        root.startPlay();
         break;
       case COMMAND_STOPPLAY:
         root.stopPlay();
