@@ -475,6 +475,11 @@ const NSInteger kProgressUpdateTime = 250;
         [Orientation setOrientation:UIInterfaceOrientationMaskLandscapeRight];
         [self movRotateToInterfaceOrientation:UIInterfaceOrientationLandscapeRight];
     } else {
+        if (self.orientation == UIInterfaceOrientationLandscapeRight) {
+            [Orientation setOrientation:UIInterfaceOrientationMaskLandscapeRight];
+        } else {
+            [Orientation setOrientation:UIInterfaceOrientationMaskLandscapeLeft];
+        }
         [self movRotateToInterfaceOrientation:self.orientation];
     }
     [self movSetNeedsUpdateOfSupportedInterfaceOrientations];
@@ -485,9 +490,7 @@ const NSInteger kProgressUpdateTime = 250;
 
 -(void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    if (self.orientation == UIInterfaceOrientationUnknown) {
-        [Orientation setOrientation:UIInterfaceOrientationMaskPortrait];
-    }
+    [Orientation setOrientation:UIInterfaceOrientationMaskPortrait];
     [self movRotateToInterfaceOrientation:UIInterfaceOrientationPortrait];
     [self movSetNeedsUpdateOfSupportedInterfaceOrientations];
     //[self.navigationController setNavigationBarHidden:NO animated:NO];

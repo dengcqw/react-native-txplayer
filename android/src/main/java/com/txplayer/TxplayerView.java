@@ -270,10 +270,15 @@ public class TxplayerView extends FrameLayout {
   }
 
   public void switchToOrientation(String oriention) {
+    if ("portrait".equals(oriention)) {
+      if(!isFullScreenPlay()) return;
+      superPlayerView.switchToPortrait();
+    }
+
     if(isFullScreenPlay()) return;
-    if (oriention == "left") {
+    if ("left".equals(oriention)) {
       superPlayerView.switchToLandscape();
-    } else if (oriention == "right") {
+    } else if ("right".equals(oriention)) {
       superPlayerView.switchToLandscape();
     }
   }
