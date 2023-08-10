@@ -246,7 +246,9 @@ public class TxplayerView extends FrameLayout {
 
     model.title = videoName;
     model.coverPictureUrl = videoCoverURL;
-    model.isEnableCache = true;
+    if (enableDownload) {
+      model.isEnableCache = true;
+    }
 
     superPlayerView.showPIPIV(false);
     superPlayerView.setStartTime(playStartTime);

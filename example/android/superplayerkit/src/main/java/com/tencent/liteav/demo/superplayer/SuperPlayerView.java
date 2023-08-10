@@ -129,6 +129,7 @@ public class SuperPlayerView extends RelativeLayout
     private long                       mPlayAble;
 
     private SuperPlayerDef.PlayerMode currPlayerMode = SuperPlayerDef.PlayerMode.WINDOW;
+    private int mPreSystemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
 
     public SuperPlayerView(Context context) {
         super(context);
@@ -334,6 +335,14 @@ public class SuperPlayerView extends RelativeLayout
         mDynamicWatermarkView.hide();
     }
 
+    @Override
+    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+        if (visibility != View.VISIBLE) {
+            onPause();
+        }
+    }
+
     /**
      * 更新标题
      *
@@ -453,6 +462,9 @@ public class SuperPlayerView extends RelativeLayout
             if (isFull) {
                 //隐藏虚拟按键，并且全屏
                 View decorView = activity.getWindow().getDecorView();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    mPreSystemUiVisibility = decorView.getSystemUiVisibility();
+                }
                 if (decorView == null) return;
                 if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
                     decorView.setSystemUiVisibility(View.GONE);
@@ -470,6 +482,10 @@ public class SuperPlayerView extends RelativeLayout
                     decorView.setSystemUiVisibility(View.VISIBLE);
                 } else if (Build.VERSION.SDK_INT >= 19) {
                     decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                    activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                    activity.getWindow().getDecorView().setSystemUiVisibility(mPreSystemUiVisibility);
                 }
             }
         }
