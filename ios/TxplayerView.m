@@ -162,6 +162,21 @@ const NSInteger kProgressUpdateTime = 250;
     [self.playerView playWithModelNeedLicence:model];
 }
 
+- (JTDanmakuView *)danmakuView{
+  if (_danmakuView == nil){
+    _danmakuView                    = [[JTDanmakuView alloc] initWithFrame:CGRectZero];
+    _danmakuView.duration           = 6.5;
+    _danmakuView.centerDuration     = 2.5;
+    _danmakuView.lineHeight         = 25;
+    _danmakuView.maxShowLineCount   = 1;
+    _danmakuView.maxCenterLineCount = 1;
+    _danmakuView.delegate = self;
+    _danmakuView.clipsToBounds = NO;
+  }
+  
+  return _danmakuView;
+}
+
 - (void)stopPlay {
     [self.playerView pause];
     
@@ -169,6 +184,17 @@ const NSInteger kProgressUpdateTime = 250;
         self.onPlayStateChange(@{
             @"state": [NSNumber numberWithInteger:StateStopped]
         });
+    }
+}
+
+- (void)switchFullscreen:(BOOL)fullscreen {
+    if ([_playerView.controlView isKindOfClass:[SPDefaultControlView class]]) {
+        SPDefaultControlView *controlView = (SPDefaultControlView *)_playerView.controlView;
+        if (fullscreen) {
+            [controlView.fullScreenBtn sendActionsForControlEvents:(UIControlEventTouchUpInside)];
+        } else {
+            [controlView.backBtn sendActionsForControlEvents:(UIControlEventTouchUpInside)];
+        }
     }
 }
 
@@ -227,6 +253,14 @@ const NSInteger kProgressUpdateTime = 250;
 
 - (void)superPlayerFullScreenChanged:(SuperPlayerView *)player {
     [[UIApplication sharedApplication] setStatusBarHidden:false];
+    SPDefaultControlView *controlView = (SPDefaultControlView *)_playerView.controlView;
+    if (controlView.danmakuBtn.selected) {
+        if (player.isFullScreen) {
+            [self danmakuShow];
+        } else {
+            [self danmakuHidden];
+        }
+    }
 }
 
 - (void)superPlayerDidSelectDownload:(SuperPlayerView *)player{

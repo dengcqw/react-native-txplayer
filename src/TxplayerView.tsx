@@ -3,14 +3,15 @@ import { findNodeHandle, UIManager, requireNativeComponent, type NativeSynthetic
 
 const ComponentName = 'TxplayerView';
 const Commands = Platform.OS === 'ios' ? {
-  startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay,
-  stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay,
-  addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku,
+  startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay!,
+  stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay!,
+  addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku!,
+  switchToLandscape: UIManager.getViewManagerConfig(ComponentName).Commands.switchToLandscape!,
 }: {
   startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay!.toString(),
   stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay!.toString(),
   addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku!.toString(),
-  switchToLandscape: UIManager.getViewManagerConfig(ComponentName).Commands.switchToLandscape.toString(),
+  switchToLandscape: UIManager.getViewManagerConfig(ComponentName).Commands.switchToLandscape!.toString(),
 }
 
 export enum SuperPlayerState {

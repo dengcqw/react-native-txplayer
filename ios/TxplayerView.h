@@ -42,6 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)startPlay;
 - (void)stopPlay;
 - (void)prepareDanmaku:(NSDictionary *)danmakus;
+- (void)switchFullscreen:(BOOL)fullscreen;
 
 @end
 
