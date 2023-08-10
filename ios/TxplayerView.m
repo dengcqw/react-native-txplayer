@@ -93,7 +93,7 @@ const NSInteger kProgressUpdateTime = 250;
 @property(nonatomic, strong) JTDanmakuView *danmakuView;
 @property (nonatomic,assign) NSInteger updateCount;
 @property (nonatomic,strong) NSMutableArray *danmakus;
-@property (nonatomic,assign) NSUInteger oriention;
+@property (nonatomic,assign) NSUInteger orientation;
 @end
 
 @implementation TxplayerView
@@ -124,7 +124,7 @@ const NSInteger kProgressUpdateTime = 250;
     }
     
     model.name = self.videoName;
-    model.customCoverImageUrl = self.videoCoverURL;
+    model.defaultCoverImageUrl = self.videoCoverURL;
     
     self.playerView.startTime = self.playStartTime.floatValue;
     
@@ -189,22 +189,23 @@ const NSInteger kProgressUpdateTime = 250;
 }
 
 // 自动旋转
-- (void)switchToOrientation:(NSString *)oriention {
-    if ([oriention isEqualToString:@"right"]) {
-        self.oriention = UIInterfaceOrientationLandscapeRight;
-    } else if ([oriention isEqualToString:@"left"]) {
-        self.oriention = UIInterfaceOrientationLandscapeLeft;
+- (void)switchToOrientation:(NSString *)orientation {
+    // 注意这里left和Right对应，right和Left对应
+    if ([orientation isEqualToString:@"left"]) {
+        self.orientation = UIInterfaceOrientationLandscapeRight;
+    } else if ([orientation isEqualToString:@"right"]) {
+        self.orientation = UIInterfaceOrientationLandscapeLeft;
     } else {
-        self.oriention = UIInterfaceOrientationUnknown;
+        self.orientation = UIInterfaceOrientationUnknown;
     }
     if ([_playerView.controlView isKindOfClass:[SPDefaultControlView class]]) {
         SPDefaultControlView *controlView = (SPDefaultControlView *)_playerView.controlView;
         if (controlView.isFullScreen) { // 当前全屏
-            if (self.oriention == UIInterfaceOrientationUnknown) { // 旋转至横屏
+            if (self.orientation == UIInterfaceOrientationUnknown) { // 旋转至横屏
                 [controlView.backBtn sendActionsForControlEvents:(UIControlEventTouchUpInside)];
             }
         } else { // 当前横屏
-            if (self.oriention != UIInterfaceOrientationPortrait) { // 旋转至全屏
+            if (self.orientation != UIInterfaceOrientationUnknown) { // 旋转至全屏
                 [controlView.fullScreenBtn sendActionsForControlEvents:(UIControlEventTouchUpInside)];
             }
         }
@@ -232,7 +233,7 @@ const NSInteger kProgressUpdateTime = 250;
           controlView.disableDanmakuBtn = YES;
           controlView.disableDownloadBtn = YES;
         }
-        _oriention = UIInterfaceOrientationUnknown;
+        _orientation = UIInterfaceOrientationUnknown;
     }
     return _playerView;
 }
@@ -289,7 +290,7 @@ const NSInteger kProgressUpdateTime = 250;
     [self.playerView showOrHideBackBtn:YES];
 
     FeedBaseFullScreenViewController *vc = [FeedBaseFullScreenViewController new];
-    vc.oriention = self.oriention;
+    vc.orientation = self.orientation;
     vc.playerView = self.playerView;
     // fix 覆盖 tab bar
     UINavigationController *navi = (UINavigationController *)[UIApplication sharedApplication].keyWindow.rootViewController;
@@ -299,7 +300,7 @@ const NSInteger kProgressUpdateTime = 250;
         [self.viewController.navigationController pushViewController:vc animated:NO];
     }
     // 横屏后，初始化状态
-    self.oriention = UIInterfaceOrientationUnknown;
+    self.orientation = UIInterfaceOrientationUnknown;
 }
 
 - (void)backHookAction {
@@ -470,11 +471,13 @@ const NSInteger kProgressUpdateTime = 250;
     // 竖视频可以不旋转
     
     // 手动横屏, 设置Orientation right
-    if (self.oriention == UIInterfaceOrientationUnknown) {
+    if (self.orientation == UIInterfaceOrientationUnknown) {
         [Orientation setOrientation:UIInterfaceOrientationMaskLandscapeRight];
         [self movRotateToInterfaceOrientation:UIInterfaceOrientationLandscapeRight];
-        [self movSetNeedsUpdateOfSupportedInterfaceOrientations];
+    } else {
+        [self movRotateToInterfaceOrientation:self.orientation];
     }
+    [self movSetNeedsUpdateOfSupportedInterfaceOrientations];
     
     // React Navigation 不需要隐藏
     //[self.navigationController setNavigationBarHidden:YES animated:NO];
@@ -482,11 +485,11 @@ const NSInteger kProgressUpdateTime = 250;
 
 -(void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    if (self.oriention == UIInterfaceOrientationUnknown) {
+    if (self.orientation == UIInterfaceOrientationUnknown) {
         [Orientation setOrientation:UIInterfaceOrientationMaskPortrait];
-        [self movRotateToInterfaceOrientation:UIInterfaceOrientationPortrait];
-        [self movSetNeedsUpdateOfSupportedInterfaceOrientations];
     }
+    [self movRotateToInterfaceOrientation:UIInterfaceOrientationPortrait];
+    [self movSetNeedsUpdateOfSupportedInterfaceOrientations];
     //[self.navigationController setNavigationBarHidden:NO animated:NO];
 }
 

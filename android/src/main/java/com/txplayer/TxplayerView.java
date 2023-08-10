@@ -175,12 +175,10 @@ public class TxplayerView extends FrameLayout {
       public void onPlayProgress(long current, long duration, long playable) {
         // 5秒更新一次
         if (lastTime > current) {
-          lastTime = current;
           return;
         }
-        if (lastTime < current + 5) {
-          lastTime = current;
-        }
+        lastTime = current + 5;
+
         if (playerViewCallback != null) {
           WritableMap event = Arguments.createMap();
           event.putInt("totalTime", (int) duration);
@@ -272,6 +270,7 @@ public class TxplayerView extends FrameLayout {
   }
 
   public void switchToOrientation(String oriention) {
+    if(isFullScreenPlay()) return;
     if (oriention == "left") {
       superPlayerView.switchToLandscape();
     } else if (oriention == "right") {

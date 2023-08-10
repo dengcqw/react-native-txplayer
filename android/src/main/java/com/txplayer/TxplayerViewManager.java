@@ -111,7 +111,7 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
     if (args == null) {
       return;
     }
-    String oriention  = args.getArray(0);
+    String oriention  = args.getString(0);
     root.switchToOrientation(oriention);
   }
 
