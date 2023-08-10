@@ -6,12 +6,12 @@ const Commands = Platform.OS === 'ios' ? {
   startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay!,
   stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay!,
   addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku!,
-  switchToLandscape: UIManager.getViewManagerConfig(ComponentName).Commands.switchToLandscape!,
+  switchToOrientation: UIManager.getViewManagerConfig(ComponentName).Commands.switchToOrientation!,
 }: {
   startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay!.toString(),
   stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay!.toString(),
   addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku!.toString(),
-  switchToLandscape: UIManager.getViewManagerConfig(ComponentName).Commands.switchToLandscape!.toString(),
+  switchToOrientation: UIManager.getViewManagerConfig(ComponentName).Commands.switchToOrientation!.toString(),
 }
 
 export enum SuperPlayerState {
@@ -34,7 +34,7 @@ export type TxplayerViewApi = {
   startPlay: () => void;
   stopPlay: () => void;
   addDanmaku: (contents: string[]) => void;
-  switchToLandscape: () => void;
+  switchToOrientation: (oriention: string) => void;
 };
 
 export type PlayTimeType = {
@@ -85,8 +85,8 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, TxplayerViewApi>((props
       addDanmaku: (contents: string[]) => {
         UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.addDanmaku, [contents]);
       },
-      switchToLandscape: () => {
-        UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.switchToLandscape, []);
+      switchToOrientation: (oriention: string) => {
+        UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.switchToOrientation, [oriention]);
       },
     }),
     []
@@ -97,3 +97,4 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, TxplayerViewApi>((props
 });
 
 export default TxplayerView;
+

@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)startPlay;
 - (void)stopPlay;
 - (void)prepareDanmaku:(NSDictionary *)danmakus;
-- (void)switchFullscreen:(BOOL)fullscreen;
+- (void)switchToOrientation:(NSString *)oriention;
 
 @end
 
@@ -52,6 +52,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface FeedBaseFullScreenViewController : UIViewController
 ///视频窗口
 @property (nonatomic, strong) SuperPlayerView *playerView;
+@property (nonatomic,assign) NSUInteger oriention;
+
 - (UIView *)screenView;
 @end
 

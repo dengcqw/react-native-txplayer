@@ -271,8 +271,12 @@ public class TxplayerView extends FrameLayout {
     superPlayerView.setDanmuData(danmuContentList);
   }
 
-  public void switchToLandscape() {
-    superPlayerView.switchToLandscape();
+  public void switchToOrientation(String oriention) {
+    if (oriention == "left") {
+      superPlayerView.switchToLandscape();
+    } else if (oriention == "right") {
+      superPlayerView.switchToLandscape();
+    }
   }
 
   /**

@@ -77,10 +77,10 @@ RCT_EXPORT_METHOD(addDanmaku:(nonnull NSNumber *) reactTag danmakuInfo:(NSDictio
     }];
 }
 
-RCT_EXPORT_METHOD(switchToLandscape:(nonnull NSNumber *) reactTag) {
+RCT_EXPORT_METHOD(switchToOrientation:(nonnull NSNumber *) reactTag oriention: (NSString *)oriention) {
     [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *,UIView *> *viewRegistry) {
         TxplayerView * player  = (TxplayerView *) viewRegistry[reactTag];
-        [player switchFullscreen:YES];
+        [player switchToOrientation:oriention];
     }];
 }
 

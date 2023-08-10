@@ -65,7 +65,7 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
       "startPlay", COMMAND_STARTPLAY,
       "stopPlay", COMMAND_STOPPLAY,
       "addDanmaku", COMMAND_ADDDanmuk,
-      "switchToLandscape", COMMAND_SWITCH_TO_LANDSCAPE
+      "switchToOrientation", COMMAND_SWITCH_TO_LANDSCAPE
     );
   }
 
@@ -89,7 +89,7 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
         handleAddDanmuList(root, args);
         break;
       case COMMAND_SWITCH_TO_LANDSCAPE:
-        switchToLandscape(root);
+        switchToOrientation(root, args);
         break;
       default: {}
     }
@@ -107,8 +107,12 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
     root.addDanmukInfo(danmuContentList);
   }
 
-  private void switchToLandscape(TxplayerView root) {
-    root.switchToLandscape();
+  private void switchToOrientation(TxplayerView root, ReadableArray args) {
+    if (args == null) {
+      return;
+    }
+    String oriention  = args.getArray(0);
+    root.switchToOrientation(oriention);
   }
 
   public Map getExportedCustomBubblingEventTypeConstants() {
