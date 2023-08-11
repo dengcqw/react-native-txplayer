@@ -8,6 +8,11 @@ public class SuperPlayerDef {
         FLOAT       // 悬浮窗模式
     }
 
+    public enum FullScreenDirection {
+        LEFT,     // 全屏模式-朝左
+        RIGHT, // 全屏模式-朝右
+    }
+
     public enum PlayerState {
         INIT,       //初始状态
         PAUSE,      // 暂停中

@@ -503,7 +503,7 @@ public class SuperPlayerView extends RelativeLayout
         }
     }
 
-    private void onSwitchFullMode(SuperPlayerDef.PlayerMode playerMode) {
+    private void onSwitchFullMode(SuperPlayerDef.PlayerMode playerMode, SuperPlayerDef.FullScreenDirection direction) {
         if (mLayoutParamFullScreenMode == null) {
             return;
         }
@@ -513,7 +513,7 @@ public class SuperPlayerView extends RelativeLayout
         if (mPlayerViewCallback != null) {
             mPlayerViewCallback.onStartFullScreenPlay();
         }
-        rotateScreenOrientation(SuperPlayerDef.Orientation.LANDSCAPE);
+        rotateScreenOrientation(SuperPlayerDef.Orientation.LANDSCAPE, direction);
         mSuperPlayer.switchPlayMode(playerMode);
     }
 
@@ -555,7 +555,7 @@ public class SuperPlayerView extends RelativeLayout
             removeView(mFullScreenPlayer);
             addView(mWindowPlayer, mVodControllerWindowParams);
             setLayoutParams(mLayoutParamWindowMode);
-            rotateScreenOrientation(SuperPlayerDef.Orientation.PORTRAIT);
+            rotateScreenOrientation(SuperPlayerDef.Orientation.PORTRAIT, SuperPlayerDef.FullScreenDirection.LEFT);
             if (mPlayerViewCallback != null) {
                 mPlayerViewCallback.onStopFullScreenPlay();
             }
@@ -620,6 +620,10 @@ public class SuperPlayerView extends RelativeLayout
     }
 
     private void handleSwitchPlayMode(SuperPlayerDef.PlayerMode playerMode) {
+        handleSwitchPlayMode(playerMode, SuperPlayerDef.FullScreenDirection.LEFT);
+    }
+
+    private void handleSwitchPlayMode(SuperPlayerDef.PlayerMode playerMode, SuperPlayerDef.FullScreenDirection direction) {
         if (currPlayerMode == playerMode) {
             return;
         }
@@ -630,7 +634,7 @@ public class SuperPlayerView extends RelativeLayout
         mFloatPlayer.hide();
         //请求全屏模式
         if (playerMode == SuperPlayerDef.PlayerMode.FULLSCREEN) {
-            onSwitchFullMode(playerMode);
+            onSwitchFullMode(playerMode, direction);
         } else if (playerMode == SuperPlayerDef.PlayerMode.WINDOW) { // 请求窗口模式
             onSwitchWindowMode(playerMode);
         } else if (playerMode == SuperPlayerDef.PlayerMode.FLOAT) { // 请求悬浮窗模式
@@ -910,20 +914,16 @@ public class SuperPlayerView extends RelativeLayout
      * 旋转屏幕方向
      *
      * @param orientation
+     * @param direction
      */
-    private void rotateScreenOrientation(SuperPlayerDef.Orientation orientation) {
+    private void rotateScreenOrientation(SuperPlayerDef.Orientation orientation, SuperPlayerDef.FullScreenDirection direction) {
         switch (orientation) {
             case LANDSCAPE:
-                ((Activity) mContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                int flag = direction == SuperPlayerDef.FullScreenDirection.LEFT ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
+                ((Activity) mContext).setRequestedOrientation(flag);
                 break;
             case PORTRAIT:
                 ((Activity) mContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                // 三秒后置为不锁定
-                getHandler().postDelayed(() -> {
-                    if (mContext != null) {
-                        ((Activity) mContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-                    }
-                }, 3000);
                 break;
         }
     }
@@ -1349,8 +1349,12 @@ public class SuperPlayerView extends RelativeLayout
         }
     }
 
-    public void switchToLandscape() {
-        handleSwitchPlayMode(SuperPlayerDef.PlayerMode.FULLSCREEN);
+    public void switchToLandscape(SuperPlayerDef.FullScreenDirection direction) {
+        handleSwitchPlayMode(SuperPlayerDef.PlayerMode.FULLSCREEN, direction);
+    }
+
+    public void switchToPortrait() {
+        handleSwitchPlayMode(SuperPlayerDef.PlayerMode.WINDOW);
     }
 
     public static void save2MediaStore(Context context, Bitmap image) {

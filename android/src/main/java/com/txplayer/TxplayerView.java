@@ -277,9 +277,9 @@ public class TxplayerView extends FrameLayout {
 
     if(isFullScreenPlay()) return;
     if ("left".equals(oriention)) {
-      superPlayerView.switchToLandscape();
+      superPlayerView.switchToLandscape(SuperPlayerDef.FullScreenDirection.LEFT);
     } else if ("right".equals(oriention)) {
-      superPlayerView.switchToLandscape();
+      superPlayerView.switchToLandscape(SuperPlayerDef.FullScreenDirection.RIGHT);
     }
   }
 
