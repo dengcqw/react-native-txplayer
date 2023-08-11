@@ -25,15 +25,14 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-//    api project(':deprecatedcommon')
-    implementation rootProject.ext.liteavSdk
+    api 'com.tencent.liteav:LiteAVSDK_Professional:11.0.0.13124'
     implementation 'com.github.ctiao:DanmakuFlameMaster:0.5.3'
 
-    implementation 'androidx.appcompat:appcompat:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    api 'androidx.recyclerview:recyclerview:1.3.0'
 
-    api 'com.github.bumptech.glide:glide:4.12.0'
-    implementation 'androidx.exifinterface:exifinterface:1.2.0'
+    api 'com.github.bumptech.glide:glide:4.13.0'
+    implementation 'androidx.exifinterface:exifinterface:1.3.6'
     implementation 'androidx.vectordrawable:vectordrawable-animated:1.1.0'
-    api 'androidx.constraintlayout:constraintlayout:1.1.3'
+    api 'androidx.constraintlayout:constraintlayout:2.1.4'
 }
