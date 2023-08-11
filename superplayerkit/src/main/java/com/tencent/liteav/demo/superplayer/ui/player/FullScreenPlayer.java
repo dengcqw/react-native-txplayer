@@ -810,9 +810,10 @@ public class FullScreenPlayer extends AbsPlayer implements View.OnClickListener,
         } else if (i == R.id.superplayer_iv_danmuku) {          //弹幕按钮
             toggleBarrage();
         } else if (i == R.id.superplayer_iv_snapshot) {         //截屏按钮
-            if (mControllerCallback != null) {
+            // 截图功能暂不需要
+            /*if (mControllerCallback != null) {
                 mControllerCallback.onSnapshot();
-            }
+            }*/
         } else if (i == R.id.superplayer_iv_more) {             //更多设置按钮
             showMoreView();
         } else if (i == R.id.superplayer_tv_quality) {          //画质按钮
