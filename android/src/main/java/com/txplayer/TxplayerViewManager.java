@@ -209,7 +209,6 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
     }
     event.putInt("state", state);
     sendEvent(viewId,"onPlayStateChange", event);
-
   }
 
   @Override

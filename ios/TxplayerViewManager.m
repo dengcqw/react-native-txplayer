@@ -24,9 +24,12 @@ RCT_EXPORT_MODULE(TxplayerView)
     view.enableDownload = @NO;
     view.enableDanmaku = @NO;
     view.enableFullScreen = @YES;
+    view.hidePlayerControl = @NO;
+    view.enableLoop = @YES;
     
     view.playType = @0;
     view.playStartTime = @0;
+    view.timeEventDuration = @5;
     
     return view;
 }
@@ -42,6 +45,7 @@ RCT_EXPORT_VIEW_PROPERTY(onPlayStateChange, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onPlayTimeChange, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onDownload, RCTBubblingEventBlock)
 
+RCT_EXPORT_VIEW_PROPERTY(hidePlayerControl, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(enableSlider, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(enableMorePanel, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(enableDownload, NSNumber)
@@ -50,6 +54,8 @@ RCT_EXPORT_VIEW_PROPERTY(enableFullScreen, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(playType, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(playStartTime, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(language, NSString)
+RCT_EXPORT_VIEW_PROPERTY(enableLoop, NSNumber)
+RCT_EXPORT_VIEW_PROPERTY(timeEventDuration, NSNumber)
 
 
 RCT_EXPORT_METHOD(startPlay:(nonnull NSNumber *) reactTag) {
@@ -83,6 +89,20 @@ RCT_EXPORT_METHOD(switchToOrientation:(nonnull NSNumber *) reactTag oriention: (
     [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *,UIView *> *viewRegistry) {
         TxplayerView * player  = (TxplayerView *) viewRegistry[reactTag];
         [player switchToOrientation:oriention];
+    }];
+}
+
+RCT_EXPORT_METHOD(seekTo:(nonnull NSNumber *) reactTag second: (nonnull NSNumber *)second) {
+    [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *,UIView *> *viewRegistry) {
+        TxplayerView * player  = (TxplayerView *) viewRegistry[reactTag];
+        [player seekTo:second];
+    }];
+}
+
+RCT_EXPORT_METHOD(togglePlay:(nonnull NSNumber *) reactTag) {
+    [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *,UIView *> *viewRegistry) {
+        TxplayerView * player  = (TxplayerView *) viewRegistry[reactTag];
+        [player togglePlay];
     }];
 }
 

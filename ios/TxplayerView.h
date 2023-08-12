@@ -33,16 +33,23 @@ NS_ASSUME_NONNULL_BEGIN
 @property(copy, nonatomic) NSNumber *playType;
 @property (nonatomic) NSString *language;
 
+
+@property(nonatomic, assign) NSNumber *enableLoop; // 进度条
+@property(nonatomic, assign) NSNumber *hidePlayerControl;
 @property(nonatomic, assign) NSNumber *enableSlider; // 进度条
-@property(nonatomic, assign) NSNumber * enableMorePanel; // 全屏更多按键
-@property(nonatomic, assign) NSNumber * enableDownload; // 可以下载
-@property(nonatomic, assign) NSNumber * enableDanmaku; //
-@property(nonatomic, assign) NSNumber * enableFullScreen;
+@property(nonatomic, assign) NSNumber *enableMorePanel; // 全屏更多按键
+@property(nonatomic, assign) NSNumber *enableDownload; // 可以下载
+@property(nonatomic, assign) NSNumber *enableDanmaku; //
+@property(nonatomic, assign) NSNumber *enableFullScreen;
+@property(nonatomic, assign) NSNumber *timeEventDuration;
+
 
 - (void)startPlay;
 - (void)stopPlay;
+- (void)togglePlay;
 - (void)prepareDanmaku:(NSDictionary *)danmakus;
 - (void)switchToOrientation:(NSString *)orientation;
+- (void)seekTo:(NSNumber *)second;
 
 @end
 

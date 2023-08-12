@@ -132,6 +132,11 @@ const NSInteger kProgressUpdateTime = 250;
     [self.playerView.controlView setTrackBtnState: NO];
     [self.playerView.controlView showOrHideBackBtn: NO];
     
+    if (self.hidePlayerControl.boolValue) {
+        self.playerView.controlView.alpha = 0;
+        self.playerView.userInteractionEnabled = NO;
+    }
+    
     if ([self.playerView.controlView isKindOfClass:[SPDefaultControlView class]]){
         SPDefaultControlView *controlView = (SPDefaultControlView *)self.playerView.controlView;
         controlView.disableMoreBtn = !self.enableMorePanel.boolValue;
@@ -157,10 +162,23 @@ const NSInteger kProgressUpdateTime = 250;
     self.playerView.disableSliderToTime = !self.enableSlider.boolValue;
     // 禁用竖屏全部调节音量和声音
     self.playerView.disableGesture = YES;
+    self.playerView.loop = self.enableLoop.boolValue;
     // 屏幕保持
     [UIApplication sharedApplication].idleTimerDisabled = YES;
     
     [self.playerView playWithModelNeedLicence:model];
+}
+
+- (void)togglePlay {
+    if (self.playerView.state == StatePlaying) {
+        [self.playerView pause];
+    } else {
+        [self.playerView resume];
+    }
+}
+
+- (void)seekTo:(NSNumber *)second {
+    [self.playerView seekToTime:second.integerValue];
 }
 
 - (JTDanmakuView *)danmakuView{
@@ -223,7 +241,6 @@ const NSInteger kProgressUpdateTime = 250;
         _playerView.delegate = self;
         _playerView.playListener = self;
         _playerView.disableVolumControl = YES;
-        _playerView.loop = NO;
         [_playerView showOrHideBackBtn: NO];
         // demo的时移域名，请根据您项目实际情况修改这里
         _playerView.playerConfig.playShiftDomain = @"liteavapp.timeshift.qcloud.com";
@@ -353,9 +370,8 @@ const NSInteger kProgressUpdateTime = 250;
 }
 
 - (void)progressEvent{
-    // NSLog(@"VodPlayEvent");
     self.updateCount++;
-    if (self.updateCount == kProgressUpdateTime){
+    if (self.updateCount == self.timeEventDuration.intValue * 50) {
         self.updateCount = 0;
         [self playTimeDidChange: NO];
     }

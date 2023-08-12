@@ -7,11 +7,15 @@ const Commands = Platform.OS === 'ios' ? {
   stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay!,
   addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku!,
   switchToOrientation: UIManager.getViewManagerConfig(ComponentName).Commands.switchToOrientation!,
+  seekTo: UIManager.getViewManagerConfig(ComponentName).Commands.seekTo!,
+  togglePlay: UIManager.getViewManagerConfig(ComponentName).Commands.togglePlay!
 }: {
   startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay!.toString(),
   stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay!.toString(),
   addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku!.toString(),
   switchToOrientation: UIManager.getViewManagerConfig(ComponentName).Commands.switchToOrientation!.toString(),
+  seekTo: UIManager.getViewManagerConfig(ComponentName).Commands.seekTo!.toString(),
+  togglePlay: UIManager.getViewManagerConfig(ComponentName).Commands.togglePlay!.toString()
 }
 
 export enum SuperPlayerState {
@@ -54,12 +58,15 @@ export type TxplayerViewProps = {
   videoName: string;
   videoCoverURL: string;
   enableSlider: boolean;
+  hidePlayerControl: boolean;
   enableMorePanel: boolean;
   enableDownload: boolean;
   enableDanmaku: boolean;
   enableFullScreen: boolean;
   playStartTime: number;
   language: string;
+  enableLoop: boolean;
+  timeEventDuration: number; // 时间时间发送间隔
 
   playType: SuperPlayType;
 
@@ -87,6 +94,12 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, TxplayerViewApi>((props
       },
       switchToOrientation: (oriention: string) => {
         UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.switchToOrientation, [oriention]);
+      },
+      togglePlay: () => {
+        UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.togglePlay, []);
+      },
+      seekTo: (second: number) => {
+        UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.seekTo, [second]);
       },
     }),
     []
