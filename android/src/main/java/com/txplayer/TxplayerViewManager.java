@@ -199,6 +199,14 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   @Override
   public void onPlayStateChange(int viewId, Integer state) {
     WritableMap event = Arguments.createMap();
+    // 转换成js定义
+    if (state == 1) {
+      state = 5;
+    } else if (state == 2) {
+      state = 1;
+    } else if (state == 0) {
+      state = 2;
+    }
     event.putInt("state", state);
     sendEvent(viewId,"onPlayStateChange", event);
 
@@ -221,3 +229,4 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
       params);
   }
 }
+

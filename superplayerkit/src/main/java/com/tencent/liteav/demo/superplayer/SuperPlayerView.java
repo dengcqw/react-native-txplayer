@@ -1505,4 +1505,7 @@ public class SuperPlayerView extends RelativeLayout
         return mFullScreenPlayer;
     }
 
+    public WindowPlayer getWindowPlayer() {
+        return mWindowPlayer;
+    }
 }

@@ -18,6 +18,7 @@ import com.tencent.liteav.demo.superplayer.SuperPlayerModel;
 import com.tencent.liteav.demo.superplayer.SuperPlayerVideoId;
 import com.tencent.liteav.demo.superplayer.SuperPlayerView;
 import com.tencent.liteav.demo.superplayer.ui.player.FullScreenPlayer;
+import com.tencent.liteav.demo.superplayer.ui.player.WindowPlayer;
 
 import java.util.List;
 
@@ -191,6 +192,7 @@ public class TxplayerView extends FrameLayout {
 
       @Override
       public void superPlayerDidChangeState(Integer state) {
+        if (state == 4) return;
         if (playerViewCallback != null) {
           playerViewCallback.onPlayStateChange(getId(), state);
         }
@@ -241,6 +243,14 @@ public class TxplayerView extends FrameLayout {
     FullScreenPlayer fullscreenPlayer = superPlayerView.getFullscreenPlayer();
     View mIvSnapshot = fullscreenPlayer.findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_iv_snapshot);
     mIvSnapshot.setVisibility(View.GONE);
+    View mDanmu = fullscreenPlayer.findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_iv_danmuku);
+    mDanmu.setVisibility(enableDanmaku ? View.VISIBLE : View.GONE);
+
+    WindowPlayer windowPlayer = superPlayerView.getWindowPlayer();
+    View mIvFullScreen = (View) windowPlayer.findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_iv_fullscreen);
+    mIvFullScreen.setVisibility(enableFullScreen ? View.VISIBLE : View.GONE);
+    View mTvTitle = (View) findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_tv_title);
+    mTvTitle.setVisibility(View.GONE);
 
     model.title = videoName;
     model.coverPictureUrl = videoCoverURL;
@@ -270,6 +280,11 @@ public class TxplayerView extends FrameLayout {
   }
 
   public void switchToOrientation(String oriention) {
+
+    if (!enableFullScreen) {
+      return;
+    }
+
     if ("portrait".equals(oriention)) {
       if(!isFullScreenPlay()) return;
       superPlayerView.switchToPortrait();
@@ -383,3 +398,4 @@ public class TxplayerView extends FrameLayout {
     return (ViewGroup)act.findViewById(android.R.id.content);
   }
 }
+

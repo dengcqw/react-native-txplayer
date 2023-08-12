@@ -190,6 +190,9 @@ const NSInteger kProgressUpdateTime = 250;
 
 // 自动旋转
 - (void)switchToOrientation:(NSString *)orientation {
+
+    if (!self.enableFullScreen.boolValue) return;
+
     // 注意这里left和Right对应，right和Left对应
     if ([orientation isEqualToString:@"left"]) {
         self.orientation = UIInterfaceOrientationLandscapeRight;
