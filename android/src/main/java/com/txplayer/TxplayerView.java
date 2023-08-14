@@ -47,6 +47,13 @@ public class TxplayerView extends FrameLayout {
   private Integer playType = 0;
   private Float playStartTime = .0F;
   private String language;
+
+  private Integer timeEventDuration = 5;
+
+  private Boolean enableLoop = false;
+
+  private Boolean hidePlayerControl = false;
+
   public void setVideoURL(String videoURL) {
     this.videoURL = videoURL;
   }
@@ -88,6 +95,15 @@ public class TxplayerView extends FrameLayout {
   }
   public void setLanguage(String language) {
     this.language = language;
+  }
+  public void setTimeEventDuration(Integer timeEventDuration) {
+    this.timeEventDuration = timeEventDuration;
+  }
+  public void setEnableLoop(Boolean enableLoop) {
+    this.enableLoop = enableLoop;
+  }
+  public void setHidePlayerControl(Boolean hidePlayerControl) {
+    this.hidePlayerControl = hidePlayerControl;
   }
 
   public TxplayerView(@NonNull Context context) {
@@ -175,10 +191,12 @@ public class TxplayerView extends FrameLayout {
       @Override
       public void onPlayProgress(long current, long duration, long playable) {
         // 5秒更新一次
-        if (lastTime > current) {
-          return;
+        if (timeEventDuration > 1) {
+          if (current > lastTime &&  current - lastTime < timeEventDuration) {
+            return;
+          }
+          lastTime = current;
         }
-        lastTime = current + 5;
 
         if (playerViewCallback != null) {
           WritableMap event = Arguments.createMap();
@@ -247,10 +265,16 @@ public class TxplayerView extends FrameLayout {
     mDanmu.setVisibility(enableDanmaku ? View.VISIBLE : View.GONE);
 
     WindowPlayer windowPlayer = superPlayerView.getWindowPlayer();
-    View mIvFullScreen = (View) windowPlayer.findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_iv_fullscreen);
-    mIvFullScreen.setVisibility(enableFullScreen ? View.VISIBLE : View.GONE);
-    View mTvTitle = (View) findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_tv_title);
-    mTvTitle.setVisibility(View.GONE);
+    if (hidePlayerControl) {
+      if (windowPlayer.getParent() != null) {
+        ((ViewGroup)windowPlayer.getParent()).removeView(windowPlayer);
+      }
+    } else {
+      View mIvFullScreen = (View) windowPlayer.findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_iv_fullscreen);
+      mIvFullScreen.setVisibility(enableFullScreen ? View.VISIBLE : View.GONE);
+      View mTvTitle = (View) windowPlayer.findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_tv_title);
+      mTvTitle.setVisibility(View.GONE);
+    }
 
     model.title = videoName;
     model.coverPictureUrl = videoCoverURL;
@@ -258,6 +282,7 @@ public class TxplayerView extends FrameLayout {
       model.isEnableCache = true;
     }
 
+    superPlayerView.setLoop(enableLoop);
     superPlayerView.showPIPIV(false);
     superPlayerView.setStartTime(playStartTime);
     superPlayerView.playWithModelNeedLicence(model);
@@ -265,9 +290,17 @@ public class TxplayerView extends FrameLayout {
 
   public void stopPlay() {
     if (superPlayerView == null) return;
-    superPlayerView.stopPlay();
-//    Log.i("TxplayerView_TAG", "stopPlay");
-    superPlayerView.releasePlayModel();
+    superPlayerView.pause();
+  }
+
+  public void togglePlay() {
+    if (superPlayerView == null) return;
+    superPlayerView.togglePlay();
+  }
+
+  public void seekTo(int seconds) {
+    if (superPlayerView == null) return;
+    superPlayerView.seekTo(seconds);
   }
 
   public void addDanmukInfo(List<String> danmuContentList) {
@@ -322,7 +355,7 @@ public class TxplayerView extends FrameLayout {
 
   public void stop() {
     if (superPlayerView != null) {
-      superPlayerView.stopPlay();
+      superPlayerView.pause();
     }
   }
 

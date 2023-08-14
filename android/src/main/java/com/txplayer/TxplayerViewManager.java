@@ -31,6 +31,8 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   public final int COMMAND_STOPPLAY = 2;
   public final int COMMAND_ADDDanmuk = 3;
   public final int COMMAND_SWITCH_TO_LANDSCAPE = 4;
+  public final int COMMAND_TOGGLE_PLAY = 5;
+  public final int COMMAND_SEEKTO = 6;
 
 
 
@@ -65,7 +67,9 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
       "startPlay", COMMAND_STARTPLAY,
       "stopPlay", COMMAND_STOPPLAY,
       "addDanmaku", COMMAND_ADDDanmuk,
-      "switchToOrientation", COMMAND_SWITCH_TO_LANDSCAPE
+      "switchToOrientation", COMMAND_SWITCH_TO_LANDSCAPE,
+      "togglePlay", COMMAND_TOGGLE_PLAY,
+      "seekTo", COMMAND_SEEKTO
     );
   }
 
@@ -90,6 +94,13 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
         break;
       case COMMAND_SWITCH_TO_LANDSCAPE:
         switchToOrientation(root, args);
+        break;
+      case COMMAND_TOGGLE_PLAY:
+        root.togglePlay();
+        break;
+      case COMMAND_SEEKTO:
+        int seconds = args.getInt(0);
+        root.seekTo(seconds);
         break;
       default: {}
     }
@@ -194,6 +205,19 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   @ReactProp(name = "language")
   public void setLanguage(TxplayerView view, String language) {
     view.setLanguage(language);
+  }
+
+  @ReactProp(name = "hidePlayerControl")
+  public void setHidePlayerControl(TxplayerView view, Boolean hidePlayerControl) {
+    view.setHidePlayerControl(hidePlayerControl);
+  }
+  @ReactProp(name = "enableLoop")
+  public void setEnableLoop(TxplayerView view, Boolean enableLoop) {
+    view.setEnableLoop(enableLoop);
+  }
+  @ReactProp(name = "timeEventDuration")
+  public void setTimeEventDuration(TxplayerView view, Integer timeEventDuration) {
+    view.setTimeEventDuration(timeEventDuration);
   }
 
   @Override

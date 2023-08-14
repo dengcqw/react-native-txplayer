@@ -133,11 +133,10 @@ const NSInteger kProgressUpdateTime = 250;
     [self.playerView.controlView showOrHideBackBtn: NO];
     
     if (self.hidePlayerControl.boolValue) {
-        self.playerView.controlView.alpha = 0;
+        [self.playerView.controlView removeFromSuperview];
+        self.playerView.centerPlayBtn.alpha = 0;
         self.playerView.userInteractionEnabled = NO;
-    }
-    
-    if ([self.playerView.controlView isKindOfClass:[SPDefaultControlView class]]){
+    } else if ([self.playerView.controlView isKindOfClass:[SPDefaultControlView class]]) {
         SPDefaultControlView *controlView = (SPDefaultControlView *)self.playerView.controlView;
         controlView.disableMoreBtn = !self.enableMorePanel.boolValue;
         controlView.disableDownloadBtn = !self.enableDownload.boolValue;
@@ -201,7 +200,7 @@ const NSInteger kProgressUpdateTime = 250;
     
     if(self.onPlayStateChange != nil){
         self.onPlayStateChange(@{
-            @"state": [NSNumber numberWithInteger:StateStopped]
+            @"state": [NSNumber numberWithInteger:StatePause]
         });
     }
 }
@@ -379,8 +378,8 @@ const NSInteger kProgressUpdateTime = 250;
 
 - (void)playTimeDidChange:(BOOL)isFinish{
     if (self.onPlayTimeChange != nil) {
-        unsigned long totalTime = self.playerView.playDuration * 1000;
-        unsigned long progressTime = self.playerView.playCurrentTime * 1000;
+        unsigned long totalTime = self.playerView.playDuration ;
+        unsigned long progressTime = self.playerView.playCurrentTime;
         unsigned long remainTime = totalTime - progressTime;
         BOOL finish = isFinish || remainTime == 0;
         self.onPlayTimeChange(@{

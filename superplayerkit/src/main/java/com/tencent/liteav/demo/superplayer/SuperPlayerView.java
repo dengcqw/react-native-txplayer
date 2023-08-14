@@ -1508,4 +1508,19 @@ public class SuperPlayerView extends RelativeLayout
     public WindowPlayer getWindowPlayer() {
         return mWindowPlayer;
     }
+    public void togglePlay() {
+      if (getPlayerState() == SuperPlayerDef.PlayerState.PLAYING ) {
+        mSuperPlayer.pause();
+      } else {
+        mSuperPlayer.resume();
+      }
+    }
+
+    public void seekTo(int seconds) {
+      mSuperPlayer.seek(seconds);
+    }
+
+    public void pause() {
+      mSuperPlayer.pause();
+    }
 }

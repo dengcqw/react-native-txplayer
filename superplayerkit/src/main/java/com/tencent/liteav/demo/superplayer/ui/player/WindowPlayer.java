@@ -319,7 +319,7 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
         }
         mLivePushDuration = 0;
         toggleView(mImageCover, true);
-        mIvPause.setImageResource(R.drawable.superplayer_ic_vod_play_normal);
+//        mIvPause.setImageResource(R.drawable.superplayer_ic_vod_play_normal);
         updateVideoProgress(0, superPlayerModel.duration,0);
         mSeekBarProgress.setEnabled(superPlayerModel.playAction != SuperPlayerModel.PLAY_ACTION_MANUAL_PLAY);
         updateStartUI(superPlayerModel.playAction == SuperPlayerModel.PLAY_ACTION_AUTO_PLAY);
