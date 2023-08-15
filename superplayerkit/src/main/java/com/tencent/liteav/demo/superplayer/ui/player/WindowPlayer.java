@@ -221,6 +221,7 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
         mPbLiveLoading = (ProgressBar) findViewById(R.id.superplayer_pb_live);
         mImageCover = (ImageView) findViewById(R.id.superplayer_cover_view);
         mImageStartAndResume = (ImageView) findViewById(R.id.superplayer_resume);
+
         mIvPlayNext = (ImageView) findViewById(R.id.superplayer_iv_play_next);
         mPiPIV = (ImageView) findViewById(R.id.superplayer_iv_pip);
         mImageStartAndResume.setOnClickListener(this);

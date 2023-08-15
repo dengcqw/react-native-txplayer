@@ -10,6 +10,7 @@ import android.view.Choreographer;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
@@ -266,8 +267,9 @@ public class TxplayerView extends FrameLayout {
 
     WindowPlayer windowPlayer = superPlayerView.getWindowPlayer();
     if (hidePlayerControl) {
-      if (windowPlayer.getParent() != null) {
-        ((ViewGroup)windowPlayer.getParent()).removeView(windowPlayer);
+      View mImageStartAndResume = (View) findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_resume);
+      if (mImageStartAndResume.getParent() != null) {
+        ((ViewGroup)mImageStartAndResume.getParent()).removeView(mImageStartAndResume);
       }
     } else {
       View mIvFullScreen = (View) windowPlayer.findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_iv_fullscreen);

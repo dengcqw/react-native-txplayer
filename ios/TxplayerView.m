@@ -133,9 +133,8 @@ const NSInteger kProgressUpdateTime = 250;
     [self.playerView.controlView showOrHideBackBtn: NO];
     
     if (self.hidePlayerControl.boolValue) {
-        [self.playerView.controlView removeFromSuperview];
+        self.playerView.controlView.alpha = 0;
         self.playerView.centerPlayBtn.alpha = 0;
-        self.playerView.userInteractionEnabled = NO;
     } else if ([self.playerView.controlView isKindOfClass:[SPDefaultControlView class]]) {
         SPDefaultControlView *controlView = (SPDefaultControlView *)self.playerView.controlView;
         controlView.disableMoreBtn = !self.enableMorePanel.boolValue;
@@ -307,6 +306,11 @@ const NSInteger kProgressUpdateTime = 250;
 -(void)fullScreenHookAction {
     self.playerView.disableGesture = NO;
     [self.playerView showOrHideBackBtn:YES];
+    
+    if (self.hidePlayerControl.boolValue) {
+        self.playerView.controlView.alpha = 1;
+        self.playerView.centerPlayBtn.alpha = 1;
+    }
 
     FeedBaseFullScreenViewController *vc = [FeedBaseFullScreenViewController new];
     vc.orientation = self.orientation;
@@ -323,6 +327,10 @@ const NSInteger kProgressUpdateTime = 250;
 }
 
 - (void)backHookAction {
+    if (self.hidePlayerControl.boolValue) {
+        self.playerView.controlView.alpha = 0;
+        self.playerView.centerPlayBtn.alpha = 0;
+    }
     self.playerView.disableGesture = YES;
     // 竖屏隐藏返回按键
     [self.playerView showOrHideBackBtn:NO];
