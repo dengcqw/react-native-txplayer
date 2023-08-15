@@ -176,7 +176,6 @@ public class TxplayerView extends FrameLayout {
       public void onPlayEnd() {
         if (playerViewCallback != null) {
           playerViewCallback.onPlayStateChange(getId(), SuperPlayerDef.PlayerState.END.ordinal());
-          playTimeDidChange(true);
         }
       }
 
@@ -192,13 +191,13 @@ public class TxplayerView extends FrameLayout {
       @Override
       public void onPlayProgress(long current, long duration, long playable) {
         // 5秒更新一次
-        if (timeEventDuration > 1) {
-          if (current > lastTime &&  current - lastTime < timeEventDuration) {
-            return;
-          }
-          lastTime = current;
+        if (current == lastTime) {
+          return;
         }
-
+        if (current > lastTime &&  current - lastTime < timeEventDuration) {
+          return;
+        }
+        lastTime = current;
         if (playerViewCallback != null) {
           WritableMap event = Arguments.createMap();
           event.putInt("totalTime", (int) duration);
@@ -268,7 +267,7 @@ public class TxplayerView extends FrameLayout {
     WindowPlayer windowPlayer = superPlayerView.getWindowPlayer();
     if (hidePlayerControl) {
       View mImageStartAndResume = (View) findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_resume);
-      if (mImageStartAndResume.getParent() != null) {
+      if (mImageStartAndResume != null && mImageStartAndResume.getParent() != null) {
         ((ViewGroup)mImageStartAndResume.getParent()).removeView(mImageStartAndResume);
       }
     } else {

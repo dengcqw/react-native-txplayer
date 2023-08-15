@@ -16,8 +16,6 @@
 #import "TXLiveSDKTypeDef.h"
 #import "TXLiveSDKEventDef.h"
 
-//50 : 5秒
-const NSInteger kProgressUpdateTime = 250;
 
 @interface UIViewController(TxplayerView)
 - (BOOL)movRotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
@@ -91,9 +89,9 @@ const NSInteger kProgressUpdateTime = 250;
 @property(strong, nonatomic) SuperPlayerView *playerView;
 
 @property(nonatomic, strong) JTDanmakuView *danmakuView;
-@property (nonatomic,assign) NSInteger updateCount;
 @property (nonatomic,strong) NSMutableArray *danmakus;
 @property (nonatomic,assign) NSUInteger orientation;
+@property (nonatomic,assign) NSInteger lastTime;
 @end
 
 @implementation TxplayerView
@@ -377,14 +375,18 @@ const NSInteger kProgressUpdateTime = 250;
 }
 
 - (void)progressEvent{
-    self.updateCount++;
-    if (self.updateCount == self.timeEventDuration.intValue * 50) {
-        self.updateCount = 0;
-        [self playTimeDidChange: NO];
+    NSInteger current = (NSInteger)self.playerView.playCurrentTime;
+    if (current == self.lastTime) {
+        return;
     }
+    if (current > self.lastTime && current - self.lastTime < self.timeEventDuration.integerValue) {
+        return;
+    }
+    self.lastTime = current;
+    [self playTimeDidChange: NO];
 }
 
-- (void)playTimeDidChange:(BOOL)isFinish{
+- (void)playTimeDidChange:(BOOL)isFinish {
     if (self.onPlayTimeChange != nil) {
         unsigned long totalTime = self.playerView.playDuration ;
         unsigned long progressTime = self.playerView.playCurrentTime;

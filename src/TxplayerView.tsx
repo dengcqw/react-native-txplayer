@@ -19,13 +19,13 @@ const Commands = Platform.OS === 'ios' ? {
 }
 
 export enum SuperPlayerState {
-  StateFailed, // 播放失败
-  StateBuffering, // 缓冲中
-  StatePrepare, // 准备就绪
-  StatePlaying, // 播放中
-  StateStopped, // 停止播放
-  StatePause, // 暂停播放
-  StateFirstFrame, // 第一帧画面
+  StateFailed = 0, // 播放失败
+  StateBuffering = 1, // 缓冲中
+  StatePrepare = 2, // 准备就绪
+  StatePlaying = 3, // 播放中
+  StateStopped = 4, // 停止播放
+  StatePause = 5, // 暂停播放
+  StateFirstFrame = 6, // 第一帧画面
 }
 
 export enum SuperPlayType {
