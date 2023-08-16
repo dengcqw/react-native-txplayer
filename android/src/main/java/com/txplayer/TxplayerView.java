@@ -1,6 +1,7 @@
 package com.txplayer;
 
 import android.app.Activity;
+import android.app.LocaleManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -47,7 +48,7 @@ public class TxplayerView extends FrameLayout {
   private Boolean enableDanmaku = false;
   private Boolean enableFullScreen = true;
   private Integer playType = 0;
-  private Float playStartTime = .0F;
+  private Double playStartTime = .0;
   private String language;
 
   private Integer timeEventDuration = 5;
@@ -92,7 +93,7 @@ public class TxplayerView extends FrameLayout {
   public void setPlayType(Integer playType) {
     this.playType = playType;
   }
-  public void setPlayStartTime(Float playStartTime) {
+  public void setPlayStartTime(Double playStartTime) {
     this.playStartTime = playStartTime;
   }
   public void setLanguage(String language) {
@@ -168,9 +169,9 @@ public class TxplayerView extends FrameLayout {
 
       @Override
       public void onPlaying() {
-        if (playerViewCallback != null) {
-          playerViewCallback.onPlayStateChange(getId(), SuperPlayerDef.PlayerState.PLAYING.ordinal());
-        }
+//        if (playerViewCallback != null) {
+//          playerViewCallback.onPlayStateChange(getId(), SuperPlayerDef.PlayerState.PLAYING.ordinal());
+//        }
       }
 
       @Override
@@ -300,7 +301,13 @@ public class TxplayerView extends FrameLayout {
 
   public void togglePlay() {
     if (superPlayerView == null) return;
-    superPlayerView.togglePlay();
+    if (isPlaying()) {
+      superPlayerView.togglePlay();
+    } else if (superPlayerView.getPlayerState() == SuperPlayerDef.PlayerState.PAUSE) {
+      superPlayerView.togglePlay();
+    } else {
+      startPlay();
+    }
   }
 
   public void seekTo(int seconds) {

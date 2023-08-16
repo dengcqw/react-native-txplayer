@@ -169,8 +169,10 @@
 - (void)togglePlay {
     if (self.playerView.state == StatePlaying) {
         [self.playerView pause];
-    } else {
+    } else if (self.playerView.state == StatePause) {
         [self.playerView resume];
+    } else {
+        [self startPlay];
     }
 }
 

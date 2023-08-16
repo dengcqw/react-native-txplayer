@@ -199,8 +199,8 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
     view.setPlayType(playType);
   }
   @ReactProp(name = "playStartTime")
-  public void setPlayStartTime(TxplayerView view, String playStartTime) {
-    view.setPlayStartTime(Float.valueOf(playStartTime));
+  public void setPlayStartTime(TxplayerView view, Double playStartTime) {
+    view.setPlayStartTime(playStartTime);
   }
   @ReactProp(name = "language")
   public void setLanguage(TxplayerView view, String language) {
