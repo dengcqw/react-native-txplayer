@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Choreographer;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -266,9 +267,12 @@ public class TxplayerView extends FrameLayout {
 
     WindowPlayer windowPlayer = superPlayerView.getWindowPlayer();
     if (hidePlayerControl) {
-      View mImageStartAndResume = (View) findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_resume);
+      View mImageStartAndResume = (View) windowPlayer.findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_resume);
       if (mImageStartAndResume != null && mImageStartAndResume.getParent() != null) {
         ((ViewGroup)mImageStartAndResume.getParent()).removeView(mImageStartAndResume);
+      }
+      if (windowPlayer.getParent() != null) {
+        ((ViewGroup)windowPlayer.getParent()).removeView(windowPlayer);
       }
     } else {
       View mIvFullScreen = (View) windowPlayer.findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_iv_fullscreen);
@@ -430,6 +434,14 @@ public class TxplayerView extends FrameLayout {
   private ViewGroup rootView() {
     Activity act = (Activity)getContext();
     return (ViewGroup)act.findViewById(android.R.id.content);
+  }
+
+  @Override
+  public boolean onInterceptTouchEvent(MotionEvent ev) {
+    if (this.hidePlayerControl) {
+      return true;
+    }
+    return super.onInterceptTouchEvent(ev);
   }
 }
 

@@ -123,6 +123,7 @@
     
     model.name = self.videoName;
     model.defaultCoverImageUrl = self.videoCoverURL;
+    model.customCoverImageUrl = self.videoCoverURL;
     
     self.playerView.startTime = self.playStartTime.floatValue;
     

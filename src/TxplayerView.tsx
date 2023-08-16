@@ -84,7 +84,10 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, TxplayerViewApi>((props
     ref,
     () => ({
       startPlay: () => {
-        UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.startPlay, []);
+        try {
+          UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.startPlay, []);
+        } catch (e) {
+        }
       },
       stopPlay: () => {
         UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.stopPlay, []);
