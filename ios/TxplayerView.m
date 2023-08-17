@@ -258,10 +258,6 @@
 }
 
 - (void)setLanguage:(NSString *)language {
-    if (language && ![language isEqualToString:_language]) {
-        _language = language;
-        superPlayerUpdateLanguage(language);
-    }
 }
 
 #pragma mark - SuperPlayerDelegate

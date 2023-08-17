@@ -34,6 +34,7 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   public final int COMMAND_TOGGLE_PLAY = 5;
   public final int COMMAND_SEEKTO = 6;
 
+  private TxplayerView currentPlayer;
 
 
   public TxplayerViewManager(ReactApplicationContext reactContext) {
@@ -84,7 +85,11 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
 
     switch (commandIdInt) {
       case COMMAND_STARTPLAY:
+        if (currentPlayer != null) {
+          currentPlayer.stopPlay();
+        }
         root.startPlay();
+        currentPlayer = root;
         break;
       case COMMAND_STOPPLAY:
         root.stopPlay();
