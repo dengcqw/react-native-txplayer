@@ -227,6 +227,7 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
         mImageStartAndResume.setOnClickListener(this);
 
         mIvBack.setOnClickListener(this);
+        mTvDuration.setOnClickListener(this);
         mTvBackToLive.setOnClickListener(this);
         mIvPause.setOnClickListener(this);
         mIvPlayNext.setOnClickListener(this);
@@ -681,7 +682,7 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
             }
         } else if (id == R.id.superplayer_iv_pause || id == R.id.superplayer_resume) { //暂停\播放按钮
             togglePlayState();
-        } else if (id == R.id.superplayer_iv_fullscreen) { //全屏按钮
+        } else if (id == R.id.superplayer_iv_fullscreen || id == R.id.superplayer_tv_duration) { //全屏按钮
             if (mControllerCallback != null) {
                 mControllerCallback.onSwitchPlayMode(SuperPlayerDef.PlayerMode.FULLSCREEN);
             }
