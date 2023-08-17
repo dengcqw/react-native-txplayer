@@ -19,6 +19,7 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   public final int COMMAND_TOGGLE_PLAY = 5;
   public final int COMMAND_SEEKTO = 6;
 
-  private TxplayerView currentPlayer;
+  private WeakReference<TxplayerView> currentPlayer;
 
 
   public TxplayerViewManager(ReactApplicationContext reactContext) {
@@ -86,10 +87,13 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
     switch (commandIdInt) {
       case COMMAND_STARTPLAY:
         if (currentPlayer != null) {
-          currentPlayer.stopPlay();
+          TxplayerView player = currentPlayer.get();
+          if (player != null) {
+            player.stopPlay();
+          }
         }
         root.startPlay();
-        currentPlayer = root;
+        currentPlayer = new WeakReference<>(root);
         break;
       case COMMAND_STOPPLAY:
         root.stopPlay();
