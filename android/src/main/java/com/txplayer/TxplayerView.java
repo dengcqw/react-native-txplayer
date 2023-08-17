@@ -48,7 +48,7 @@ public class TxplayerView extends FrameLayout {
   private Boolean enableDanmaku = false;
   private Boolean enableFullScreen = true;
   private Integer playType = 0;
-  private Double playStartTime = .0;
+  private double playStartTime = .0;
   private String language;
 
   private Integer timeEventDuration = 5;
@@ -93,7 +93,7 @@ public class TxplayerView extends FrameLayout {
   public void setPlayType(Integer playType) {
     this.playType = playType;
   }
-  public void setPlayStartTime(Double playStartTime) {
+  public void setPlayStartTime(double playStartTime) {
     this.playStartTime = playStartTime;
   }
   public void setLanguage(String language) {
