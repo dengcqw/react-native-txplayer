@@ -29,19 +29,19 @@ NS_ASSUME_NONNULL_BEGIN
 // 播放器UI配置
 @property(copy, nonatomic) NSString *videoName;
 @property(copy, nonatomic) NSString *videoCoverURL;
-@property(nonatomic, assign) NSNumber *playStartTime;
+@property(copy, nonatomic) NSNumber *playStartTime;
 @property(copy, nonatomic) NSNumber *playType;
-@property (nonatomic) NSString *language;
+@property(copy, nonatomic) NSString *language;
 
 
-@property(nonatomic, assign) NSNumber *enableLoop; // 进度条
-@property(nonatomic, assign) NSNumber *hidePlayerControl;
-@property(nonatomic, assign) NSNumber *enableSlider; // 进度条
-@property(nonatomic, assign) NSNumber *enableMorePanel; // 全屏更多按键
-@property(nonatomic, assign) NSNumber *enableDownload; // 可以下载
-@property(nonatomic, assign) NSNumber *enableDanmaku; //
-@property(nonatomic, assign) NSNumber *enableFullScreen;
-@property(nonatomic, assign) NSNumber *timeEventDuration;
+@property(nonatomic, copy) NSNumber *enableLoop; // 进度条
+@property(nonatomic, copy) NSNumber *hidePlayerControl;
+@property(nonatomic, copy) NSNumber *enableSlider; // 进度条
+@property(nonatomic, copy) NSNumber *enableMorePanel; // 全屏更多按键
+@property(nonatomic, copy) NSNumber *enableDownload; // 可以下载
+@property(nonatomic, copy) NSNumber *enableDanmaku; //
+@property(nonatomic, copy) NSNumber *enableFullScreen;
+@property(nonatomic, copy) NSNumber *timeEventDuration;
 
 
 - (void)startPlay;
