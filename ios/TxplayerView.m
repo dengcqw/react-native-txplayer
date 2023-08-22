@@ -85,6 +85,7 @@
 
 @end
 
+static int s_playerCount = 0;
 @interface TxplayerView () <SuperPlayerDelegate,SuperPlayerPlayListener,JTDanmakuDelegate>
 @property(strong, nonatomic) SuperPlayerView *playerView;
 
@@ -92,6 +93,7 @@
 @property (nonatomic,strong) NSMutableArray *danmakus;
 @property (nonatomic,assign) NSUInteger orientation;
 @property (nonatomic,assign) NSInteger lastTime;
+@property (nonatomic,assign) BOOL isPlaying;
 @end
 
 @implementation TxplayerView
@@ -160,8 +162,6 @@
     // 禁用竖屏全部调节音量和声音
     self.playerView.disableGesture = YES;
     self.playerView.loop = self.enableLoop.boolValue;
-    // 屏幕保持
-    [UIApplication sharedApplication].idleTimerDisabled = YES;
     
     [self.playerView playWithModelNeedLicence:model];
 }
@@ -267,12 +267,20 @@
 }
 
 - (void)superPlayerDidStart:(SuperPlayerView *)player {
+    if (!self.isPlaying) {
+        self.isPlaying = true;
+        [self keepScreen:self.isPlaying];
+    }
     [self playTimeDidChange:NO];
     // 开播前会被重置
     [self.playerView.controlView setSliderState: self.enableSlider.boolValue];
 }
 
 - (void)superPlayerDidEnd:(SuperPlayerView *)player {
+    if (self.isPlaying) {
+        self.isPlaying = false;
+        [self keepScreen:self.isPlaying];
+    }
     [self playTimeDidChange:YES];
     if(self.onPlayStateChange != nil) {
         self.onPlayStateChange(@{
@@ -356,6 +364,10 @@
 
 /// 播放状态变更通知
 - (void)superPlayerDidChangeState:(SuperPlayerState)state{
+    if (self.isPlaying && state == StatePause) {
+        self.isPlaying = false;
+        [self keepScreen:self.isPlaying];
+    }
     if (state == StateStopped) return;
     if(self.onPlayStateChange != nil){
         self.onPlayStateChange(@{
@@ -475,6 +487,20 @@
 
 - (BOOL)danmakuViewIsBuffering:(JTDanmakuView *)danmakuView {
     return self.playerView.state != StatePlaying;
+}
+
+// 屏幕保持
+- (void)keepScreen: (BOOL)keep {
+    if (keep) {
+        s_playerCount ++;
+        [UIApplication sharedApplication].idleTimerDisabled = YES;
+    } else {
+        s_playerCount --;
+        if (s_playerCount <= 0) {
+            s_playerCount = 0;
+            [UIApplication sharedApplication].idleTimerDisabled = NO;
+        }
+    }
 }
 
 

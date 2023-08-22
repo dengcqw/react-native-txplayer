@@ -1,7 +1,6 @@
 package com.txplayer;
 
 import android.app.Activity;
-import android.app.LocaleManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -11,8 +10,8 @@ import android.view.Choreographer;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
@@ -30,6 +29,10 @@ import androidx.annotation.Nullable;
 
 
 public class TxplayerView extends FrameLayout {
+
+  // 播放器计数
+  static int playingCount = 0;
+  private boolean isPlaying = false; // 播放中，不熄屏
 
   private SuperPlayerView superPlayerView        = null;
   private TxPlayerViewCallBack playerViewCallback     = null;
@@ -169,13 +172,20 @@ public class TxplayerView extends FrameLayout {
 
       @Override
       public void onPlaying() {
-//        if (playerViewCallback != null) {
-//          playerViewCallback.onPlayStateChange(getId(), SuperPlayerDef.PlayerState.PLAYING.ordinal());
-//        }
+        Log.d("djl", "onPlaying: ");
+        if (isPlaying == false) {
+          isPlaying = true;
+          keepScreen(true);
+        }
       }
 
       @Override
       public void onPlayEnd() {
+        Log.d("djl", "onPlayEnd: ");
+        if (isPlaying) {
+          isPlaying = false;
+          keepScreen(false);
+        }
         if (playerViewCallback != null) {
           playerViewCallback.onPlayStateChange(getId(), SuperPlayerDef.PlayerState.END.ordinal());
         }
@@ -212,6 +222,10 @@ public class TxplayerView extends FrameLayout {
 
       @Override
       public void superPlayerDidChangeState(Integer state) {
+        if (isPlaying && state == SuperPlayerDef.PlayerState.PAUSE.ordinal()) {
+          isPlaying = false;
+          keepScreen(false);
+        }
         if (state == 4) return;
         if (playerViewCallback != null) {
           playerViewCallback.onPlayStateChange(getId(), state);
@@ -399,9 +413,18 @@ public class TxplayerView extends FrameLayout {
   }
 
   @Override
+  protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+
+  }
+
+  @Override
   protected void onDetachedFromWindow() {
+    if (isPlaying) {
+      isPlaying = false;
+      keepScreen(false);
+    }
     super.onDetachedFromWindow();
-//    stopPlay();
   }
 
   // 定时计算child layout，RN只计算自己管理的view？
@@ -449,6 +472,22 @@ public class TxplayerView extends FrameLayout {
       return true;
     }
     return super.onInterceptTouchEvent(ev);
+  }
+
+  void keepScreen(boolean keep) {
+    if (keep) {
+      TxplayerView.playingCount ++;
+      Activity act = (Activity) getContext();
+      act.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    } else {
+      TxplayerView.playingCount --;
+      if (TxplayerView.playingCount <= 0) {
+        TxplayerView.playingCount  = 0;
+        Activity act = (Activity) getContext();
+        act.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+      }
+    }
+    Log.d("djl", "Txplay keepScreen: " + TxplayerView.playingCount);
   }
 }
 
