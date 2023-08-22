@@ -320,6 +320,7 @@ static int s_playerCount = 0;
     FeedBaseFullScreenViewController *vc = [FeedBaseFullScreenViewController new];
     vc.orientation = self.orientation;
     vc.playerView = self.playerView;
+    vc.enableRotate = self.enableRotate.boolValue;
     // fix 覆盖 tab bar
     UINavigationController *navi = (UINavigationController *)[UIApplication sharedApplication].keyWindow.rootViewController;
     if ([navi isKindOfClass:[UINavigationController class]]) {
@@ -353,14 +354,6 @@ static int s_playerCount = 0;
 }
 - (void)lockScreen:(BOOL)lock {
 }
-//- (void)screenRotation:(BOOL)fullScreen {
-//    if (fullScreen) {
-//        [Orientation setOrientation:UIInterfaceOrientationMaskLandscapeRight];
-//    } else {
-//        [Orientation setOrientation:UIInterfaceOrientationMaskPortrait];
-//    }
-//    [self.viewController movSetNeedsUpdateOfSupportedInterfaceOrientations];
-//}
 
 /// 播放状态变更通知
 - (void)superPlayerDidChangeState:(SuperPlayerState)state{
@@ -524,6 +517,9 @@ static int s_playerCount = 0;
     // 竖视频可以不旋转
     
     // 手动横屏, 设置Orientation right
+    if (!self.enableRotate) {
+        return;
+    }
     if (self.orientation == UIInterfaceOrientationUnknown) {
         [Orientation setOrientation:UIInterfaceOrientationMaskLandscapeRight];
         [self movRotateToInterfaceOrientation:UIInterfaceOrientationLandscapeRight];
@@ -536,17 +532,16 @@ static int s_playerCount = 0;
         [self movRotateToInterfaceOrientation:self.orientation];
     }
     [self movSetNeedsUpdateOfSupportedInterfaceOrientations];
-    
-    // React Navigation 不需要隐藏
-    //[self.navigationController setNavigationBarHidden:YES animated:NO];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    if (!self.enableRotate) {
+        return;
+    }
     [Orientation setOrientation:UIInterfaceOrientationMaskPortrait];
     [self movRotateToInterfaceOrientation:UIInterfaceOrientationPortrait];
     [self movSetNeedsUpdateOfSupportedInterfaceOrientations];
-    //[self.navigationController setNavigationBarHidden:NO animated:NO];
 }
 
 -(void)viewDidLoad{

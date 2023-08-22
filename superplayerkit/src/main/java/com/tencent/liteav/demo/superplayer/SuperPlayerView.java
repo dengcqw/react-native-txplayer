@@ -128,6 +128,8 @@ public class SuperPlayerView extends RelativeLayout
     private SuperPlayerDef.PlayerMode currPlayerMode = SuperPlayerDef.PlayerMode.WINDOW;
     private int mPreSystemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
 
+    private Boolean                    enableRotate = true;
+
     public SuperPlayerView(Context context) {
         super(context);
         initialize(context);
@@ -914,6 +916,7 @@ public class SuperPlayerView extends RelativeLayout
      * @param direction
      */
     private void rotateScreenOrientation(SuperPlayerDef.Orientation orientation, SuperPlayerDef.FullScreenDirection direction) {
+      if (!enableRotate.booleanValue()) return;
         switch (orientation) {
             case LANDSCAPE:
                 int flag = direction == SuperPlayerDef.FullScreenDirection.LEFT ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
@@ -1450,6 +1453,10 @@ public class SuperPlayerView extends RelativeLayout
 
     public void setLoop(boolean b) {
         mSuperPlayer.setLoop(b);
+    }
+
+    public void setEnableRotate(Boolean b) {
+      enableRotate = b;
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull int[] grantResults) {

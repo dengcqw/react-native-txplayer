@@ -45,20 +45,22 @@ public class TxplayerView extends FrameLayout {
   private String appId;
   private String fileId;
   private String psign;
-  private Boolean enableSlider = true;
-  private Boolean enableMorePanel = true;
-  private Boolean enableDownload = false;
-  private Boolean enableDanmaku = false;
-  private Boolean enableFullScreen = true;
+  private boolean enableSlider = true;
+  private boolean enableMorePanel = true;
+  private boolean enableDownload = false;
+  private boolean enableDanmaku = false;
+  private boolean enableFullScreen = true;
   private Integer playType = 0;
   private double playStartTime = .0;
   private String language;
 
   private Integer timeEventDuration = 5;
 
-  private Boolean enableLoop = false;
+  private boolean enableLoop = false;
 
-  private Boolean hidePlayerControl = false;
+  private boolean enableRotate = true;
+
+  private boolean hidePlayerControl = false;
 
   public void setVideoURL(String videoURL) {
     this.videoURL = videoURL;
@@ -78,19 +80,19 @@ public class TxplayerView extends FrameLayout {
   public void setPsign(String psign) {
     this.psign = psign;
   }
-  public void setEnableSlider(Boolean enableSlider) {
+  public void setEnableSlider(boolean enableSlider) {
     this.enableSlider = enableSlider;
   }
-  public void setEnableMorePanel(Boolean enableMorePanel) {
+  public void setEnableMorePanel(boolean enableMorePanel) {
     this.enableMorePanel = enableMorePanel;
   }
-  public void setEnableDownload(Boolean enableDownload) {
+  public void setEnableDownload(boolean enableDownload) {
     this.enableDownload = enableDownload;
   }
-  public void setEnableDanmaku(Boolean enableDanmaku) {
+  public void setEnableDanmaku(boolean enableDanmaku) {
     this.enableDanmaku = enableDanmaku;
   }
-  public void setEnableFullScreen(Boolean enableFullScreen) {
+  public void setEnableFullScreen(boolean enableFullScreen) {
     this.enableFullScreen = enableFullScreen;
   }
   public void setPlayType(Integer playType) {
@@ -105,10 +107,13 @@ public class TxplayerView extends FrameLayout {
   public void setTimeEventDuration(Integer timeEventDuration) {
     this.timeEventDuration = timeEventDuration;
   }
-  public void setEnableLoop(Boolean enableLoop) {
+  public void setEnableLoop(boolean enableLoop) {
     this.enableLoop = enableLoop;
   }
-  public void setHidePlayerControl(Boolean hidePlayerControl) {
+  public void setEnableRotate(boolean enableRotate) {
+    this.enableRotate = enableRotate;
+  }
+  public void setHidePlayerControl(boolean hidePlayerControl) {
     this.hidePlayerControl = hidePlayerControl;
   }
 
@@ -241,7 +246,7 @@ public class TxplayerView extends FrameLayout {
     });
   }
 
-  private void  playTimeDidChange(Boolean isFinish) {
+  private void  playTimeDidChange(boolean isFinish) {
     if (playerViewCallback != null) {
       WritableMap event = Arguments.createMap();
       event.putInt("totalTime", 0);
@@ -303,6 +308,7 @@ public class TxplayerView extends FrameLayout {
     }
 
     superPlayerView.setLoop(enableLoop);
+    superPlayerView.setEnableRotate(enableRotate);
     superPlayerView.showPIPIV(false);
     superPlayerView.setStartTime(playStartTime);
     superPlayerView.playWithModelNeedLicence(model);

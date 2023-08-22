@@ -185,23 +185,33 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   }
   @ReactProp(name = "enableSlider")
   public void setEnableSlider(TxplayerView view, Boolean enableSlider) {
-    view.setEnableSlider(enableSlider);
+    if (enableSlider) {
+      view.setEnableSlider(enableSlider.booleanValue());
+    }
   }
   @ReactProp(name = "enableMorePanel")
   public void setEnableMorePanel(TxplayerView view, Boolean enableMorePanel) {
-    view.setEnableMorePanel(enableMorePanel);
+    if (enableMorePanel) {
+      view.setEnableMorePanel(enableMorePanel.booleanValue());
+    }
   }
   @ReactProp(name = "enableDownload")
   public void setEnableDownload(TxplayerView view, Boolean enableDownload) {
-    view.setEnableDownload(enableDownload);
+    if (enableDownload) {
+      view.setEnableDownload(enableDownload.booleanValue());
+    }
   }
   @ReactProp(name = "enableDanmaku")
   public void setEnableDanmaku(TxplayerView view, Boolean enableDanmaku) {
-    view.setEnableDanmaku(enableDanmaku);
+    if (enableDanmaku) {
+      view.setEnableDanmaku(enableDanmaku.booleanValue());
+    }
   }
   @ReactProp(name = "enableFullScreen")
   public void setEnableFullScreen(TxplayerView view, Boolean enableFullScreen) {
-    view.setEnableFullScreen(enableFullScreen);
+    if (enableFullScreen) {
+      view.setEnableFullScreen(enableFullScreen.booleanValue());
+    }
   }
   @ReactProp(name = "playType")
   public void setPlayType(TxplayerView view, Integer playType) {
@@ -218,11 +228,21 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
 
   @ReactProp(name = "hidePlayerControl")
   public void setHidePlayerControl(TxplayerView view, Boolean hidePlayerControl) {
-    view.setHidePlayerControl(hidePlayerControl);
+    if (hidePlayerControl) {
+      view.setHidePlayerControl(hidePlayerControl.booleanValue());
+    }
   }
   @ReactProp(name = "enableLoop")
   public void setEnableLoop(TxplayerView view, Boolean enableLoop) {
-    view.setEnableLoop(enableLoop);
+    if (enableLoop) {
+      view.setEnableLoop(enableLoop.booleanValue());
+    }
+  }
+  @ReactProp(name = "enableRotate")
+  public void setEnableRotate(TxplayerView view, Boolean enableRotate) {
+    if (enableRotate) {
+      view.setEnableRotate(enableRotate.booleanValue());
+    }
   }
   @ReactProp(name = "timeEventDuration")
   public void setTimeEventDuration(TxplayerView view, Integer timeEventDuration) {

@@ -30,6 +30,7 @@ RCT_EXPORT_MODULE(TxplayerView)
     view.playType = @0;
     view.playStartTime = @0;
     view.timeEventDuration = @5;
+    view.enableRotate = @YES;
     
     return view;
 }
@@ -57,6 +58,7 @@ RCT_EXPORT_VIEW_PROPERTY(language, NSString)
 RCT_EXPORT_VIEW_PROPERTY(enableLoop, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(timeEventDuration, NSNumber)
 
+RCT_EXPORT_VIEW_PROPERTY(enableRotate, NSNumber)
 
 RCT_EXPORT_METHOD(startPlay:(nonnull NSNumber *) reactTag) {
     [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *,UIView *> *viewRegistry) {

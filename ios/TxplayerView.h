@@ -42,6 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy) NSNumber *enableDanmaku; //
 @property(nonatomic, copy) NSNumber *enableFullScreen;
 @property(nonatomic, copy) NSNumber *timeEventDuration;
+@property(nonatomic, copy) NSNumber *enableRotate; // 屏幕旋转
 
 
 - (void)startPlay;
@@ -60,6 +61,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///视频窗口
 @property (nonatomic, strong) SuperPlayerView *playerView;
 @property (nonatomic,assign) NSUInteger orientation;
+@property (nonatomic,assign) BOOL enableRotate;
 
 - (UIView *)screenView;
 @end
