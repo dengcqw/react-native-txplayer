@@ -185,31 +185,31 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   }
   @ReactProp(name = "enableSlider")
   public void setEnableSlider(TxplayerView view, Boolean enableSlider) {
-    if (enableSlider) {
+    if (enableSlider != null) {
       view.setEnableSlider(enableSlider.booleanValue());
     }
   }
   @ReactProp(name = "enableMorePanel")
   public void setEnableMorePanel(TxplayerView view, Boolean enableMorePanel) {
-    if (enableMorePanel) {
+    if (enableMorePanel != null)  {
       view.setEnableMorePanel(enableMorePanel.booleanValue());
     }
   }
   @ReactProp(name = "enableDownload")
   public void setEnableDownload(TxplayerView view, Boolean enableDownload) {
-    if (enableDownload) {
+    if (enableDownload != null) {
       view.setEnableDownload(enableDownload.booleanValue());
     }
   }
   @ReactProp(name = "enableDanmaku")
   public void setEnableDanmaku(TxplayerView view, Boolean enableDanmaku) {
-    if (enableDanmaku) {
+    if (enableDanmaku != null) {
       view.setEnableDanmaku(enableDanmaku.booleanValue());
     }
   }
   @ReactProp(name = "enableFullScreen")
   public void setEnableFullScreen(TxplayerView view, Boolean enableFullScreen) {
-    if (enableFullScreen) {
+    if (enableFullScreen != null) {
       view.setEnableFullScreen(enableFullScreen.booleanValue());
     }
   }
@@ -228,19 +228,19 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
 
   @ReactProp(name = "hidePlayerControl")
   public void setHidePlayerControl(TxplayerView view, Boolean hidePlayerControl) {
-    if (hidePlayerControl) {
+    if (hidePlayerControl != null) {
       view.setHidePlayerControl(hidePlayerControl.booleanValue());
     }
   }
   @ReactProp(name = "enableLoop")
   public void setEnableLoop(TxplayerView view, Boolean enableLoop) {
-    if (enableLoop) {
+    if (enableLoop != null) {
       view.setEnableLoop(enableLoop.booleanValue());
     }
   }
   @ReactProp(name = "enableRotate")
   public void setEnableRotate(TxplayerView view, Boolean enableRotate) {
-    if (enableRotate) {
+    if (enableRotate != null) {
       view.setEnableRotate(enableRotate.booleanValue());
     }
   }
