@@ -150,11 +150,13 @@ public class TxplayerView extends FrameLayout {
       public void onStartFullScreenPlay() {
         removeFeedPlayFromItem();
         rootView().addView(superPlayerView , new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT , ViewGroup.LayoutParams.MATCH_PARENT));
+        playerViewCallback.onFullscreen(getId(), true);
       }
 
       @Override
       public void onStopFullScreenPlay() {
         addFeedPlayToItem();
+        playerViewCallback.onFullscreen(getId(), false);
       }
 
       @Override
@@ -414,6 +416,7 @@ public class TxplayerView extends FrameLayout {
     void onPlayStateChange(int viewId, Integer state);
     void onPlayTimeChange(int videwId, WritableMap map);
     void onDownload(int viewId);
+    void onFullscreen(int viewId, boolean fullscreen);
   }
 
   @Override

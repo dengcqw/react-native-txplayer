@@ -74,6 +74,7 @@ export type TxplayerViewProps = {
   onPlayStateChange: (stateEvent: NativeSyntheticEvent<number>) => void;
   onPlayTimeChange: (stateEvent: NativeSyntheticEvent<PlayTimeType>) => void;
   onDownload: () => void;
+  onFullscreen: (fullscreen: number) => void; // 1 yes 0 no
 };
 
 const TxplayerViewNative = requireNativeComponent<TxplayerViewProps>(ComponentName);

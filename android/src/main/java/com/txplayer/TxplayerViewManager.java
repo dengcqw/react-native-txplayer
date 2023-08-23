@@ -155,6 +155,12 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
         "phasedRegistrationNames",
         MapBuilder.of("bubbled", "onPlayTimeChange")
       ));
+    builder.put(
+      "onFullscreen",
+      MapBuilder.of(
+        "phasedRegistrationNames",
+        MapBuilder.of("bubbled", "onFullscreen")
+      ));
 
     return builder.build();
   }
@@ -263,6 +269,13 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   @Override
   public void onPlayTimeChange(int viewId, WritableMap map) {
     sendEvent(viewId,"onPlayTimeChange", map);
+  }
+
+  @Override
+  public void onFullscreen(int viewId, boolean fullscreen) {
+    WritableMap event = Arguments.createMap();
+    event.putInt("fullscreen", fullscreen ? 1 : 0);
+    sendEvent(viewId,"onFullscreen", event);
   }
 
   @Override
