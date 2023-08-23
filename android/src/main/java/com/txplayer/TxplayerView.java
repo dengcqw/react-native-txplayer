@@ -52,7 +52,6 @@ public class TxplayerView extends FrameLayout {
   private boolean enableFullScreen = true;
   private Integer playType = 0;
   private double playStartTime = .0;
-  private String language;
 
   private Integer timeEventDuration = 5;
 
@@ -100,9 +99,6 @@ public class TxplayerView extends FrameLayout {
   }
   public void setPlayStartTime(double playStartTime) {
     this.playStartTime = playStartTime;
-  }
-  public void setLanguage(String language) {
-    this.language = language;
   }
   public void setTimeEventDuration(Integer timeEventDuration) {
     this.timeEventDuration = timeEventDuration;
@@ -280,12 +276,14 @@ public class TxplayerView extends FrameLayout {
     }
 
     FullScreenPlayer fullscreenPlayer = superPlayerView.getFullscreenPlayer();
+    fullscreenPlayer.setEnableSlider(enableSlider);
     View mIvSnapshot = fullscreenPlayer.findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_iv_snapshot);
     mIvSnapshot.setVisibility(View.GONE);
     View mDanmu = fullscreenPlayer.findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_iv_danmuku);
     mDanmu.setVisibility(enableDanmaku ? View.VISIBLE : View.GONE);
 
     WindowPlayer windowPlayer = superPlayerView.getWindowPlayer();
+    windowPlayer.setEnableSlider(enableSlider);
     if (hidePlayerControl) {
       View mImageStartAndResume = (View) windowPlayer.findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_resume);
       if (mImageStartAndResume != null && mImageStartAndResume.getParent() != null) {

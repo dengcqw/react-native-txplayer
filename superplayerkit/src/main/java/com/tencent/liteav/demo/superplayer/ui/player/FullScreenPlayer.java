@@ -132,6 +132,7 @@ public class FullScreenPlayer extends AbsPlayer implements View.OnClickListener,
     private List<VideoQuality>             mVideoQualityList;                      // 画质列表
     private boolean                        mFirstShowQuality;                      // 是都是首次显示画质信息
     private boolean                        mIsOpenGesture    = true;                  // 是否开启手势
+    private boolean                        enableSlider    = true;                  // sandstalk 是否允许调节进度
     private boolean                        isDestroy         = false;              // Activity是否被销毁
     private VodSoundTrackView              mVodSoundTrackView;
     private VodSubtitlesView               mVodSubtitlesView;
@@ -250,6 +251,8 @@ public class FullScreenPlayer extends AbsPlayer implements View.OnClickListener,
 
             @Override
             public void onSeekGesture(int progress) {
+                // sandstalk
+                if (!enableSlider) return;
                 mIsChangingSeekBarProgress = true;
                 if (mGestureVideoProgressLayout != null) {
 
@@ -549,14 +552,14 @@ public class FullScreenPlayer extends AbsPlayer implements View.OnClickListener,
                 mIvPause.setImageResource(R.drawable.superplayer_ic_vod_play_normal);
                 break;
             case PLAYING:
-                mSeekBarProgress.setEnabled(true);
+                mSeekBarProgress.setEnabled(enableSlider);
                 mIvPause.setImageResource(R.drawable.superplayer_ic_vod_pause_normal);
                 toggleView(mImageStartAndResume, false);
                 toggleView(mPbLiveLoading, false);
                 toggleView(mLayoutReplay, false);
                 break;
             case LOADING:
-                mSeekBarProgress.setEnabled(true);
+                mSeekBarProgress.setEnabled(enableSlider);
                 mIvPause.setImageResource(R.drawable.superplayer_ic_vod_pause_normal);
                 toggleView(mPbLiveLoading, true);
                 toggleView(mLayoutReplay, false);
@@ -752,7 +755,8 @@ public class FullScreenPlayer extends AbsPlayer implements View.OnClickListener,
             mGestureDetector.onTouchEvent(event);
         }
 
-        if (!mLockScreen) {
+        // sandstalk
+        if (!mLockScreen && enableSlider)  {
             if (event.getAction() == MotionEvent.ACTION_UP && mVideoGestureDetector != null && mVideoGestureDetector.isVideoProgressModel()) {
                 int progress = mVideoGestureDetector.getVideoProgress();
                 if (progress > mSeekBarProgress.getMax()) {
@@ -1157,7 +1161,13 @@ public class FullScreenPlayer extends AbsPlayer implements View.OnClickListener,
         this.mIsOpenGesture = !flag;
     }
 
-    @Override
+    // sandstalk
+    public void setEnableSlider(boolean flag) {
+      this.enableSlider = flag;
+    }
+
+
+  @Override
     public void onClickVipTitleBack() {
         if (mControllerCallback != null) {
             mControllerCallback.onBackPressed(SuperPlayerDef.PlayerMode.FULLSCREEN);

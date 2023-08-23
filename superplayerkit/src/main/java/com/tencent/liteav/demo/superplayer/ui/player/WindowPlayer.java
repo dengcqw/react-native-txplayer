@@ -79,6 +79,7 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
     private float                          mWaterMarkBmpY;                         // 水印y坐标
     private long                           mLastClickTime;                         // 上次点击事件的时间
     private boolean                        mIsOpenGesture    = true;               // 是否开启手势
+    private boolean                        enableSlider    = true;               // sandstalk 是否允许调节进度
     private boolean                        isDestroy         = false;              // Activity 是否被销毁
     private VideoGestureDetector.VideoGestureListener mVideoGestureListener;
     private ImageView                      mPiPIV;
@@ -164,6 +165,8 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
 
             @Override
             public void onSeekGesture(int progress) {
+                // sandstalk
+                if (!enableSlider) return;
                 mIsChangingSeekBarProgress = true;
                 if (mGestureVideoProgressLayout != null) {
 
@@ -409,14 +412,14 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
                 mIvPause.setImageResource(R.drawable.superplayer_ic_vod_play_normal);
                 break;
             case PLAYING:
-                mSeekBarProgress.setEnabled(true);
+                mSeekBarProgress.setEnabled(enableSlider);
                 mIvPause.setImageResource(R.drawable.superplayer_ic_vod_pause_normal);
                 toggleView(mImageStartAndResume, false);
                 toggleView(mPbLiveLoading, false);
                 toggleView(mLayoutReplay, false);
                 break;
             case LOADING:
-                mSeekBarProgress.setEnabled(true);
+                mSeekBarProgress.setEnabled(enableSlider);
                 mIvPause.setImageResource(R.drawable.superplayer_ic_vod_pause_normal);
                 toggleView(mPbLiveLoading, true);
                 toggleView(mLayoutReplay, false);
@@ -627,7 +630,8 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
         }
 
         boolean isCall = event.getAction() == MotionEvent.ACTION_CANCEL || event.getAction() == MotionEvent.ACTION_UP;
-        if (isCall && mVideoGestureDetector != null && mVideoGestureDetector.isVideoProgressModel()) {
+        // sandstalk
+        if (enableSlider && isCall && mVideoGestureDetector != null && mVideoGestureDetector.isVideoProgressModel()) {
             int progress = mVideoGestureDetector.getVideoProgress();
             if (progress > mSeekBarProgress.getMax()) {
                 progress = mSeekBarProgress.getMax();
@@ -771,6 +775,11 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
         this.mIsOpenGesture = !flag;
     }
 
+    // sandstalk
+    public void setEnableSlider(boolean flag) {
+        this.enableSlider = flag;
+        this.mSeekBarProgress.setEnabled(flag);
+    }
 
     @Override
     public void onClickVipTitleBack() {

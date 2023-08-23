@@ -862,6 +862,7 @@ public class SuperPlayerView extends RelativeLayout
                 mSuperPlayer.play(mCurrentSuperPlayerModel);
             }
         } else if (mSuperPlayer.getPlayerState() == SuperPlayerDef.PlayerState.END) { //重播
+            mSuperPlayer.setStartTime(0);
             mSuperPlayer.reStart();
         } else if (mSuperPlayer.getPlayerState() == SuperPlayerDef.PlayerState.PAUSE) { //继续播放
             mSuperPlayer.resume();
