@@ -108,4 +108,12 @@ RCT_EXPORT_METHOD(togglePlay:(nonnull NSNumber *) reactTag) {
     }];
 }
 
+RCT_EXPORT_METHOD(stopAllPlay) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.currentPlayerView) {
+            [self.currentPlayerView stopPlay];
+        }
+    });
+}
+
 @end
