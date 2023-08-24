@@ -330,6 +330,9 @@ static int s_playerCount = 0;
     }
     // 横屏后，初始化状态
     self.orientation = UIInterfaceOrientationUnknown;
+    if (self.onFullscreen) {
+        self.onFullscreen(@{@"fullscreen": @1});
+    }
 }
 
 - (void)backHookAction {
@@ -348,6 +351,9 @@ static int s_playerCount = 0;
         [self.viewController.navigationController popViewControllerAnimated:NO];
     }
     self.playerView.fatherView = self;
+    if (self.onFullscreen) {
+        self.onFullscreen(@{@"fullscreen": @0});
+    }
 }
 
 - (void)singleTapClick {

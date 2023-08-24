@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) RCTBubblingEventBlock onPlayStateChange;
 // 下载点击事件
 @property (nonatomic, copy) RCTBubblingEventBlock onDownload;
+@property (nonatomic, copy) RCTBubblingEventBlock onFullscreen;
 
 // 播放内容
 @property(copy, nonatomic) NSString *videoURL;

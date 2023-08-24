@@ -45,6 +45,7 @@ RCT_EXPORT_VIEW_PROPERTY(videoName, NSString)
 RCT_EXPORT_VIEW_PROPERTY(onPlayStateChange, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onPlayTimeChange, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onDownload, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onFullscreen, RCTBubblingEventBlock)
 
 RCT_EXPORT_VIEW_PROPERTY(hidePlayerControl, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(enableSlider, NSNumber)
@@ -57,7 +58,6 @@ RCT_EXPORT_VIEW_PROPERTY(playStartTime, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(language, NSString)
 RCT_EXPORT_VIEW_PROPERTY(enableLoop, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(timeEventDuration, NSNumber)
-
 RCT_EXPORT_VIEW_PROPERTY(enableRotate, NSNumber)
 
 RCT_EXPORT_METHOD(startPlay:(nonnull NSNumber *) reactTag) {
