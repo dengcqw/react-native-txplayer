@@ -321,6 +321,10 @@ static int s_playerCount = 0;
     vc.orientation = self.orientation;
     vc.playerView = self.playerView;
     vc.enableRotate = self.enableRotate.boolValue;
+    
+    SPDefaultControlView *controlView = (SPDefaultControlView *)self.playerView.controlView;
+    [controlView layoutLandscape:self.enableRotate.boolValue];
+
     // fix 覆盖 tab bar
     UINavigationController *navi = (UINavigationController *)[UIApplication sharedApplication].keyWindow.rootViewController;
     if ([navi isKindOfClass:[UINavigationController class]]) {
@@ -520,6 +524,7 @@ static int s_playerCount = 0;
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    self.navigationController.interactivePopGestureRecognizer.enabled = false;
     // 竖视频可以不旋转
     
     // 手动横屏, 设置Orientation right
@@ -542,6 +547,7 @@ static int s_playerCount = 0;
 
 -(void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    self.navigationController.interactivePopGestureRecognizer.enabled = true;
     if (!self.enableRotate) {
         return;
     }
