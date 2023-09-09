@@ -120,6 +120,7 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, TxplayerViewApi>((props
   return <TxplayerViewNative {...props} ref={nativeRef} />;
 });
 
+// @ts-ignore
 TxplayerView.stopAllPlay = TxplayerViewMgr ? TxplayerViewMgr.stopAllPlay : undefined
 
 export default TxplayerView;
