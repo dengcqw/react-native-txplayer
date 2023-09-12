@@ -8,10 +8,43 @@
 
 using namespace facebook::jsi;
 
+static NSString * TXDownloadEvent = @"TxDownloadEvent";
+
+NSDictionary *getDownloanInfo(TXVodDownloadMediaInfo *mediaInfo) {
+    return @{
+        @"dataSource": @{
+            @"appId": @(mediaInfo.dataSource.appId),
+            @"fileId": mediaInfo.dataSource.fileId,
+            @"sign":mediaInfo.dataSource.pSign
+        },
+        @"userName":mediaInfo.userName,
+        @"duration":@(mediaInfo.duration),
+        @"playableDuration":@(mediaInfo.playableDuration),
+        @"size":@(mediaInfo.size),
+        @"downloadSize":@(mediaInfo.downloadSize),
+        @"segments":@(mediaInfo.segments),
+        @"downloadSegments":@(mediaInfo.downloadSegments),
+        @"progress":@(mediaInfo.progress),
+        @"playPath":mediaInfo.playPath,
+        @"speed":@(mediaInfo.speed),
+        @"downloadState":@(mediaInfo.downloadState),
+        @"preferredResolution":@(mediaInfo.preferredResolution),
+        @"isResourceBroken":@(mediaInfo.isResourceBroken),
+    };
+}
+
+NSArray<NSDictionary *> *getDownloanInfos(NSArray<TXVodDownloadMediaInfo *> *mediaInfos) {
+    NSMutableArray *arr = [NSMutableArray new];
+    for (TXVodDownloadMediaInfo *info in mediaInfos) {
+        [arr addObject:getDownloanInfo(info)];
+    }
+    return arr;
+}
 
 static void install(Runtime &jsiRuntime, TxDownloadManager *manager);
 
 @interface TxDownloadManager () <TXVodDownloadDelegate>
+@property(assign, nonatomic) Boolean hasListeners;
 @end
 
 @implementation TxDownloadManager
@@ -20,6 +53,20 @@ static void install(Runtime &jsiRuntime, TxDownloadManager *manager);
 @synthesize methodQueue = _methodQueue;
 
 RCT_EXPORT_MODULE(TxDownloadManager)
+
+- (NSArray<NSString *> *)supportedEvents
+{
+  return @[TXDownloadEvent];
+}
+
+// 在添加第一个监听函数时触发
+- (void)startObserving {
+    self.hasListeners = YES;
+}
+
+- (void)stopObserving {
+    self.hasListeners = NO;
+}
 
 + (BOOL)requiresMainQueueSetup {
     return YES;
@@ -52,17 +99,18 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
     }
     return mgr;
 }
-
+    
 - (void)startDownload:(NSString *)videoInfo {
     NSError* error;
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:[videoInfo dataUsingEncoding:(NSUTF8StringEncoding)] options:(kNilOptions) error:&error];
     NSLog(@"TxPlayer: startDownload");
     
     TXVodDownloadDataSource *dataSource = [[TXVodDownloadDataSource alloc] init];
-    dataSource.appId = 1304755944;
+    dataSource.appId = [dict[@"appId"] integerValue];
     dataSource.fileId = dict[@"fileId"];
-    dataSource.pSign = dict[@"pSign"];
+    dataSource.pSign = dict[@"sign"];
     [[self getDownloadMgr] startDownload:dataSource];
+
 }
 - (void)stopDownload:(NSString *)videoFileId {
     NSLog(@"TxPlayer: stopDownload %@", videoFileId);
@@ -73,34 +121,68 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
     NSLog(@"TxPlayer: deleteDownload %@", videoFileId);
     id mediaInfo =[[self getDownloadMgr] getDownloadMediaInfo:0 fileId:videoFileId qualityId:0 userName:@""];
     [[self getDownloadMgr] deleteDownloadMediaInfo:mediaInfo];
+    
 }
 - (NSString *)getDownloadList {
     NSArray<TXVodDownloadMediaInfo *> * array = [[self getDownloadMgr] getDownloadMediaInfoList];
+    
     if (array == nil) array = @[];
     NSError* error;
-    NSData *str = [NSJSONSerialization dataWithJSONObject:array options:kNilOptions error:&error];
-    return [[NSString alloc]initWithData:str encoding:NSUTF8StringEncoding];
+    NSData *str = [NSJSONSerialization dataWithJSONObject:getDownloanInfos(array) options:NSJSONWritingFragmentsAllowed error:&error];
+    NSLog(@"TxPlayer: getDownloadList %@", [error localizedDescription]);
+    return [[NSString alloc] initWithData:str encoding:NSUTF8StringEncoding];
 }
 
 - (void)onDownloadError:(TXVodDownloadMediaInfo *)mediaInfo errorCode:(TXDownloadError)code errorMsg:(NSString *)msg {
-    NSLog(@"TxPlayer: onDownloadError %@", mediaInfo.dataSource.fileId);
+    NSLog(@"TxPlayer: onDownloadError %@ %@", mediaInfo.dataSource.fileId, msg);
+    if (!self.hasListeners) return;
+    [self sendEventWithName:TXDownloadEvent body:@{
+        @"name": @"error",
+        @"fileId": mediaInfo.dataSource.fileId,
+    }];
 }
 
 - (void)onDownloadFinish:(TXVodDownloadMediaInfo *)mediaInfo {
     NSLog(@"TxPlayer: onDownloadFinish %@", mediaInfo.dataSource.fileId);
+    if (!self.hasListeners) return;
+    [self sendEventWithName:TXDownloadEvent body:@{
+        @"name": @"finish",
+        @"fileId": mediaInfo.dataSource.fileId
+    }];
 }
 
 - (void)onDownloadProgress:(TXVodDownloadMediaInfo *)mediaInfo {
     NSLog(@"TxPlayer: onDownloadProgress %@ %@", mediaInfo.dataSource.fileId, @(mediaInfo.progress));
+    if (!self.hasListeners) return;
+    [self sendEventWithName:TXDownloadEvent body:@{
+        @"name": @"progress",
+        @"fileId": mediaInfo.dataSource.fileId,
+        @"progress": @(mediaInfo.progress)
+    }];
 }
 
 - (void)onDownloadStart:(TXVodDownloadMediaInfo *)mediaInfo {
     NSLog(@"TxPlayer: onDownloadStart %@", mediaInfo.dataSource.fileId);
+    if (!self.hasListeners) return;
+    [self sendEventWithName:TXDownloadEvent body:@{
+        @"name": @"start",
+        @"fileId": mediaInfo.dataSource.fileId
+    }];
 }
 
 - (void)onDownloadStop:(TXVodDownloadMediaInfo *)mediaInfo {
     NSLog(@"TxPlayer: onDownloadStop %@", mediaInfo.dataSource.fileId);
+    if (!self.hasListeners) return;
+    [self sendEventWithName:TXDownloadEvent body:@{
+        @"name": @"stop",
+        @"fileId": mediaInfo.dataSource.fileId
+    }];
 }
+
+- (int)hlsKeyVerify:(TXVodDownloadMediaInfo *)mediaInfo url:(NSString *)url data:(NSData *)data {
+    return 0;
+}
+
 
 @end
 
@@ -119,7 +201,7 @@ static void install(jsi::Runtime &jsiRuntime, TxDownloadManager *manager) {
         return Value(runtime, downloadList);
     });
     
-    jsiRuntime.global().setProperty(jsiRuntime, "getDownloadList", std::move(getDownloadList));
+    jsiRuntime.global().setProperty(jsiRuntime, "TXD_getDownloadList", std::move(getDownloadList));
     
     auto startDownload = Function::createFromHostFunction(jsiRuntime,
                                                           PropNameID::forAscii(jsiRuntime,
@@ -137,7 +219,7 @@ static void install(jsi::Runtime &jsiRuntime, TxDownloadManager *manager) {
         return Value(true);
     });
     
-    jsiRuntime.global().setProperty(jsiRuntime, "startDownload", std::move(startDownload));
+    jsiRuntime.global().setProperty(jsiRuntime, "TXD_startDownload", std::move(startDownload));
     
     
     auto stopDownload = Function::createFromHostFunction(jsiRuntime,
@@ -155,7 +237,7 @@ static void install(jsi::Runtime &jsiRuntime, TxDownloadManager *manager) {
         return Value(true);
     });
     
-    jsiRuntime.global().setProperty(jsiRuntime, "stopDownload", std::move(stopDownload));
+    jsiRuntime.global().setProperty(jsiRuntime, "TXD_stopDownload", std::move(stopDownload));
     
     auto deleteDownload = Function::createFromHostFunction(jsiRuntime,
                                                            PropNameID::forAscii(jsiRuntime,
@@ -173,5 +255,5 @@ static void install(jsi::Runtime &jsiRuntime, TxDownloadManager *manager) {
         return Value(true);
     });
     
-    jsiRuntime.global().setProperty(jsiRuntime, "deleteDownload", std::move(deleteDownload));
+    jsiRuntime.global().setProperty(jsiRuntime, "TXD_deleteDownload", std::move(deleteDownload));
 }

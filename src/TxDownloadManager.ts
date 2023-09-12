@@ -1,8 +1,10 @@
-import { NativeModules } from 'react-native';
+import { NativeModules, NativeEventEmitter } from 'react-native';
+
+const emitter = new NativeEventEmitter(NativeModules.TxDownloadManager);
 
 function isLoaded() {
   // @ts-ignore
-  return global.getDownloadList != null;
+  return global.TXD_getDownloadList != null;
 }
 
 if (!isLoaded()) {
@@ -57,22 +59,48 @@ export interface DownloadInfo {
 
 export const startDownload = (videoInfo: VideoInfo) => {
   try {
-    global.startDownload(JSON.stringify(videoInfo));
+    // @ts-ignore
+    global.TXD_startDownload(JSON.stringify(videoInfo));
   } catch (e) {
     console.log('----> TxDownloadManager startDownload err', e);
   }
 };
 export const stopDownload = (fileId: string) => {
-  global.stopDownload(fileId);
+  // @ts-ignore
+  global.TXD_stopDownload(fileId);
 };
 export const deleteDownload = (fileId: string) => {
-  global.deleteDownload(fileId);
+  // @ts-ignore
+  global.TXD_deleteDownload(fileId);
 };
 export const getDownloadList = (): DownloadInfo[] => {
   try {
-    return JSON.parse(global.getDownloadList());
+    // @ts-ignore
+    return JSON.parse(global.TXD_getDownloadList());
   } catch (e) {
     console.log('----> TxDownloadManager getDownloadList err', e);
+    return [];
   }
 };
+
+export type DownloadEventType = {
+  name: 'progress' | 'finish' | 'start' | 'stop' | 'error';
+  fileId: string;
+  progress: number;
+};
+
+type Unsubscribe = () => void
+export const subscribeEvent = (cb: (value: DownloadEventType) => void): Unsubscribe  => {
+  const subscription = emitter.addListener(
+  'TxDownloadEvent',
+    (value) => {
+      cb && cb(value)
+      console.log('----> download event', value)
+    }
+  );
+  return () => {
+    subscription.remove();
+  }
+}
+
 

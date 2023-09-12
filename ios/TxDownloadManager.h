@@ -2,11 +2,12 @@
 #import "RNJtjsiSpec.h"
 
 
-@interface TxDownloadManager : NSObject <NativeJtjsiSpec>
+@interface TxDownloadManager : RCTEventEmitter <NativeJtjsiSpec>
 #else
 #import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
 
-@interface TxDownloadManager : NSObject <RCTBridgeModule>
+@interface TxDownloadManager : RCTEventEmitter <RCTBridgeModule>
 #endif
 
 - (void)startDownload:(NSString *)videoInfo;
