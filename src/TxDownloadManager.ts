@@ -65,13 +65,13 @@ export const startDownload = (videoInfo: VideoInfo) => {
     console.log('----> TxDownloadManager startDownload err', e);
   }
 };
-export const stopDownload = (fileId: string) => {
+export const stopDownload = (fileId: string, appId: string) => {
   // @ts-ignore
-  global.TXD_stopDownload(fileId);
+  global.TXD_stopDownload(fileId, appId);
 };
-export const deleteDownload = (fileId: string) => {
+export const deleteDownload = (fileId: string, appId: string) => {
   // @ts-ignore
-  global.TXD_deleteDownload(fileId);
+  global.TXD_deleteDownload(fileId, appId);
 };
 export const getDownloadList = (): DownloadInfo[] => {
   try {
@@ -86,16 +86,19 @@ export const getDownloadList = (): DownloadInfo[] => {
 export type DownloadEventType = {
   name: 'progress' | 'finish' | 'start' | 'stop' | 'error';
   fileId: string;
-  progress: number;
+  progress?: number;
+  downloaded?: number
 };
 
 type Unsubscribe = () => void
-export const subscribeEvent = (cb: (value: DownloadEventType) => void): Unsubscribe  => {
+export const subscribeEvent = (fileId: string, cb: (value: DownloadEventType) => void): Unsubscribe  => {
   const subscription = emitter.addListener(
   'TxDownloadEvent',
     (value) => {
-      cb && cb(value)
       console.log('----> download event', value)
+      if (value.fileId === fileId) {
+        cb && cb(value)
+      }
     }
   );
   return () => {

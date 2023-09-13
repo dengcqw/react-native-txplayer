@@ -112,16 +112,15 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
     [[self getDownloadMgr] startDownload:dataSource];
 
 }
-- (void)stopDownload:(NSString *)videoFileId {
-    NSLog(@"TxPlayer: stopDownload %@", videoFileId);
-    id mediaInfo =[[self getDownloadMgr] getDownloadMediaInfo:0 fileId:videoFileId qualityId:0 userName:@""];
+- (void)stopDownload:(NSString *)videoFileId appId:(NSString *)appId {
+    NSLog(@"TxPlayer: stopDownload %@ %@", appId, videoFileId);
+    id mediaInfo =[[self getDownloadMgr] getDownloadMediaInfo:[appId integerValue] fileId:videoFileId qualityId:0 userName:@""];
     [[self getDownloadMgr] stopDownload:mediaInfo];
 }
-- (void)deleteDownload:(NSString *)videoFileId {
-    NSLog(@"TxPlayer: deleteDownload %@", videoFileId);
-    id mediaInfo =[[self getDownloadMgr] getDownloadMediaInfo:0 fileId:videoFileId qualityId:0 userName:@""];
+- (void)deleteDownload:(NSString *)videoFileId appId:(NSString *)appId {
+    NSLog(@"TxPlayer: deleteDownload %@ %@", appId, videoFileId);
+    id mediaInfo =[[self getDownloadMgr] getDownloadMediaInfo:[appId integerValue] fileId:videoFileId qualityId:0 userName:@""];
     [[self getDownloadMgr] deleteDownloadMediaInfo:mediaInfo];
-    
 }
 - (NSString *)getDownloadList {
     NSArray<TXVodDownloadMediaInfo *> * array = [[self getDownloadMgr] getDownloadMediaInfoList];
@@ -157,7 +156,8 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
     [self sendEventWithName:TXDownloadEvent body:@{
         @"name": @"progress",
         @"fileId": mediaInfo.dataSource.fileId,
-        @"progress": @(mediaInfo.progress)
+        @"progress": @(mediaInfo.progress),
+        @"downloaded": @(mediaInfo.downloadSize)
     }];
 }
 
@@ -231,8 +231,9 @@ static void install(jsi::Runtime &jsiRuntime, TxDownloadManager *manager) {
                                                                    const Value *arguments,
                                                                    size_t count) -> Value {
         NSString *fileId = convertJSIStringToNSString(runtime, arguments[0].getString(runtime));
+        NSString *appId = convertJSIStringToNSString(runtime, arguments[1].getString(runtime));
         
-        [manager stopDownload: fileId];
+        [manager stopDownload: fileId appId:appId];
         
         return Value(true);
     });
@@ -249,8 +250,9 @@ static void install(jsi::Runtime &jsiRuntime, TxDownloadManager *manager) {
                                                                      size_t count) -> Value {
         
         NSString *fileId = convertJSIStringToNSString(runtime, arguments[0].getString(runtime));
+        NSString *appId = convertJSIStringToNSString(runtime, arguments[1].getString(runtime));
         
-        [manager stopDownload: fileId];
+        [manager stopDownload: fileId appId:appId];
         
         return Value(true);
     });
