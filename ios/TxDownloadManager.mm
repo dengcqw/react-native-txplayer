@@ -12,23 +12,16 @@ static NSString * TXDownloadEvent = @"TxDownloadEvent";
 
 NSDictionary *getDownloanInfo(TXVodDownloadMediaInfo *mediaInfo) {
     return @{
-        @"dataSource": @{
-            @"appId": @(mediaInfo.dataSource.appId),
-            @"fileId": mediaInfo.dataSource.fileId,
-            @"sign":mediaInfo.dataSource.pSign
-        },
-        @"userName":mediaInfo.userName,
+        @"appId": @(mediaInfo.dataSource.appId),
+        @"fileId": mediaInfo.dataSource.fileId,
+        @"sign":mediaInfo.dataSource.pSign
         @"duration":@(mediaInfo.duration),
-        @"playableDuration":@(mediaInfo.playableDuration),
         @"size":@(mediaInfo.size),
         @"downloadSize":@(mediaInfo.downloadSize),
-        @"segments":@(mediaInfo.segments),
-        @"downloadSegments":@(mediaInfo.downloadSegments),
         @"progress":@(mediaInfo.progress),
         @"playPath":mediaInfo.playPath,
         @"speed":@(mediaInfo.speed),
         @"downloadState":@(mediaInfo.downloadState),
-        @"preferredResolution":@(mediaInfo.preferredResolution),
         @"isResourceBroken":@(mediaInfo.isResourceBroken),
     };
 }

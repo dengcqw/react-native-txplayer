@@ -43,6 +43,18 @@ def supportsNamespace() {
   return major >= 8
 }
 
+def reactNativeArchitectures() {
+  def value = project.getProperties().get("reactNativeArchitectures")
+  return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
+}
+
+def resolveBuildType() {
+  Gradle gradle = getGradle()
+  String tskReqStr = gradle.getStartParameter().getTaskRequests()['args'].toString()
+
+  return tskReqStr.contains('Release') ? 'release' : 'debug'
+}
+
 android {
   if (supportsNamespace()) {
     namespace "com.txplayer"
@@ -60,6 +72,13 @@ android {
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
     targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+    externalNativeBuild {
+      cmake {
+        cppFlags "-O2 -frtti -fexceptions -Wall -Wno-unused-variable -fstack-protector-all"
+        arguments "-DANDROID_STL=c++_shared"
+        abiFilters (*reactNativeArchitectures())
+      }
+    }
   }
   buildTypes {
     release {
@@ -76,6 +95,24 @@ android {
     targetCompatibility JavaVersion.VERSION_1_8
   }
 
+  externalNativeBuild {
+    cmake {
+      path "CMakeLists.txt"
+    }
+  }
+  packagingOptions {
+    doNotStrip resolveBuildType() == 'debug' ? "**/**/*.so" : ''
+    excludes = [
+      "META-INF",
+      "META-INF/**",
+      "**/libjsi.so",
+      "**/libc++_shared.so"
+    ]
+  }
+
+  buildFeatures {
+    prefab true
+  }
 }
 
 repositories {
@@ -90,6 +127,7 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation project(path: ':superplayerkit')
+  api "com.google.code.gson:gson:2.8.9"
 }
 
 if (isNewArchitectureEnabled()) {
@@ -97,5 +135,20 @@ if (isNewArchitectureEnabled()) {
     jsRootDir = file("../src/")
     libraryName = "TxplayerView"
     codegenJavaPackageName = "com.txplayer"
+  }
+}
+
+// Resolves "LOCAL_SRC_FILES points to a missing file, Check that libfb.so exists or that its path is correct".
+tasks.whenTaskAdded { task ->
+  if (task.name.contains("configureCMakeDebug")) {
+    rootProject.getTasksByName("packageReactNdkDebugLibs", true).forEach {
+      task.dependsOn(it)
+    }
+  }
+  // We want to add a dependency for both configureCMakeRelease and configureCMakeRelWithDebInfo
+  if (task.name.contains("configureCMakeRel")) {
+    rootProject.getTasksByName("packageReactNdkReleaseLibs", true).forEach {
+      task.dependsOn(it)
+    }
   }
 }

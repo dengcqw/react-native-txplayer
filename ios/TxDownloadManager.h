@@ -11,8 +11,8 @@
 #endif
 
 - (void)startDownload:(NSString *)videoInfo;
-- (void)stopDownload:(NSString *)videoFileId;
-- (void)deleteDownload:(NSString *)videoFileId;
+- (void)stopDownload:(NSString *)videoFileId appId:(NSString *)appId;
+- (void)deleteDownload:(NSString *)videoFileId appId:(NSString *)appId;
 - (NSString *)getDownloadList;
 @end
 
