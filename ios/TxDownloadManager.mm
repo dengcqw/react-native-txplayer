@@ -14,7 +14,7 @@ NSDictionary *getDownloanInfo(TXVodDownloadMediaInfo *mediaInfo) {
     return @{
         @"appId": @(mediaInfo.dataSource.appId),
         @"fileId": mediaInfo.dataSource.fileId,
-        @"sign":mediaInfo.dataSource.pSign
+        @"sign":mediaInfo.dataSource.pSign,
         @"duration":@(mediaInfo.duration),
         @"size":@(mediaInfo.size),
         @"downloadSize":@(mediaInfo.downloadSize),
@@ -102,17 +102,19 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
     dataSource.appId = [dict[@"appId"] integerValue];
     dataSource.fileId = dict[@"fileId"];
     dataSource.pSign = dict[@"sign"];
+    dataSource.quality = TXVodQualityHD;
+    dataSource.userName = @"default";
     [[self getDownloadMgr] startDownload:dataSource];
 
 }
 - (void)stopDownload:(NSString *)videoFileId appId:(NSString *)appId {
     NSLog(@"TxPlayer: stopDownload %@ %@", appId, videoFileId);
-    id mediaInfo =[[self getDownloadMgr] getDownloadMediaInfo:[appId integerValue] fileId:videoFileId qualityId:0 userName:@""];
+    id mediaInfo =[[self getDownloadMgr] getDownloadMediaInfo:[appId integerValue] fileId:videoFileId qualityId:TXVodQualityHD userName:@"default"];
     [[self getDownloadMgr] stopDownload:mediaInfo];
 }
 - (void)deleteDownload:(NSString *)videoFileId appId:(NSString *)appId {
     NSLog(@"TxPlayer: deleteDownload %@ %@", appId, videoFileId);
-    id mediaInfo =[[self getDownloadMgr] getDownloadMediaInfo:[appId integerValue] fileId:videoFileId qualityId:0 userName:@""];
+    id mediaInfo =[[self getDownloadMgr] getDownloadMediaInfo:[appId integerValue] fileId:videoFileId qualityId:TXVodQualityHD userName:@"default"];
     [[self getDownloadMgr] deleteDownloadMediaInfo:mediaInfo];
 }
 - (NSString *)getDownloadList {
