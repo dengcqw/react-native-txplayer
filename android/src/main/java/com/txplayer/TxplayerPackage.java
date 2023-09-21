@@ -12,7 +12,7 @@ import java.util.List;
 public class TxplayerPackage implements ReactPackage {
   @Override
   public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-    return Collections.emptyList();
+    return Arrays.<NativeModule>asList(new TxDownloadManager(reactContext));
   }
 
   @Override

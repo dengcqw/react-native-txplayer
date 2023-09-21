@@ -1,5 +1,7 @@
 package com.txplayer;
 
+import static com.tencent.rtmp.downloader.TXVodDownloadDataSource.QUALITY_720P;
+
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -36,7 +38,10 @@ public class TxDownloadManager extends ReactContextBaseJavaModule implements ITX
     super(reactContext);
   }
   private TXVodDownloadManager  mDownloadManager;
-  private Integer listeners;
+  private int listeners;
+
+  public static final int quality = QUALITY_720P;
+  public static final String UserName = "default";
 
 
   @Override
@@ -71,26 +76,30 @@ public class TxDownloadManager extends ReactContextBaseJavaModule implements ITX
     return mDownloadManager;
   }
 
-  public void startDowload(String videoInfo) {
+  public void startDownload(String videoInfo) {
     JsonObject convertedObject = new Gson().fromJson(videoInfo, JsonObject.class);
 
     TXVodDownloadDataSource downloadDataSource = new TXVodDownloadDataSource(
       convertedObject.get("appId").getAsInt(),
       convertedObject.get("fileId").getAsString(),
-      0,
+      quality,
       convertedObject.get("sign").getAsString(),
-      "default");
+      UserName);
     getDownloadMgr().startDownload(downloadDataSource);
+    Log.d(NAME, "startDownload ");
   }
 
   public void stopDownload(String videoFileId, String appId) {
-    TXVodDownloadMediaInfo info = getDownloadMgr().getDownloadMediaInfo(Integer.valueOf(appId), videoFileId, 0);
+    TXVodDownloadMediaInfo info = getDownloadMgr().getDownloadMediaInfo(Integer.valueOf(appId), videoFileId, quality, UserName);
     getDownloadMgr().stopDownload(info);
+    Log.d(NAME, "stopDownload " + videoFileId);
   }
 
   public void deleteDownload(String videoFileId, String appId) {
-    TXVodDownloadMediaInfo info = getDownloadMgr().getDownloadMediaInfo(Integer.valueOf(appId), videoFileId, 0);
-    getDownloadMgr().deleteDownloadMediaInfo(info);
+    TXVodDownloadMediaInfo info = getDownloadMgr().getDownloadMediaInfo(Integer.valueOf(appId), videoFileId, quality, UserName);
+    getDownloadMgr().stopDownload(info);
+    boolean ret = getDownloadMgr().deleteDownloadMediaInfo(info);
+    Log.d(NAME, "deleteDownload: " + " vid=" + videoFileId + " ret=" + ret );
   }
 
   public String getDownloadList() {
@@ -166,15 +175,16 @@ public class TxDownloadManager extends ReactContextBaseJavaModule implements ITX
   public void onDownloadFinish(TXVodDownloadMediaInfo txVodDownloadMediaInfo) {
     if (listeners <= 0) return;
     WritableMap params = Arguments.createMap();
-    params.putString("name", "stop");
+    params.putString("name", "finish");
     params.putString("fileId", txVodDownloadMediaInfo.getDataSource().getFileId());
+    sendEvent(TxDownloadEvent, params);
   }
 
   @Override
   public void onDownloadError(TXVodDownloadMediaInfo txVodDownloadMediaInfo, int i, String s) {
     if (listeners <= 0) return;
     WritableMap params = Arguments.createMap();
-    params.putString("name", "stop");
+    params.putString("name", "error");
     params.putString("fileId", txVodDownloadMediaInfo.getDataSource().getFileId());
     sendEvent(TxDownloadEvent, params);
   }

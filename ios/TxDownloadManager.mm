@@ -105,7 +105,6 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
     dataSource.quality = TXVodQualityHD;
     dataSource.userName = @"default";
     [[self getDownloadMgr] startDownload:dataSource];
-
 }
 - (void)stopDownload:(NSString *)videoFileId appId:(NSString *)appId {
     NSLog(@"TxPlayer: stopDownload %@ %@", appId, videoFileId);
@@ -113,9 +112,10 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
     [[self getDownloadMgr] stopDownload:mediaInfo];
 }
 - (void)deleteDownload:(NSString *)videoFileId appId:(NSString *)appId {
-    NSLog(@"TxPlayer: deleteDownload %@ %@", appId, videoFileId);
     id mediaInfo =[[self getDownloadMgr] getDownloadMediaInfo:[appId integerValue] fileId:videoFileId qualityId:TXVodQualityHD userName:@"default"];
-    [[self getDownloadMgr] deleteDownloadMediaInfo:mediaInfo];
+    [[self getDownloadMgr] stopDownload:mediaInfo];
+    BOOL ret = [[self getDownloadMgr] deleteDownloadMediaInfo:mediaInfo];
+    NSLog(@"TxPlayer: deleteDownload %@ %@ %@", appId, videoFileId, @(ret));
 }
 - (NSString *)getDownloadList {
     NSArray<TXVodDownloadMediaInfo *> * array = [[self getDownloadMgr] getDownloadMediaInfoList];
@@ -123,7 +123,7 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
     if (array == nil) array = @[];
     NSError* error;
     NSData *str = [NSJSONSerialization dataWithJSONObject:getDownloanInfos(array) options:NSJSONWritingFragmentsAllowed error:&error];
-    NSLog(@"TxPlayer: getDownloadList %@", [error localizedDescription]);
+    NSLog(@"TxPlayer: getDownloadList %@, %@", @(array.count), [error localizedDescription]);
     return [[NSString alloc] initWithData:str encoding:NSUTF8StringEncoding];
 }
 
@@ -151,7 +151,7 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
     [self sendEventWithName:TXDownloadEvent body:@{
         @"name": @"progress",
         @"fileId": mediaInfo.dataSource.fileId,
-        @"progress": @(mediaInfo.progress),
+        @"progress": [mediaInfo isDownloadFinished] ? @(1) : @(mediaInfo.progress),
         @"downloaded": @(mediaInfo.downloadSize)
     }];
 }
@@ -247,7 +247,7 @@ static void install(jsi::Runtime &jsiRuntime, TxDownloadManager *manager) {
         NSString *fileId = convertJSIStringToNSString(runtime, arguments[0].getString(runtime));
         NSString *appId = convertJSIStringToNSString(runtime, arguments[1].getString(runtime));
         
-        [manager stopDownload: fileId appId:appId];
+        [manager deleteDownload: fileId appId:appId];
         
         return Value(true);
     });

@@ -110,7 +110,7 @@ void install(facebook::jsi::Runtime &jsiRuntime) {
 
                                                         });
 
-    jsiRuntime.global().setProperty(jsiRuntime, "getDownloadList", move(getDownloadList));
+    jsiRuntime.global().setProperty(jsiRuntime, "TXD_getDownloadList", move(getDownloadList));
 
     auto deleteDownload = Function::createFromHostFunction(jsiRuntime,
                                                                 PropNameID::forAscii(jsiRuntime,
@@ -132,7 +132,7 @@ void install(facebook::jsi::Runtime &jsiRuntime) {
                                                                             java_object);
 
                                                                     jmethodID set = jniEnv->GetMethodID(
-                                                                            java_class, "stopDownload",
+                                                                            java_class, "deleteDownload",
                                                                             "(Ljava/lang/String;Ljava/lang/String;)V");
 
                                                                     jstring jstr1 = string2jstring(jniEnv,
@@ -150,7 +150,7 @@ void install(facebook::jsi::Runtime &jsiRuntime) {
                                                                     return Value(true);
                                                                 });
 
-    jsiRuntime.global().setProperty(jsiRuntime, "deleteDownload", move(deleteDownload));
+    jsiRuntime.global().setProperty(jsiRuntime, "TXD_deleteDownload", move(deleteDownload));
 
 
     auto stopDownload = Function::createFromHostFunction(jsiRuntime,
@@ -191,11 +191,11 @@ void install(facebook::jsi::Runtime &jsiRuntime) {
                                                      return Value(true);
                                                  });
 
-    jsiRuntime.global().setProperty(jsiRuntime, "stopDownload", move(stopDownload));
+    jsiRuntime.global().setProperty(jsiRuntime, "TXD_stopDownload", move(stopDownload));
 
-    auto startDowload = Function::createFromHostFunction(jsiRuntime,
+    auto startDownload = Function::createFromHostFunction(jsiRuntime,
                                                        PropNameID::forAscii(jsiRuntime,
-                                                                            "startDowload"),
+                                                                            "startDownload"),
                                                        1,
                                                        [](Runtime &runtime,
                                                           const Value &thisValue,
@@ -208,7 +208,7 @@ void install(facebook::jsi::Runtime &jsiRuntime) {
                                                                    java_object);
 
                                                            jmethodID set = jniEnv->GetMethodID(
-                                                                   java_class, "startDowload",
+                                                                   java_class, "startDownload",
                                                                    "(Ljava/lang/String;)V");
 
                                                            string key = arguments[0].getString(
@@ -224,7 +224,7 @@ void install(facebook::jsi::Runtime &jsiRuntime) {
                                                            return Value(true);
                                                        });
 
-    jsiRuntime.global().setProperty(jsiRuntime, "startDowload", move(startDowload));
+    jsiRuntime.global().setProperty(jsiRuntime, "TXD_startDownload", move(startDownload));
 }
 
 extern "C"
