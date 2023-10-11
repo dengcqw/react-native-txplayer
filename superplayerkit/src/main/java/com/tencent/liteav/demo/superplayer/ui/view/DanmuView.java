@@ -49,7 +49,7 @@ public class DanmuView extends DanmakuView {
     // 是否已被结束(视频播放完了)
     private boolean terminated;
 
-    private boolean hide;
+    private boolean hide = true;
 
     public DanmuView(Context context) {
         super(context);
@@ -237,7 +237,7 @@ public class DanmuView extends DanmakuView {
                     }
                     sendDanmu();
                     isRunning = true;
-                    int time = new Random().nextInt(1000);
+                    int time = new Random().nextInt(4000);
                     mDanmuHandler.sendEmptyMessageDelayed(MSG_SEND_DANMU, time);
                     break;
             }

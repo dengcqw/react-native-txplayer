@@ -448,7 +448,7 @@ static int s_playerCount = 0;
     UIFont *font = [UIFont systemFontOfSize:15];
     CGFloat playDuration = _playerView.playDuration;
     if (playDuration == 0) playDuration = 60;
-    CGFloat timeSpace = playDuration / total.floatValue;
+    CGFloat timeSpace = 2; //playDuration / total.floatValue;
     
     int index = (current.intValue - 1) * size.intValue;
     for (NSDictionary *dict in danmakus) {
@@ -471,17 +471,17 @@ static int s_playerCount = 0;
     }
 }
 
-- (void)danmakuShow{
+- (void)danmakuShow {
+    if (!self.enableDanmaku) return;
     if (!_danmakuView.hidden) return;
-    [_danmakuView start];
     _danmakuView.hidden = NO;
+    [_danmakuView start];
 }
 
-- (void)danmakuHidden{
+- (void)danmakuHidden {
     if (_danmakuView.hidden) return;
-    [_danmakuView pause];
     _danmakuView.hidden = YES;
-    
+    [_danmakuView pause];
 }
 
 - (NSTimeInterval)danmakuViewGetPlayTime:(JTDanmakuView *)danmakuView {
@@ -489,7 +489,7 @@ static int s_playerCount = 0;
 }
 
 - (BOOL)danmakuViewIsBuffering:(JTDanmakuView *)danmakuView {
-    return self.playerView.state != StatePlaying;
+    return self.playerView.state != StatePlaying || self.danmakus.count == 0;
 }
 
 // 屏幕保持

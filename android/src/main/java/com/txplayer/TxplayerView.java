@@ -151,12 +151,15 @@ public class TxplayerView extends FrameLayout {
         removeFeedPlayFromItem();
         rootView().addView(superPlayerView , new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT , ViewGroup.LayoutParams.MATCH_PARENT));
         playerViewCallback.onFullscreen(getId(), true);
+        FullScreenPlayer fullscreenPlayer = superPlayerView.getFullscreenPlayer();
+        superPlayerView.toggleDanmu(fullscreenPlayer.mBarrageOn);
       }
 
       @Override
       public void onStopFullScreenPlay() {
         addFeedPlayToItem();
         playerViewCallback.onFullscreen(getId(), false);
+        superPlayerView.toggleDanmu(false);
       }
 
       @Override
@@ -217,7 +220,7 @@ public class TxplayerView extends FrameLayout {
           WritableMap event = Arguments.createMap();
           event.putInt("totalTime", (int) duration);
           event.putInt("progressTime", (int) current);
-          event.putInt("remainTime", (int) playable);
+          event.putInt("remainTime", (int) (duration - current));
           event.putBoolean("isFinish",  isEnd());
           playerViewCallback.onPlayTimeChange(getId(), event);
         }

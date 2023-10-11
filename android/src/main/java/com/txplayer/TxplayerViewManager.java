@@ -20,7 +20,9 @@ import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -119,12 +121,16 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
     if (args == null) {
       return;
     }
-    List<String> danmuContentList = new ArrayList<>();
-    ReadableArray danmuList = args.getArray(0);
-    for (Object strObj : danmuList.toArrayList()) {
-      danmuContentList.add(String.valueOf(strObj));
+    try {
+      HashMap danmu = (HashMap) args.toArrayList().get(0);
+      ArrayList<HashMap<String, String>> list = (ArrayList<HashMap<String, String>>) danmu.get("records");
+      List<String> danmuContentList = new ArrayList<>();
+      for (HashMap<String, String> strObj : list) {
+        danmuContentList.add(strObj.get("content"));
+      }
+      root.addDanmukInfo(danmuContentList);
+    } catch (Exception e) {
     }
-    root.addDanmukInfo(danmuContentList);
   }
 
   private void switchToOrientation(TxplayerView root, ReadableArray args) {

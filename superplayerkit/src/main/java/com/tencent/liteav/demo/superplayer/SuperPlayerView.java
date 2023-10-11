@@ -1340,6 +1340,10 @@ public class SuperPlayerView extends RelativeLayout
         }
     }
 
+    public void toggleDanmu(boolean on) {
+        mDanmuView.toggle(on);
+    }
+
     public void setDanmuData(List<String> danmuList) {
         mDanmuView.setDanmuDataList(danmuList);
         SuperPlayerDef.PlayerState playerState = mSuperPlayer.getPlayerState();
