@@ -38,6 +38,7 @@ public class TxplayerView extends FrameLayout {
   private TxPlayerViewCallBack playerViewCallback     = null;
 
   private long lastTime = 0;
+  private long playDuration = 0;
 
   private String videoURL;
   private String videoName;
@@ -194,6 +195,7 @@ public class TxplayerView extends FrameLayout {
         }
         if (playerViewCallback != null) {
           playerViewCallback.onPlayStateChange(getId(), SuperPlayerDef.PlayerState.END.ordinal());
+          playTimeDidChange(true);
         }
       }
 
@@ -224,6 +226,8 @@ public class TxplayerView extends FrameLayout {
           event.putBoolean("isFinish",  isEnd());
           playerViewCallback.onPlayTimeChange(getId(), event);
         }
+
+        playDuration = duration;
       }
 
       @Override
@@ -250,8 +254,8 @@ public class TxplayerView extends FrameLayout {
   private void  playTimeDidChange(boolean isFinish) {
     if (playerViewCallback != null) {
       WritableMap event = Arguments.createMap();
-      event.putInt("totalTime", 0);
-      event.putInt("progressTime", 0);
+      event.putInt("totalTime", (int) playDuration);
+      event.putInt("progressTime", (int) playDuration);
       event.putInt("remainTime", 0);
       event.putBoolean("isFinish",  isFinish);
       playerViewCallback.onPlayTimeChange(getId(), event);
