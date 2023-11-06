@@ -293,6 +293,8 @@ public class TxplayerView extends FrameLayout {
 
     WindowPlayer windowPlayer = superPlayerView.getWindowPlayer();
     windowPlayer.setEnableSlider(enableSlider);
+    View mDownloadBtn = windowPlayer.findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_iv_download);
+    mDownloadBtn.setVisibility(enableDownload ? View.VISIBLE : View.GONE);
     if (hidePlayerControl) {
       View mImageStartAndResume = (View) windowPlayer.findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_resume);
       if (mImageStartAndResume != null && mImageStartAndResume.getParent() != null) {

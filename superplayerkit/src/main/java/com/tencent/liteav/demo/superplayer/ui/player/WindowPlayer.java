@@ -50,6 +50,7 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
     private ImageView                      mIvPause;                               // 暂停播放按钮
     private ImageView                      mIvPlayNext;                            // 播放下一个按钮
     private ImageView                      mIvFullScreen;                          // 全屏按钮
+    private ImageView                      mIvDownload;                          // 全屏按钮
     private TextView                       mTvTitle;                               // 视频名称文本
     private TextView                       mTvBackToLive;                          // 返回直播文本
     private ImageView                      mBackground;                            // 背景
@@ -220,6 +221,7 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
         mSeekBarProgress.setProgress(0);
         mSeekBarProgress.setMax(100);
         mIvFullScreen = (ImageView) findViewById(R.id.superplayer_iv_fullscreen);
+        mIvDownload = (ImageView) findViewById(R.id.superplayer_iv_download);
         mTvBackToLive = (TextView) findViewById(R.id.superplayer_tv_back_to_live);
         mPbLiveLoading = (ProgressBar) findViewById(R.id.superplayer_pb_live);
         mImageCover = (ImageView) findViewById(R.id.superplayer_cover_view);
@@ -235,6 +237,7 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
         mIvPause.setOnClickListener(this);
         mIvPlayNext.setOnClickListener(this);
         mIvFullScreen.setOnClickListener(this);
+        mIvDownload.setOnClickListener(this);
         mLayoutTop.setOnClickListener(this);
         mLayoutReplay.setOnClickListener(this);
         mPiPIV.setOnClickListener(this);
@@ -706,6 +709,10 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
             if (mControllerCallback != null) {
                 mControllerCallback.enterPictureInPictureMode();
             }
+        } else if (id == R.id.superplayer_iv_download) {
+            if (mControllerCallback != null) {
+                mControllerCallback.onClickDownload();
+            }
         }
     }
 
@@ -827,3 +834,4 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
                 .hasPipPermission((Activity) mContext) ? VISIBLE : GONE);
     }
 }
+

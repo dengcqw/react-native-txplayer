@@ -107,7 +107,7 @@
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:background="@drawable/superplayer_bottom_shadow"
-    android:paddingLeft="15dp"
+    android:paddingLeft="10dp"
     android:orientation="horizontal">
 
     <!--播放/暂停-->
@@ -148,6 +148,7 @@
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
       android:gravity="center_vertical"
+      android:layout_marginRight="10dp"
       android:layout_gravity="center_vertical"
       android:text="00:00"
       android:textColor="@android:color/white"
@@ -163,8 +164,18 @@
       android:src="@drawable/superplayer_play_next"/>
 
     <ImageView
+        android:id="@+id/superplayer_iv_download"
+        android:layout_marginRight="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:src="@drawable/superplayer_ic_vod_download"/>
+
+    <ImageView
       android:id="@+id/superplayer_iv_fullscreen"
-      android:paddingRight="15dp"
+      android:layout_marginRight="10dp"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"
@@ -202,3 +213,4 @@
     android:visibility="gone"
     android:src="@drawable/superplayer_pip_play_icon" />
 </RelativeLayout>
+
