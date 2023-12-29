@@ -182,6 +182,7 @@ public class TxplayerView extends FrameLayout {
         Log.d("djl", "onPlaying: ");
         if (isPlaying == false) {
           isPlaying = true;
+          playerViewCallback.onStartPlay(TxplayerView.this);
           keepScreen(true);
         }
       }
@@ -426,6 +427,7 @@ public class TxplayerView extends FrameLayout {
     void onPlayTimeChange(int videwId, WritableMap map);
     void onDownload(int viewId);
     void onFullscreen(int viewId, boolean fullscreen);
+    void onStartPlay(TxplayerView view);
   }
 
   @Override
@@ -506,4 +508,3 @@ public class TxplayerView extends FrameLayout {
     Log.d("djl", "Txplay keepScreen: " + TxplayerView.playingCount);
   }
 }
-

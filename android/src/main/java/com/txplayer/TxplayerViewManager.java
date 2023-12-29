@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.common.MapBuilder;
@@ -96,6 +97,7 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
         }
         root.startPlay();
         currentPlayer = new WeakReference<>(root);
+        context.getNativeModule(TxplayerNativeModule.class).setCurrentPlayer(currentPlayer);
         break;
       case COMMAND_STOPPLAY:
         root.stopPlay();
@@ -285,6 +287,19 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   }
 
   @Override
+  public void onStartPlay(TxplayerView view) {
+    // update currentplayer, when user tap player to start play
+    if (currentPlayer != null) {
+      TxplayerView player = currentPlayer.get();
+      if (player != null && player != view) {
+        player.stopPlay();
+      }
+    }
+    currentPlayer = new WeakReference<>(view);
+    context.getNativeModule(TxplayerNativeModule.class).setCurrentPlayer(currentPlayer);
+  }
+
+  @Override
   public void onDownload(int viewId) {
     sendEvent(viewId,"onDownload", Arguments.createMap());
   }
@@ -295,5 +310,6 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
       eventName,
       params);
   }
-}
 
+
+}
