@@ -2,6 +2,7 @@ package com.txplayer;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -56,6 +57,7 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   public TxplayerView createViewInstance(ThemedReactContext reactContext) {
     TxplayerView txplayerView = new TxplayerView(reactContext.getCurrentActivity());
     txplayerView.setFeedPlayerCallBack(this);
+    // reactContext.addLifecycleEventListener(txplayerView);
     return txplayerView;
   }
 
@@ -89,15 +91,7 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
 
     switch (commandIdInt) {
       case COMMAND_STARTPLAY:
-        if (currentPlayer != null) {
-          TxplayerView player = currentPlayer.get();
-          if (player != null) {
-            player.stopPlay();
-          }
-        }
         root.startPlay();
-        currentPlayer = new WeakReference<>(root);
-        context.getNativeModule(TxplayerNativeModule.class).setCurrentPlayer(currentPlayer);
         break;
       case COMMAND_STOPPLAY:
         root.stopPlay();
@@ -311,5 +305,12 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
       params);
   }
 
-
+  @Override
+  protected void onAfterUpdateTransaction(@NonNull TxplayerView view) {
+    super.onAfterUpdateTransaction(view);
+    Log.d("Txplayer", "onAfterUpdateTransaction: " + view.getId());
+    if (view.needPrepare()) {
+      view.startPlay();
+    }
+  }
 }

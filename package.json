@@ -1,6 +1,6 @@
 {
   "name": "@jtreact/react-native-txplayer",
-  "version": "0.1.30",
+  "version": "0.1.34",
   "description": "封装腾讯云视频播放器superplayer",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -54,14 +54,11 @@
   },
   "homepage": "https://github.com/dengcqw/react-native-txplayer/react-native-txplayer#readme",
   "devDependencies": {
-    "@commitlint/config-conventional": "^17.0.2",
-    "@evilmartians/lefthook": "^1.2.2",
     "@react-native-community/eslint-config": "^3.0.2",
     "@release-it/conventional-changelog": "^5.0.0",
     "@types/jest": "^28.1.2",
     "@types/react": "~17.0.21",
     "@types/react-native": "0.70.0",
-    "commitlint": "^17.0.2",
     "del-cli": "^5.0.0",
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^8.5.0",
@@ -95,25 +92,6 @@
     ]
   },
 "  publishConfig": { "@jtreact:registry":"http://code.jms.com/api/v4/projects/7824/packages/npm/" },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  },
-  "release-it": {
-    "git": {
-      "commitMessage": "chore: release ${version}",
-      "tagName": "v${version}"
-    },
-    "github": {
-      "release": true
-    },
-    "plugins": {
-      "@release-it/conventional-changelog": {
-        "preset": "angular"
-      }
-    }
-  },
   "eslintConfig": {
     "root": true,
     "extends": [

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { findNodeHandle, UIManager, requireNativeComponent, type NativeSyntheticEvent, Platform, NativeModules } from 'react-native';
 
-const TxplayerViewMgr = NativeModules.TxplayerView
+const TxplayerViewMgr = Platform.OS === 'ios' ? NativeModules.TxplayerView : NativeModules.TxplayerNativeModule
 
 const ComponentName = 'TxplayerView';
 const Commands = Platform.OS === 'ios' ? {
@@ -39,9 +39,9 @@ export enum SuperPlayType {
 export type TxplayerViewApi = {
   startPlay: () => void;
   stopPlay: () => void;
+  togglePlay: () => void;
   addDanmaku: (contents: string[]) => void;
   switchToOrientation: (oriention: string) => void;
-  stopAllPlay: () => void;
 };
 
 export type PlayTimeType = {
@@ -108,9 +108,6 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, TxplayerViewApi>((props
       },
       seekTo: (second: number) => {
         UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.seekTo, [second]);
-      },
-      stopAllPlay: () => {
-        TxplayerViewMgr && TxplayerViewMgr.stopAllPlay && TxplayerViewMgr.stopAllPlay()
       }
     }),
     []
@@ -121,7 +118,9 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, TxplayerViewApi>((props
 });
 
 // @ts-ignore
-TxplayerView.stopAllPlay = TxplayerViewMgr ? TxplayerViewMgr.stopAllPlay : undefined
+export const stopAllPlay = () => {
+ TxplayerViewMgr && TxplayerViewMgr.stopAllPlay && TxplayerViewMgr.stopAllPlay()
+}
 
 export default TxplayerView;
 

@@ -26,6 +26,7 @@ RCT_EXPORT_MODULE(TxplayerView)
     view.enableFullScreen = @YES;
     view.hidePlayerControl = @NO;
     view.enableLoop = @YES;
+    view.dirty = true;
     
     view.playType = @0;
     view.playStartTime = @0;
@@ -74,13 +75,8 @@ RCT_EXPORT_VIEW_PROPERTY(enableRotate, NSNumber)
 RCT_EXPORT_METHOD(startPlay:(nonnull NSNumber *) reactTag) {
     [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *,UIView *> *viewRegistry) {
         TxplayerView * player  = (TxplayerView *) viewRegistry[reactTag];
-        if (self.currentPlayerView != player) {
-            [player startPlay];
-            if (self.currentPlayerView) {
-                [self.currentPlayerView stopPlay];
-            }
-        }
-        self.currentPlayerView = player;
+        [player startPlay];
+        NSLog(@"djl startPlay %@ %@", reactTag, player.videoName);
     }];
 }
 
@@ -88,6 +84,7 @@ RCT_EXPORT_METHOD(stopPlay:(nonnull NSNumber *) reactTag) {
     [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *,UIView *> *viewRegistry) {
         TxplayerView * player  = (TxplayerView *) viewRegistry[reactTag];
         [player stopPlay];
+        NSLog(@"djl stopPlay %@ %@", reactTag, player.videoName);
     }];
 }
 
@@ -116,11 +113,13 @@ RCT_EXPORT_METHOD(togglePlay:(nonnull NSNumber *) reactTag) {
     [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *,UIView *> *viewRegistry) {
         TxplayerView * player  = (TxplayerView *) viewRegistry[reactTag];
         [player togglePlay];
+        NSLog(@"djl togglePlay %@ %@", reactTag, player.videoName);
     }];
 }
 
 RCT_EXPORT_METHOD(stopAllPlay) {
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSLog(@"djl stopAllPlay");
         if (self.currentPlayerView) {
             [self.currentPlayerView stopPlay];
         }

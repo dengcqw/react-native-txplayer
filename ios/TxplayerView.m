@@ -15,6 +15,7 @@
 #import "SuperPlayerLocalized.h"
 #import "TXLiveSDKTypeDef.h"
 #import "TXLiveSDKEventDef.h"
+#import <React/UIView+React.h>
 
 
 @interface UIViewController(TxplayerView)
@@ -103,6 +104,10 @@ static int s_playerCount = 0;
 }
 
 - (void)startPlay {
+    if (!self.dirty) return;
+    self.dirty = false;
+    NSLog(@"TxplayerView did startPlay %@",  self.videoName);
+
     SuperPlayerModel *model = [[SuperPlayerModel alloc] init];
     if(self.videoURL != nil && self.videoURL.length > 0) {
         model.videoURL          = self.videoURL;
@@ -169,10 +174,8 @@ static int s_playerCount = 0;
 - (void)togglePlay {
     if (self.playerView.state == StatePlaying) {
         [self.playerView pause];
-    } else if (self.playerView.state == StatePause) {
-        [self.playerView resume];
     } else {
-        [self startPlay];
+        [self.playerView resume];
     }
 }
 
@@ -509,6 +512,17 @@ static int s_playerCount = 0;
     }
 }
 
+- (void)setVideoURL:(NSString *)videoURL {
+    _videoURL = videoURL;
+    self.dirty = true;
+}
+
+- (void)didSetProps:(__unused NSArray<NSString *> *)changedProps {
+    [super didSetProps:changedProps];
+    if (self.playType.intValue == 1 && self.dirty) {
+        [self startPlay];
+    }
+}
 
 @end
 

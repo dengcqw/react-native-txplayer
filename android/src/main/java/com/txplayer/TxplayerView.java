@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.LifecycleEventListener;
 import com.tencent.liteav.demo.superplayer.SuperPlayerDef;
 import com.tencent.liteav.demo.superplayer.SuperPlayerModel;
 import com.tencent.liteav.demo.superplayer.SuperPlayerVideoId;
@@ -28,7 +29,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 
-public class TxplayerView extends FrameLayout {
+public class TxplayerView extends FrameLayout implements LifecycleEventListener {
 
   // 播放器计数
   static int playingCount = 0;
@@ -62,8 +63,16 @@ public class TxplayerView extends FrameLayout {
 
   private boolean hidePlayerControl = false;
 
+  private boolean isDirty = true;
+
+  // 是否需要预加载
+  public boolean needPrepare() {
+    return isDirty && playType == 1;
+  }
+
   public void setVideoURL(String videoURL) {
     this.videoURL = videoURL;
+    this.isDirty = true;
   }
   public void setVideoName(String videoName) {
     this.videoName = videoName;
@@ -183,6 +192,7 @@ public class TxplayerView extends FrameLayout {
         if (isPlaying == false) {
           isPlaying = true;
           playerViewCallback.onStartPlay(TxplayerView.this);
+          Log.d("Txplayer", "onPlaying: " + videoName);
           keepScreen(true);
         }
       }
@@ -264,7 +274,12 @@ public class TxplayerView extends FrameLayout {
   }
 
   public void startPlay() {
+    Log.d("Txplayer", "will startPlay: " + videoName + getId());
     if (superPlayerView == null) return;
+    if (!isDirty) return;
+    Log.d("Txplayer", "did startPlay: " + videoName);
+
+    isDirty = false;
     SuperPlayerModel model = new SuperPlayerModel();
     if (videoURL != null) {
       model.url = videoURL;
@@ -330,13 +345,12 @@ public class TxplayerView extends FrameLayout {
   }
 
   public void togglePlay() {
+    Log.d("Txplayer", "togglePlay: " + videoName);
     if (superPlayerView == null) return;
     if (isPlaying()) {
-      superPlayerView.togglePlay();
-    } else if (superPlayerView.getPlayerState() == SuperPlayerDef.PlayerState.PAUSE) {
-      superPlayerView.togglePlay();
+      superPlayerView.pause();
     } else {
-      startPlay();
+      superPlayerView.togglePlay();
     }
   }
 
@@ -420,6 +434,21 @@ public class TxplayerView extends FrameLayout {
 
   public boolean isEnd() {
     return superPlayerView.getPlayerState() == SuperPlayerDef.PlayerState.END;
+  }
+
+  @Override
+  public void onHostResume() {
+    Log.d("Txplayer", "onHostResume: " + getId());
+  }
+
+  @Override
+  public void onHostPause() {
+    Log.d("Txplayer", "onHostPause: " + getId());
+  }
+
+  @Override
+  public void onHostDestroy() {
+    Log.d("Txplayer", "onHostDestroy: " + getId());
   }
 
   public interface TxPlayerViewCallBack {
