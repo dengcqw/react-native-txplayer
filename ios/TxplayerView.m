@@ -268,6 +268,9 @@ static int s_playerCount = 0;
 
 - (void)superPlayerDidStart:(SuperPlayerView *)player {
     if (!self.isPlaying) {
+        if (self.onStartPlay) {
+            self.onStartPlay(self);
+        }
         self.isPlaying = true;
         [self keepScreen:self.isPlaying];
     }

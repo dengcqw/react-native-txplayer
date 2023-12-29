@@ -31,6 +31,17 @@ RCT_EXPORT_MODULE(TxplayerView)
     view.playStartTime = @0;
     view.timeEventDuration = @5;
     view.enableRotate = @YES;
+    __weak TxplayerViewManager *weakSelf = self;
+    view.onStartPlay = ^(TxplayerView *player) {
+        __strong TxplayerViewManager *mgr = weakSelf;
+        if (mgr.currentPlayerView == player) return;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (mgr.currentPlayerView) {
+                [mgr.currentPlayerView stopPlay];
+            }
+            mgr.currentPlayerView = player;
+        });
+    };
     
     return view;
 }
