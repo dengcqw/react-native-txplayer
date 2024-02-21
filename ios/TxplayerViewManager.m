@@ -26,7 +26,6 @@ RCT_EXPORT_MODULE(TxplayerView)
     view.enableFullScreen = @YES;
     view.hidePlayerControl = @NO;
     view.enableLoop = @YES;
-    view.dirty = true;
     
     view.playType = @0;
     view.playStartTime = @0;

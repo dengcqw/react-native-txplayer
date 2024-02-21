@@ -46,8 +46,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy) NSNumber *timeEventDuration;
 @property(nonatomic, copy) NSNumber *enableRotate; // 屏幕旋转
 
-@property(assign, nonatomic) BOOL dirty;
-
 
 - (void)startPlay;
 - (void)stopPlay;

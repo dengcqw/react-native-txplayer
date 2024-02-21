@@ -104,8 +104,6 @@ static int s_playerCount = 0;
 }
 
 - (void)startPlay {
-    if (!self.dirty) return;
-    self.dirty = false;
     NSLog(@"TxplayerView did startPlay %@",  self.videoName);
 
     SuperPlayerModel *model = [[SuperPlayerModel alloc] init];
@@ -512,15 +510,13 @@ static int s_playerCount = 0;
     }
 }
 
-- (void)setVideoURL:(NSString *)videoURL {
-    _videoURL = videoURL;
-    self.dirty = true;
-}
-
 - (void)didSetProps:(__unused NSArray<NSString *> *)changedProps {
     [super didSetProps:changedProps];
-    if (self.playType.intValue == 1 && self.dirty) {
-        [self startPlay];
+    //   autoPlay = 0 preload = 1 manualPlay = 2
+    if (self.playType.intValue != 2) {
+        if ([changedProps containsObject:@"fileId"] || [changedProps containsObject:@"videoURL"]) {
+            [self startPlay];
+        }
     }
 }
 
