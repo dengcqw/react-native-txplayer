@@ -66,8 +66,8 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
   private boolean isDirty = true;
 
   // 是否需要预加载
-  public boolean needPrepare() {
-    return isDirty && playType == 1;
+  public boolean needAutoStart() {
+    return isDirty && playType != 2;
   }
 
   public void setVideoURL(String videoURL) {
@@ -85,6 +85,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
   }
   public void setFileId(String fileId) {
     this.fileId = fileId;
+    this.isDirty = true;
   }
   public void setPsign(String psign) {
     this.psign = psign;
@@ -276,10 +277,8 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
   public void startPlay() {
     Log.d("Txplayer", "will startPlay: " + videoName + getId());
     if (superPlayerView == null) return;
-    if (!isDirty) return;
     Log.d("Txplayer", "did startPlay: " + videoName);
 
-    isDirty = false;
     SuperPlayerModel model = new SuperPlayerModel();
     if (videoURL != null) {
       model.url = videoURL;
