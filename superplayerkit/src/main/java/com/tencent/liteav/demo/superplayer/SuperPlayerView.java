@@ -258,7 +258,7 @@ public class SuperPlayerView extends RelativeLayout
     public void playWithModelNeedLicence(SuperPlayerModel model) {
         isCallResume = false;
         mIsPlayInit = false;
-        mSuperPlayer.stop();
+        mSuperPlayer.pause();
         mIsLoopPlayList = false;
         mWindowPlayer.setPlayNextButtonVisibility(false);
         mFullScreenPlayer.setPlayNextButtonVisibility(false);
