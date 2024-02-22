@@ -293,16 +293,17 @@ static int s_playerCount = 0;
     }
 }
 
-- (void)superPlayerFullScreenChanged:(SuperPlayerView *)player {
-    [[UIApplication sharedApplication] setStatusBarHidden:false];
-    SPDefaultControlView *controlView = (SPDefaultControlView *)_playerView.controlView;
+- (void)changeToFullscreen:(BOOL)fullScreen {
+     SPDefaultControlView *controlView = (SPDefaultControlView *)_playerView.controlView;
     if (controlView.danmakuBtn.selected) {
-        if (player.isFullScreen) {
+        if (fullScreen) {
             [self danmakuShow];
         } else {
             [self danmakuHidden];
         }
     }
+   
+    [[UIApplication sharedApplication] setStatusBarHidden:fullScreen];
 }
 
 - (void)superPlayerDidSelectDownload:(SuperPlayerView *)player{
@@ -313,6 +314,7 @@ static int s_playerCount = 0;
 
 // 横屏代理方法
 -(void)fullScreenHookAction {
+    [self changeToFullscreen: true];
     self.playerView.disableGesture = NO;
     [self.playerView showOrHideBackBtn:YES];
     
@@ -344,6 +346,7 @@ static int s_playerCount = 0;
 }
 
 - (void)backHookAction {
+    [self changeToFullscreen: false];
     if (self.hidePlayerControl.boolValue) {
         self.playerView.controlView.alpha = 0;
         self.playerView.centerPlayBtn.alpha = 0;
