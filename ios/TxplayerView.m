@@ -134,7 +134,7 @@ static int s_playerCount = 0;
     
     [self.playerView.controlView setSubtitlesBtnState: NO];
     [self.playerView.controlView setTrackBtnState: NO];
-    [self.playerView.controlView showOrHideBackBtn: NO];
+    [self.playerView.controlView showOrHideBackBtn: self.playerView.isFullScreen ? YES : NO];
     
     if (self.hidePlayerControl.boolValue) {
         self.playerView.controlView.alpha = 0;
