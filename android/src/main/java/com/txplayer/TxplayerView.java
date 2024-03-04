@@ -71,6 +71,9 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
   }
 
   public void setVideoURL(String videoURL) {
+    if (this.videoURL != null && this.videoURL.equals(videoURL)) {
+      return;
+    }
     this.videoURL = videoURL;
     this.isDirty = true;
   }
@@ -84,6 +87,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
     this.appId = appId;
   }
   public void setFileId(String fileId) {
+    if (this.fileId != null && this.fileId.equals(fileId)) return;
     this.fileId = fileId;
     this.isDirty = true;
   }
@@ -278,6 +282,8 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
     Log.d("Txplayer", "will startPlay: " + videoName + getId());
     if (superPlayerView == null) return;
     Log.d("Txplayer", "did startPlay: " + videoName);
+
+    this.isDirty = false;
 
     SuperPlayerModel model = new SuperPlayerModel();
     if (videoURL != null) {
