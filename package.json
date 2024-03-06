@@ -1,6 +1,6 @@
 {
   "name": "@jtreact/react-native-txplayer",
-  "version": "0.1.40",
+  "version": "0.1.41",
   "description": "封装腾讯云视频播放器superplayer",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -91,7 +91,7 @@
       "<rootDir>/lib/"
     ]
   },
-"  publishConfig": { "@jtreact:registry":"http://code.jms.com/api/v4/projects/7824/packages/npm/" },
+"  publishConfig": { "@jtreact:registry":"http://code.jms.com/api/v4/projects/11871/packages/npm/" },
   "eslintConfig": {
     "root": true,
     "extends": [

@@ -211,22 +211,27 @@ static int s_playerCount = 0;
 
     if (!self.enableFullScreen.boolValue) return;
 
+    UIInterfaceOrientation newOri = UIInterfaceOrientationUnknown;
     // 注意这里left和Right对应，right和Left对应
     if ([orientation isEqualToString:@"left"]) {
-        self.orientation = UIInterfaceOrientationLandscapeRight;
+        newOri = UIInterfaceOrientationLandscapeRight;
     } else if ([orientation isEqualToString:@"right"]) {
-        self.orientation = UIInterfaceOrientationLandscapeLeft;
+        newOri = UIInterfaceOrientationLandscapeLeft;
     } else {
-        self.orientation = UIInterfaceOrientationUnknown;
+        newOri = UIInterfaceOrientationUnknown;
     }
     if ([_playerView.controlView isKindOfClass:[SPDefaultControlView class]]) {
         SPDefaultControlView *controlView = (SPDefaultControlView *)_playerView.controlView;
         if (controlView.isFullScreen) { // 当前全屏
-            if (self.orientation == UIInterfaceOrientationUnknown) { // 旋转至横屏
+            if (controlView.isLockScreen) return;
+            if (newOri == UIInterfaceOrientationUnknown) { // 旋转至横屏
+                self.orientation = newOri;
+
                 [controlView.backBtn sendActionsForControlEvents:(UIControlEventTouchUpInside)];
             }
         } else { // 当前横屏
-            if (self.orientation != UIInterfaceOrientationUnknown) { // 旋转至全屏
+            if (newOri != UIInterfaceOrientationUnknown) { // 旋转至全屏
+                self.orientation = newOri;
                 [controlView.fullScreenBtn sendActionsForControlEvents:(UIControlEventTouchUpInside)];
             }
         }

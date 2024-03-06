@@ -381,6 +381,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
 
     if ("portrait".equals(oriention)) {
       if(!isFullScreenPlay()) return;
+      if (superPlayerView.getFullscreenPlayer().isLockScreen()) return;
       superPlayerView.switchToPortrait();
     }
 

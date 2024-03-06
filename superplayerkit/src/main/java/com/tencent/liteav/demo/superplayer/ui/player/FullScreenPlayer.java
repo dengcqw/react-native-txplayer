@@ -962,6 +962,10 @@ public class FullScreenPlayer extends AbsPlayer implements View.OnClickListener,
         }
     }
 
+    public boolean isLockScreen() {
+        return mLockScreen;
+    }
+
     /**
      * 重播
      */
