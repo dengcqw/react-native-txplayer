@@ -145,18 +145,18 @@ public class PictureInPictureHelper implements ServiceConnection {
 
             // 上一个
             final PendingIntent intentNext = PendingIntent.getBroadcast(mContext, PIP_REQUEST_TYPE_LAST,
-                    new Intent(PIP_ACTION_MEDIA_CONTROL).putExtra(PIP_EXTRA_CONTROL_TYPE, PIP_CONTROL_TYPE_NEXT), 0);
+                    new Intent(PIP_ACTION_MEDIA_CONTROL).putExtra(PIP_EXTRA_CONTROL_TYPE, PIP_CONTROL_TYPE_NEXT), PendingIntent.FLAG_IMMUTABLE);
             actions.add(new RemoteAction(Icon.createWithResource(mContext, R.drawable.superplayer_seek_left),
                     "", "", intentNext));
 
             // 暂停/播放
             final PendingIntent intentPause = PendingIntent.getBroadcast(mContext, requestCode,
-                    new Intent(PIP_ACTION_MEDIA_CONTROL).putExtra(PIP_EXTRA_CONTROL_TYPE, controlType), 0);
+                    new Intent(PIP_ACTION_MEDIA_CONTROL).putExtra(PIP_EXTRA_CONTROL_TYPE, controlType), PendingIntent.FLAG_IMMUTABLE);
             actions.add(new RemoteAction(Icon.createWithResource(mContext, iconId), title, title, intentPause));
 
             // 下一个
             final PendingIntent intentLast = PendingIntent.getBroadcast(mContext, PIP_REQUEST_TYPE_NEXT,
-                    new Intent(PIP_ACTION_MEDIA_CONTROL).putExtra(PIP_EXTRA_CONTROL_TYPE, PIP_CONTROL_TYPE_LAST), 0);
+                    new Intent(PIP_ACTION_MEDIA_CONTROL).putExtra(PIP_EXTRA_CONTROL_TYPE, PIP_CONTROL_TYPE_LAST), PendingIntent.FLAG_IMMUTABLE);
             actions.add(new RemoteAction(Icon.createWithResource(mContext, R.drawable.superplayer_seek_right),
                     "", "", intentLast));
 

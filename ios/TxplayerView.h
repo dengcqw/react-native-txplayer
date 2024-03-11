@@ -53,7 +53,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)prepareDanmaku:(NSDictionary *)danmakus;
 - (void)switchToOrientation:(NSString *)orientation;
 - (void)seekTo:(NSNumber *)second;
-
+- (void)startPip;
+- (void)stopPip;
 @end
 
 

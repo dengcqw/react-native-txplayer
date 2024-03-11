@@ -148,7 +148,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
     ColorDrawable colorDrawable = new ColorDrawable();
     colorDrawable.setColor(Color.BLACK);
     superPlayerView.setBackground(colorDrawable);
-    superPlayerView.showPIPIV(false);
+    superPlayerView.showPIPIV(true);
 
     // 防止崩溃
     /*SuperPlayerModel model = new SuperPlayerModel();
@@ -339,7 +339,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
 
     superPlayerView.setLoop(enableLoop);
     superPlayerView.setEnableRotate(enableRotate);
-    superPlayerView.showPIPIV(false);
+    superPlayerView.showPIPIV(true);
     superPlayerView.setStartTime(playStartTime);
     superPlayerView.playWithModelNeedLicence(model);
   }
@@ -347,6 +347,18 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
   public void stopPlay() {
     if (superPlayerView == null) return;
     superPlayerView.pause();
+  }
+
+  public void startPip() {
+    if (superPlayerView == null) return;
+    superPlayerView.setEnableRotate(false);
+    superPlayerView.switchToLandscape(SuperPlayerDef.FullScreenDirection.LEFT);
+  }
+
+  public void stopPip() {
+    if (superPlayerView == null) return;
+    superPlayerView.setEnableRotate(true);
+    superPlayerView.switchToPortrait();
   }
 
   public void togglePlay() {
@@ -374,10 +386,15 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
   }
 
   public void switchToOrientation(String oriention) {
-
     if (!enableFullScreen) {
       return;
     }
+
+    Activity act = (Activity)getContext();
+    if (act.isInPictureInPictureMode()) {
+      return;
+    }
+
 
     if ("portrait".equals(oriention)) {
       if(!isFullScreenPlay()) return;

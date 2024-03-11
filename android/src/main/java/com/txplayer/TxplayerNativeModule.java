@@ -46,5 +46,35 @@ public class TxplayerNativeModule extends ReactContextBaseJavaModule {
             }
         });
     }
+
+    @ReactMethod
+    public void startPip() {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                if (currentPlayer != null) {
+                    TxplayerView player = currentPlayer.get();
+                    if (player != null) {
+                        player.startPip();
+                    }
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void stopPip() {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                if (currentPlayer != null) {
+                    TxplayerView player = currentPlayer.get();
+                    if (player != null) {
+                        player.stopPip();
+                    }
+                }
+            }
+        });
+    }
 }
 

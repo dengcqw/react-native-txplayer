@@ -528,6 +528,14 @@ static int s_playerCount = 0;
     }
 }
 
+- (void)startPip {
+    [self.playerView controlViewPip:nil];
+}
+
+- (void)stopPip {
+    [self.playerView controlViewPip:nil];
+}
+
 @end
 
 

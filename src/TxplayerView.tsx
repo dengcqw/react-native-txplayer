@@ -122,5 +122,15 @@ export const stopAllPlay = () => {
  TxplayerViewMgr && TxplayerViewMgr.stopAllPlay && TxplayerViewMgr.stopAllPlay()
 }
 
+
+export const startPip = () => {
+ TxplayerViewMgr && TxplayerViewMgr.startPip && TxplayerViewMgr.startPip()
+}
+
+export const stopPip = () => {
+ TxplayerViewMgr && TxplayerViewMgr.stopPip && TxplayerViewMgr.stopPip()
+}
+
+
 export default TxplayerView;
 

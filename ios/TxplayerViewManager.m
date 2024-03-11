@@ -125,4 +125,23 @@ RCT_EXPORT_METHOD(stopAllPlay) {
     });
 }
 
+RCT_EXPORT_METHOD(startPip) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSLog(@"djl startPip");
+        if (self.currentPlayerView) {
+            [self.currentPlayerView startPip];
+        }
+    });
+}
+
+RCT_EXPORT_METHOD(stopPip) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSLog(@"djl stopPip");
+        if (self.currentPlayerView) {
+            [self.currentPlayerView stopPip];
+        }
+    });
+}
+
+
 @end
