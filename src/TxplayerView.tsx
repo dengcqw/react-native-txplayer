@@ -67,6 +67,7 @@ export type TxplayerViewProps = {
   enableDanmaku: boolean;
   enableFullScreen: boolean;
   enableRotate: boolean;
+  enablePIP: boolean;
   playStartTime: number;
   language: string;
   enableLoop: boolean;

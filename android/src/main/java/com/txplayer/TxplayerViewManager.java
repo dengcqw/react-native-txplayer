@@ -248,6 +248,13 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
       view.setEnableRotate(enableRotate.booleanValue());
     }
   }
+  @ReactProp(name = "enablePIP")
+  public void setEnablePIP(TxplayerView view, Boolean enablePIP) {
+    if (enableRotate != null) {
+      view.setEnablePIP(enablePIP.booleanValue());
+    }
+  }
+
   @ReactProp(name = "timeEventDuration")
   public void setTimeEventDuration(TxplayerView view, Integer timeEventDuration) {
     view.setTimeEventDuration(timeEventDuration);

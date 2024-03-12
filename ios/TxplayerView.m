@@ -144,6 +144,7 @@ static int s_playerCount = 0;
         controlView.disableMoreBtn = !self.enableMorePanel.boolValue;
         controlView.disableDownloadBtn = !self.enableDownload.boolValue;
         controlView.enableFullscreen = self.enableFullScreen.boolValue;
+        controlView.enablePIP = self.enablePIP.boolValue;
         
         if(self.enableDanmaku.boolValue) {
             controlView.disableDanmakuBtn = NO;
@@ -251,7 +252,7 @@ static int s_playerCount = 0;
         _playerView.playerConfig.playShiftDomain = @"liteavapp.timeshift.qcloud.com";
         if ([_playerView.controlView isKindOfClass:[SPDefaultControlView class]]) {
           SPDefaultControlView *controlView = (SPDefaultControlView *)_playerView.controlView;
-          controlView.disablePipBtn = YES;
+          controlView.disablePipBtn = NO;
           controlView.disableMoreBtn = YES;
           controlView.disableCaptureBtn = YES;
           controlView.disableTrackBtn = YES;
@@ -529,11 +530,9 @@ static int s_playerCount = 0;
 }
 
 - (void)startPip {
-    [self.playerView controlViewPip:nil];
 }
 
 - (void)stopPip {
-    [self.playerView controlViewPip:nil];
 }
 
 @end

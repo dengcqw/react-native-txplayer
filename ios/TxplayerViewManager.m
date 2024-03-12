@@ -26,6 +26,7 @@ RCT_EXPORT_MODULE(TxplayerView)
     view.enableFullScreen = @YES;
     view.hidePlayerControl = @NO;
     view.enableLoop = @YES;
+    view.enablePIP = @NO;
     
     view.playType = @0;
     view.playStartTime = @0;
@@ -70,6 +71,7 @@ RCT_EXPORT_VIEW_PROPERTY(language, NSString)
 RCT_EXPORT_VIEW_PROPERTY(enableLoop, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(timeEventDuration, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(enableRotate, NSNumber)
+RCT_EXPORT_VIEW_PROPERTY(enablePIP, NSNumber)
 
 RCT_EXPORT_METHOD(startPlay:(nonnull NSNumber *) reactTag) {
     [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *,UIView *> *viewRegistry) {

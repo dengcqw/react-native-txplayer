@@ -45,6 +45,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy) NSNumber *enableFullScreen;
 @property(nonatomic, copy) NSNumber *timeEventDuration;
 @property(nonatomic, copy) NSNumber *enableRotate; // 屏幕旋转
+@property(nonatomic, copy) NSNumber *enablePIP; // 画中画
+
 
 
 - (void)startPlay;

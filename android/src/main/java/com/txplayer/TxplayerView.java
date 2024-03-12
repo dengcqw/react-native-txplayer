@@ -61,6 +61,8 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
 
   private boolean enableRotate = true;
 
+  private boolean enablePIP = false;
+
   private boolean hidePlayerControl = false;
 
   private boolean isDirty = true;
@@ -123,6 +125,9 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
   }
   public void setEnableRotate(boolean enableRotate) {
     this.enableRotate = enableRotate;
+  }
+  public void setEnablePIP(boolean enablePIP) {
+    this.enablePIP = enablePIP;
   }
   public void setHidePlayerControl(boolean hidePlayerControl) {
     this.hidePlayerControl = hidePlayerControl;
@@ -339,7 +344,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
 
     superPlayerView.setLoop(enableLoop);
     superPlayerView.setEnableRotate(enableRotate);
-    superPlayerView.showPIPIV(true);
+    superPlayerView.showPIPIV(enablePIP);
     superPlayerView.setStartTime(playStartTime);
     superPlayerView.playWithModelNeedLicence(model);
   }
