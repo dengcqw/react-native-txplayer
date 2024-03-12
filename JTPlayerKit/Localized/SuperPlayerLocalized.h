@@ -13,8 +13,9 @@ extern NSString *superPlayerLocalizeFromTable(NSString *key, NSString *table);
 
 extern NSString *const SuperPlayer_Localize_TableName;
 extern NSString *      superPlayerLocalized(NSString *key);
-extern NSString * kSuperPlayerAppleLanguage;
 
+// sandstalk
+extern NSString * kSuperPlayerAppleLanguage;
 extern void superPlayerUpdateLanguage(NSString *lang);
 
 NS_ASSUME_NONNULL_END

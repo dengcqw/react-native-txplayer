@@ -98,6 +98,7 @@ SuperPlayerTrackViewDelegate, SuperPlayerSubtitlesViewDelegate>
     }
 }
 
+// sandstalk fix iOS 全屏 安全距离
 - (void)layoutLandscape:(Boolean)landscapeFullscreen {
     UIWindow *window = [UIApplication sharedApplication].keyWindow;
     if (landscapeFullscreen) {
@@ -128,6 +129,7 @@ SuperPlayerTrackViewDelegate, SuperPlayerSubtitlesViewDelegate>
             make.top.equalTo(self.topImageView.mas_top).offset(window.safeAreaInsets.top);
             make.width.height.mas_equalTo(40);
         }];
+        // sandstalk fix ios fullscreen
         [self.moreContentView mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.width.mas_equalTo(300);
             make.height.mas_equalTo(self.mas_height);
@@ -140,7 +142,9 @@ SuperPlayerTrackViewDelegate, SuperPlayerSubtitlesViewDelegate>
 - (void)makeSubViewsConstraints {
     [self.topImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.trailing.equalTo(self);
-        make.top.equalTo(self.mas_top).offset(0);
+        // sandstalk
+        // make.top.equalTo(self.mas_top).offset(0);
+        make.top.equalTo(self.mas_top).offset(30);
         make.height.mas_equalTo(50);
     }];
 
@@ -186,11 +190,12 @@ SuperPlayerTrackViewDelegate, SuperPlayerSubtitlesViewDelegate>
         make.leading.equalTo(self.bottomImageView.mas_leading).offset(5);
         make.top.equalTo(self.bottomImageView.mas_top).offset(10);
         make.width.height.mas_equalTo(30);
-        if (@available(iOS 11.0, *)) {
-            make.bottom.equalTo(self.mas_safeAreaLayoutGuideBottom).offset(-10);
-        } else {
-            make.bottom.equalTo(self.mas_bottom).offset(-10);
-        }
+        // sandstalk fix 控制条 UI
+        //if (@available(iOS 11.0, *)) {
+            //make.bottom.equalTo(self.mas_safeAreaLayoutGuideBottom).offset(-10);
+        //} else {
+            //make.bottom.equalTo(self.mas_bottom).offset(-10);
+        //}
     }];
 
     [self.currentTimeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -688,6 +693,7 @@ SuperPlayerTrackViewDelegate, SuperPlayerSubtitlesViewDelegate>
             [btn mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.width.mas_equalTo(40);
                 make.height.mas_equalTo(49);
+                // sandstalk fix 全屏UI
                 make.trailing.equalTo(self.moreBtn.mas_leading).offset(-((k * 40) + ((k + 1) * 10)));
                 make.centerY.equalTo(self.backBtn.mas_centerY);
             }];

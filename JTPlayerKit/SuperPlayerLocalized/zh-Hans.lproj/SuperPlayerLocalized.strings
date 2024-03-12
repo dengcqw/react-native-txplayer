@@ -23,6 +23,7 @@
 "SuperPlayer.speed2p0" = "2.0X";
 "SuperPlayer.mirror" = "镜像";
 "SuperPlayer.handware" = "硬件加速";
+"SuperPlayer.pipAutomatic" = "退后台自动开启画中画";
 "SuperPlayer.piploading" = "正在开启画中画";
 "SuperPlayer.pipfailed" = "开启画中画失败了";
 "SuperPlayer.trywactchtitle" = "可试看15秒，开通VIP观看完整视频";
@@ -41,6 +42,3 @@
 "SuperPlayer.track" = "音轨";
 "SuperPlayer.fastForward" = "快进";
 "SuperPlayer.rewind" = "快退";
-"SuperPlayer.usebarrage" = "如果要使用中间弹幕 必须先设置中间弹幕的时间及最大行数";
-"SuperPlayer.toomanycomments" = "同一时间评论太多--排不开了";
-"SuperPlayer.mustsettingbarrage" = "必须先设置弹幕的时间\\最大行数\\弹幕行高";

@@ -106,5 +106,6 @@
 //反向设置横屏按钮的选中状态
 - (void)fullScreenButtonSelectState:(BOOL)state;
 
+// sandstalk fix iOS 全屏 安全距离
 - (void)layoutLandscape:(Boolean)landscapeFullscreen;
 @end

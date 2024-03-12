@@ -14,23 +14,6 @@
 @class TXLivePlayer;
 @class TXVodPlayer;
 
-/// 播放器的状态
-typedef NS_ENUM(NSInteger, SuperPlayerState) {
-    StateFailed,     // 播放失败
-    StateBuffering,  // 缓冲中
-    StatePrepare,    // 准备就绪
-    StatePlaying,    // 播放中
-    StateStopped,    // 停止播放
-    StatePause,      // 暂停播放
-    StateFirstFrame, // 第一帧画面
-};
-
-/// 播放器布局样式
-typedef NS_ENUM(NSInteger, SuperPlayerLayoutStyle) {
-    SuperPlayerLayoutStyleCompact,    ///< 精简模式
-    SuperPlayerLayoutStyleFullScreen  ///< 全屏模式
-};
-
 @protocol SuperPlayerPlayListener <NSObject>
 @optional
 
@@ -86,6 +69,23 @@ typedef NS_ENUM(NSInteger, SuperPlayerLayoutStyle) {
 /// Sandstalk 下载按钮点击事件
 - (void)superPlayerDidSelectDownload:(SuperPlayerView *)player;
 @end
+
+/// 播放器的状态
+typedef NS_ENUM(NSInteger, SuperPlayerState) {
+    StateFailed,     // 播放失败
+    StateBuffering,  // 缓冲中
+    StatePrepare,    // 准备就绪
+    StatePlaying,    // 播放中
+    StateStopped,    // 停止播放
+    StatePause,      // 暂停播放
+    StateFirstFrame, // 第一帧画面
+};
+
+/// 播放器布局样式
+typedef NS_ENUM(NSInteger, SuperPlayerLayoutStyle) {
+    SuperPlayerLayoutStyleCompact,    ///< 精简模式
+    SuperPlayerLayoutStyleFullScreen  ///< 全屏模式
+};
 
 @interface SuperPlayerView : UIView
 
@@ -229,5 +229,6 @@ typedef NS_ENUM(NSInteger, SuperPlayerLayoutStyle) {
  */
 - (void)showOrHideBackBtn:(BOOL)isShow;
 
+// sandstalk
 - (void)controlViewPip:(UIView *)controlView;
 @end

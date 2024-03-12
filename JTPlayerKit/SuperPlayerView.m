@@ -183,6 +183,7 @@ TXLiveBaseDelegate,TXLivePlayListener,TXVodPlayListener>
     [self.volumeView removeFromSuperview];
     
     if (_vodPlayer) {
+        [_vodPlayer exitPictureInPicture];
         [_vodPlayer stopPlay];
         [_vodPlayer removeVideoWidget];
         _vodPlayer = nil;
@@ -266,6 +267,7 @@ TXLiveBaseDelegate,TXLivePlayListener,TXVodPlayListener>
     _currentVideoUrl = nil;
     // sandstalk
     [self.controlView setTitle:_playerModel.name];
+
     self.controlView.hidden = YES;
     [self configTXPlayer];
 }
@@ -1154,19 +1156,19 @@ TXLiveBaseDelegate,TXLivePlayListener,TXVodPlayListener>
     self.controlView.compact = !fullScreen;
 }
 ///代码手动旋转屏幕
-- (void)rotateScreenIsFullScreen:(BOOL)isFullScreen {
+- (BOOL)rotateScreenIsFullScreen:(BOOL)isFullScreen {
     if (!self.isLoaded) {
-        return;
+        return NO;
     }
     if (self.isLockScreen) {
-        return;
+        return NO;
     }
     if (self.didEnterBackground) {
-        return;
+        return NO;
     };
     UIViewController *vc = (UIViewController *)self.viewController;
     if (vc == nil) {
-        return;
+        return NO;
     }
     if (isFullScreen ) {
         if ([self.delegate respondsToSelector:@selector(screenRotation:)]) {
@@ -1174,7 +1176,7 @@ TXLiveBaseDelegate,TXLivePlayListener,TXVodPlayListener>
             [vc tx_rotateToInterfaceOrientation:UIInterfaceOrientationLandscapeRight];
             [vc tx_setNeedsUpdateOfSupportedInterfaceOrientations];
         } else {
-            return;
+            return NO;
         }
         
     } else {
@@ -1183,9 +1185,10 @@ TXLiveBaseDelegate,TXLivePlayListener,TXVodPlayListener>
             [vc tx_rotateToInterfaceOrientation:UIInterfaceOrientationPortrait];
             [vc tx_setNeedsUpdateOfSupportedInterfaceOrientations];
         } else {
-            return;
+            return NO;
         }
     }
+    return YES;
 
 }
 
@@ -1247,8 +1250,16 @@ TXLiveBaseDelegate,TXLivePlayListener,TXVodPlayListener>
     }
     
     if (!self.isPauseByUser && (self.state != StateStopped && self.state != StateFailed)) {
-        [_vodPlayer pause];
-        self.state = StatePause;
+        
+        if (self.playerConfig.pipAutomatic == YES) {
+            if (![TXVodPlayer isSupportSeamlessPictureInPicture]) {
+                [_vodPlayer pause];
+                self.state = StatePause;
+            }
+        } else {
+            [_vodPlayer pause];
+            self.state = StatePause;
+        }
     }
 }
 
@@ -1462,7 +1473,7 @@ TXLiveBaseDelegate,TXLivePlayListener,TXVodPlayListener>
  *  @param value void
  */
 - (void)verticalMoved:(CGFloat)value {
-    if (self.disableGesture) {
+    if (!self.disableGesture) {
         return;
     }
     
@@ -1752,8 +1763,10 @@ TXLiveBaseDelegate,TXLivePlayListener,TXVodPlayListener>
             self.isFullScreen = NO;
             return;
         }
-        [self rotateScreenIsFullScreen:NO];
-        self.isFullScreen = NO;
+        BOOL result = [self rotateScreenIsFullScreen:NO];
+        if (result) {
+            self.isFullScreen = NO;
+        }
         return;
     }
     if ([self.delegate respondsToSelector:@selector(superPlayerBackAction:)]) {
@@ -1771,8 +1784,10 @@ TXLiveBaseDelegate,TXLivePlayListener,TXVodPlayListener>
         self.isFullScreen = isFullScreen;
         return;
     }
-    [self rotateScreenIsFullScreen:isFullScreen];
-    self.isFullScreen = isFullScreen;
+    BOOL result = [self rotateScreenIsFullScreen:isFullScreen];
+    if (result) {
+        self.isFullScreen = isFullScreen;
+    }
     
 }
 
@@ -1846,6 +1861,7 @@ TXLiveBaseDelegate,TXLivePlayListener,TXVodPlayListener>
         [self.vodPlayer setMirror:self.playerConfig.mirror];
         [self.vodPlayer setMute:self.playerConfig.mute];
         [self.vodPlayer setRenderMode:self.playerConfig.renderMode];
+        [TXVodPlayer setPictureInPictureSeamlessEnabled:self.playerConfig.pipAutomatic];
     }
     if (reload) {
         if (!self.isLive) self.startTime = [self.vodPlayer currentPlaybackTime];
@@ -1912,6 +1928,7 @@ TXLiveBaseDelegate,TXLivePlayListener,TXVodPlayListener>
     }
 }
 
+// sandstalk
 - (void)controlViewDidSelectDownload:(UIView *)controlView{
     if ([self.delegate respondsToSelector:@selector(superPlayerDidSelectDownload:)]) {
         [self.delegate superPlayerDidSelectDownload:self];
@@ -2025,8 +2042,10 @@ TXLiveBaseDelegate,TXLivePlayListener,TXVodPlayListener>
     } else {
         isShowVipWatchView = YES;
         ///返回小屏状态
-        [self rotateScreenIsFullScreen:NO];
-        self.isFullScreen = NO;
+        BOOL result = [self rotateScreenIsFullScreen:NO];
+        if (result) {
+            self.isFullScreen = NO;
+        }
     }
 }
 ///vipWatchView重新播放
@@ -2499,6 +2518,7 @@ TXLiveBaseDelegate,TXLivePlayListener,TXVodPlayListener>
     
     if (_middleBlackBtn == nil) {
         _middleBlackBtn = [UIButton buttonWithType:UIButtonTypeSystem];
+        // sandstalk
         _middleBlackBtn.hidden = true;
         [_middleBlackBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         _middleBlackBtn.titleLabel.font = [UIFont systemFontOfSize:14.0];

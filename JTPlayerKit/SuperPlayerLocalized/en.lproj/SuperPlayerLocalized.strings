@@ -1,6 +1,9 @@
 /* 
   SuperPlayerLocalized.strings
+  Pods
+
   Copyright © 2022年 Tencent. All rights reserved.
+  
 */
 
 "SuperPlayer.videoquality" = "Video quality";
@@ -30,5 +33,13 @@
 "SuperPlayer.tryagain" = "Try Again";
 "SuperPlayer.backtolive" = "Back to Live Streaming";
 "SuperPlayer.notsupportpip" = "This device does not support picture-in-picture";
-"SuperPlayerDemo.MoviePlayer.multitrackvideo" = "multi track video";
-"SuperPlayerDemo.MoviePlayer.multisubtitledvideo" = "multi subtitled video";
+"SuperPlayer.off" = "OFF";
+"SuperPlayer.subtitles" = "Subtitles";
+"SuperPlayer.choosefontcolor" = "Choose Font Color";
+"SuperPlayer.choosebontfont" = "Choose Bont Font";
+"SuperPlayer.chooseoutlinewidth" = "Choose Outline Width";
+"SuperPlayer.chooseoutlinecolor" = "Choose Outline Color";
+"SuperPlayer.subtitlessetting" = "Subtitles Setting";
+"SuperPlayer.track" = "Track";
+"SuperPlayer.fastForward" = "fast forward";
+"SuperPlayer.rewind" = "rewind";
