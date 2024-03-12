@@ -148,7 +148,8 @@ public class FullScreenPlayer extends AbsPlayer implements View.OnClickListener,
     private Bitmap                         mWaterMarkBmp;
     private float                          mWaterMarkBmpX;
     private float                          mWaterMarkBmpY;
-    private boolean                        mBarrageOn;                             // Whether bullet screen is enabled
+    // sandstalk
+    public boolean                        mBarrageOn;                             // Whether bullet screen is enabled
     private boolean                        mLockScreen;
     private TXImageSprite                  mTXImageSprite;
     private List<PlayKeyFrameDescInfo>     mTXPlayKeyFrameDescInfoList;

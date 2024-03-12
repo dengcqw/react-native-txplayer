@@ -314,8 +314,8 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
 
     WindowPlayer windowPlayer = superPlayerView.getWindowPlayer();
     windowPlayer.setEnableSlider(enableSlider);
-    View mDownloadBtn = windowPlayer.findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_iv_download);
-    mDownloadBtn.setVisibility(enableDownload ? View.VISIBLE : View.GONE);
+//    View mDownloadBtn = windowPlayer.findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_iv_download);
+//    mDownloadBtn.setVisibility(enableDownload ? View.VISIBLE : View.GONE);
     if (hidePlayerControl) {
       View mImageStartAndResume = (View) windowPlayer.findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_resume);
       if (mImageStartAndResume != null && mImageStartAndResume.getParent() != null) {
@@ -352,7 +352,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
   public void startPip() {
     if (superPlayerView == null) return;
     superPlayerView.setEnableRotate(false);
-    superPlayerView.switchToLandscape(SuperPlayerDef.FullScreenDirection.LEFT);
+    superPlayerView.switchToLandscape();
   }
 
   public void stopPip() {
@@ -404,9 +404,9 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
 
     if(isFullScreenPlay()) return;
     if ("left".equals(oriention)) {
-      superPlayerView.switchToLandscape(SuperPlayerDef.FullScreenDirection.LEFT);
+      superPlayerView.switchToLandscape();
     } else if ("right".equals(oriention)) {
-      superPlayerView.switchToLandscape(SuperPlayerDef.FullScreenDirection.RIGHT);
+      superPlayerView.switchToLandscape();
     }
   }
 

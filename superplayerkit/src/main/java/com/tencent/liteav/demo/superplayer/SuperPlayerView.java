@@ -944,6 +944,8 @@ public class SuperPlayerView extends RelativeLayout
      * 旋转屏幕方向
      */
     private void rotateScreenOrientation(SuperPlayerDef.Orientation orientation) {
+        // sandstalk
+        if (!enableRotate.booleanValue()) return;
         switch (orientation) {
             case LANDSCAPE:
                 ((Activity) mContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -1374,8 +1376,8 @@ public class SuperPlayerView extends RelativeLayout
         }
     }
 
-    public void switchToLandscape(SuperPlayerDef.FullScreenDirection direction) {
-        handleSwitchPlayMode(SuperPlayerDef.PlayerMode.FULLSCREEN, direction);
+    public void switchToLandscape() {
+        handleSwitchPlayMode(SuperPlayerDef.PlayerMode.FULLSCREEN);
     }
 
     public void switchToPortrait() {
@@ -1566,5 +1568,9 @@ public class SuperPlayerView extends RelativeLayout
 
     public void pause() {
       mSuperPlayer.pause();
+    }
+
+    public void setEnableRotate(Boolean b) {
+        enableRotate = b;
     }
 }
