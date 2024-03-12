@@ -127,6 +127,7 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation project(path: ':superplayerkit')
+  implementation 'com.tencent.liteav:LiteAVSDK_Player:11.7.0.13910'
   api "com.google.code.gson:gson:2.8.9"
 }
 

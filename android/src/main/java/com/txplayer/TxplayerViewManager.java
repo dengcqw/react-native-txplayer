@@ -250,7 +250,7 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   }
   @ReactProp(name = "enablePIP")
   public void setEnablePIP(TxplayerView view, Boolean enablePIP) {
-    if (enableRotate != null) {
+    if (enablePIP != null) {
       view.setEnablePIP(enablePIP.booleanValue());
     }
   }

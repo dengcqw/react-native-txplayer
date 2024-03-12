@@ -142,9 +142,7 @@ SuperPlayerTrackViewDelegate, SuperPlayerSubtitlesViewDelegate>
 - (void)makeSubViewsConstraints {
     [self.topImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.trailing.equalTo(self);
-        // sandstalk
-        // make.top.equalTo(self.mas_top).offset(0);
-        make.top.equalTo(self.mas_top).offset(30);
+        make.top.equalTo(self.mas_top).offset(0);
         make.height.mas_equalTo(50);
     }];
 

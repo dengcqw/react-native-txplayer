@@ -155,13 +155,6 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
     superPlayerView.setBackground(colorDrawable);
     superPlayerView.showPIPIV(true);
 
-    // 防止崩溃
-    /*SuperPlayerModel model = new SuperPlayerModel();
-    model.url = "";
-    superPlayerView.playWithModelNeedLicence(model);*/
-    superPlayerView.setNeedMultiSoundTrack(false);
-
-
     addView(superPlayerView);
     superPlayerView.showOrHideBackBtn(false);
 

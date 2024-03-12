@@ -246,7 +246,8 @@ public class SuperPlayerImpl implements SuperPlayer, ITXVodPlayListener, ITXLive
                 }
                 updateVideoImageSpriteAndKeyFrame(playImageSpriteInfo,keyFrameDescInfoList);
 
-                String waterMarkText = param.getString(TXVodConstants.EVT_KEY_WATER_MARK_TEXT);
+                // sandstalk
+                String waterMarkText = "";//param.getString(TXVodConstants.EVT_KEY_WATER_MARK_TEXT);
                 long videoDuration = param.getInt(TXVodConstants.EVT_PLAY_DURATION);
                 onRcvWaterMark(waterMarkText, videoDuration);
                 break;
@@ -637,7 +638,7 @@ public class SuperPlayerImpl implements SuperPlayer, ITXVodPlayListener, ITXLive
             if (mCurrentIndex != -1) {
                 mVodPlayer.setBitrateIndex(mCurrentIndex);
             }
-            if (url.startsWith("http") && !TextUtils.isEmpty(mFileId) && mAppId != 0 
+            if (url.startsWith("http") && !TextUtils.isEmpty(mFileId) && mAppId != 0
                 && isVersionSupportAppendUrl() && canAppendCustomQuery(url)) {
                 Uri uri = Uri.parse(url);
                 String query = uri.getQuery();

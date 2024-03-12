@@ -1257,8 +1257,9 @@ TXLiveBaseDelegate,TXLivePlayListener,TXVodPlayListener>
                 self.state = StatePause;
             }
         } else {
-            [_vodPlayer pause];
-            self.state = StatePause;
+            // sandstalk
+            //[_vodPlayer pause];
+            //self.state = StatePause;
         }
     }
 }

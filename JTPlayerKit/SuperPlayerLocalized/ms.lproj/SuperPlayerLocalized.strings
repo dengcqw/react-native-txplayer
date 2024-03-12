@@ -1,0 +1,44 @@
+/* 
+  SuperPlayerLocalized.strings
+  Pods
+
+  Copyright © 2022年 Tencent. All rights reserved.
+  
+*/
+
+"SuperPlayer.videoquality" = "Kualiti Video";
+"SuperPlayer.smooth" = "Lancar";
+"SuperPlayer.SD" = "SD";
+"SuperPlayer.FSD" = "Semua SD";
+"SuperPlayer.HD" = "HD";
+"SuperPlayer.FHD" = "Super HD";
+"SuperPlayer.2K" = "2K";
+"SuperPlayer.4K" = "4K";
+"SuperPlayer.volume" = "Bunyi";
+"SuperPlayer.brightness" = "Kecerahan";
+"SuperPlayer.speed" = "Pemutaran Berkelajuan";
+"SuperPlayer.speed1p0" = "1.0X";
+"SuperPlayer.speed1p25" = "1.25X";
+"SuperPlayer.speed1p5" = "1.5X";
+"SuperPlayer.speed2p0" = "2.0X";
+"SuperPlayer.mirror" = "Cerminan";
+"SuperPlayer.handware" = "Pemecutan Peranti Keras";
+"SuperPlayer.pipAutomatic" = "Bukaan Otomatik PIP Semasa Di Latar Belakang";
+"SuperPlayer.piploading" = "PIP Sedang Dibuka";
+"SuperPlayer.pipfailed" = "PIP Gagal Dibuka";
+"SuperPlayer.trywactchtitle" = "Tontonan Percubaan Selama 15 Saat, Langgan VIP Untuk Menonton Video Penuh";
+"SuperPlayer.trywactchend" = "Tontonan Percubaan Tamat, Ahli VIP Boleh Menonton Video Penuh";
+"SuperPlayer.openvip" = "Langgan Ahli VIP";
+"SuperPlayer.tryagain" = "Cubaan Semula";
+"SuperPlayer.backtolive" = "Kembali Ke Siaran Langsung";
+"SuperPlayer.notsupportpip" = "Peranti Ini Tidak Menyokong PIP";
+"SuperPlayer.off" = "Tutup";
+"SuperPlayer.subtitles" = "Sarikata";
+"SuperPlayer.choosefontcolor" = "Pilih Warna Fon";
+"SuperPlayer.choosebontfont" = "Pilih Jenis Fon";
+"SuperPlayer.chooseoutlinewidth" = "Pilih Lebar Garisan Luaran";
+"SuperPlayer.chooseoutlinecolor" = "Pilih Warna Garisan Luaran";
+"SuperPlayer.subtitlessetting" = "Tetapan Sarikata";
+"SuperPlayer.track" = "Trek Audio";
+"SuperPlayer.fastForward" = "Maju Cepat";
+"SuperPlayer.rewind" = "Undur Cepat";
