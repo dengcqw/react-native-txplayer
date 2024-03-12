@@ -1,5 +1,6 @@
 package com.tencent.liteav.demo.superplayer.helper;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -27,6 +28,25 @@ public class IntentUtils {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             }
             context.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Log.e("TAG", "ActivityNotFoundException : " + intent.toString());
+        }
+    }
+
+    /**
+     * 确保存在相应的 activity 来处理 intent，以免发生 activity 找不到的异常。
+     */
+    public static void safeStartActivityForResult(Activity activity, Intent intent, int requestCode) {
+        if (intent == null || activity == null) {
+            Log.e(TAG, "intent or activity is null");
+            return;
+        }
+        if (activity.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) == null) {
+            Log.w(TAG, "No activity match : " + intent.toString());
+            return;
+        }
+        try {
+            activity.startActivityForResult(intent, requestCode);
         } catch (ActivityNotFoundException e) {
             Log.e("TAG", "ActivityNotFoundException : " + intent.toString());
         }

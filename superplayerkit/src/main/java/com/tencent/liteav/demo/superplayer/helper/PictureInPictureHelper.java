@@ -29,11 +29,11 @@ public class PictureInPictureHelper implements ServiceConnection {
 
     private static final String PIP_ACTION_MEDIA_CONTROL = "media_control";
     private static final String PIP_EXTRA_CONTROL_TYPE = "control_type";
-    private static final int PIP_CONTROL_TYPE_PLAY = 1;
+    public static final int PIP_CONTROL_TYPE_PLAY = 1;
     private static final int PIP_CONTROL_TYPE_PAUSE = 2;
     private static final int PIP_CONTROL_TYPE_LAST = 3;
     private static final int PIP_CONTROL_TYPE_NEXT = 4;
-    private static final int PIP_REQUEST_TYPE_PLAY = 1;
+    public static final int PIP_REQUEST_TYPE_PLAY = 1;
     private static final int PIP_REQUEST_TYPE_PAUSE = 2;
     private static final int PIP_REQUEST_TYPE_LAST = 3;
     private static final int PIP_REQUEST_TYPE_NEXT = 4;
@@ -88,13 +88,6 @@ public class PictureInPictureHelper implements ServiceConnection {
     }
 
 
-    /**
-     *
-     * 进入画中画模式
-     *
-     * @param state
-     * @param mTXCloudVideoView
-     */
     public void enterPictureInPictureMode(SuperPlayerDef.PlayerState state, TXCloudVideoView mTXCloudVideoView) {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O && hasPipPermission((Activity) mContext)) {
             if (mPictureInPictureParamsBuilder == null) {
@@ -128,7 +121,7 @@ public class PictureInPictureHelper implements ServiceConnection {
 
     /**
      *
-     * 更新画中画中的三个按钮
+     * Update the three buttons in the picture-in-picture
      *
      * @param iconId
      * @param title
@@ -142,21 +135,18 @@ public class PictureInPictureHelper implements ServiceConnection {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
             final ArrayList<RemoteAction> actions = new ArrayList<>();
-
-            // 上一个
+            int defaultFlag = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_IMMUTABLE : 0;
             final PendingIntent intentNext = PendingIntent.getBroadcast(mContext, PIP_REQUEST_TYPE_LAST,
-                    new Intent(PIP_ACTION_MEDIA_CONTROL).putExtra(PIP_EXTRA_CONTROL_TYPE, PIP_CONTROL_TYPE_NEXT), PendingIntent.FLAG_IMMUTABLE);
+                    new Intent(PIP_ACTION_MEDIA_CONTROL).putExtra(PIP_EXTRA_CONTROL_TYPE, PIP_CONTROL_TYPE_NEXT), defaultFlag);
             actions.add(new RemoteAction(Icon.createWithResource(mContext, R.drawable.superplayer_seek_left),
                     "", "", intentNext));
 
-            // 暂停/播放
             final PendingIntent intentPause = PendingIntent.getBroadcast(mContext, requestCode,
-                    new Intent(PIP_ACTION_MEDIA_CONTROL).putExtra(PIP_EXTRA_CONTROL_TYPE, controlType), PendingIntent.FLAG_IMMUTABLE);
+                    new Intent(PIP_ACTION_MEDIA_CONTROL).putExtra(PIP_EXTRA_CONTROL_TYPE, controlType),  defaultFlag);
             actions.add(new RemoteAction(Icon.createWithResource(mContext, iconId), title, title, intentPause));
 
-            // 下一个
             final PendingIntent intentLast = PendingIntent.getBroadcast(mContext, PIP_REQUEST_TYPE_NEXT,
-                    new Intent(PIP_ACTION_MEDIA_CONTROL).putExtra(PIP_EXTRA_CONTROL_TYPE, PIP_CONTROL_TYPE_LAST), PendingIntent.FLAG_IMMUTABLE);
+                    new Intent(PIP_ACTION_MEDIA_CONTROL).putExtra(PIP_EXTRA_CONTROL_TYPE, PIP_CONTROL_TYPE_LAST), defaultFlag);
             actions.add(new RemoteAction(Icon.createWithResource(mContext, R.drawable.superplayer_seek_right),
                     "", "", intentLast));
 
@@ -179,28 +169,16 @@ public class PictureInPictureHelper implements ServiceConnection {
 
 
     /**
-     * 点击对应按钮的回调逻辑
+     * The callback logic when clicking on the corresponding button.
      */
     public interface OnPictureInPictureClickListener {
 
-        /**
-         * 点击画中画 播放
-         */
         void onClickPIPPlay();
 
-        /**
-         * 点击画中画 暂停
-         */
         void onClickPIPPause();
 
-        /**
-         * 点击画中画 像后播放
-         */
         void onClickPIPPlayBackward();
 
-        /**
-         * 点击画中画 向前播放
-         */
         void onClickPIPPlayForward();
     }
 
@@ -219,9 +197,7 @@ public class PictureInPictureHelper implements ServiceConnection {
         return PIP_TIME_SHIFT_INTERVAL;
     }
 
-    /**
-     * 释放
-     */
+
     public void release() {
         ((Activity) mContext).unregisterReceiver(mReceiver);
         if (Build.VERSION.SDK_INT >= 31 && mIsBindService) {

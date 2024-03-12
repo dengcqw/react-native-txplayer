@@ -29,6 +29,18 @@ import com.tencent.liteav.demo.superplayer.ui.view.VipWatchView;
 import com.tencent.liteav.demo.superplayer.ui.view.VolumeBrightnessProgressLayout;
 
 /**
+ * Window mode playback control
+ * <p>
+ * In addition to basic playback control, there are also gesture controls for fast forwarding and rewinding,
+ * and gesture controls for adjusting brightness and volume.
+ * <p>
+ * 1、Click event listener {@link #onClick(View)}.
+ * <p>
+ * 2、Touch event listener {@link #onTouchEvent(MotionEvent)}.
+ * <p>
+ * 3、Progress bar event listener {@link #onProgressChanged(PointSeekBar, int, boolean)},
+ * {@link #onStartTrackingTouch(PointSeekBar)}, {@link #onStopTrackingTouch(PointSeekBar)}.
+ *
  * 窗口模式播放控件
  * <p>
  * 除基本播放控制外，还有手势控制快进快退、手势调节亮度音量等
@@ -44,44 +56,44 @@ import com.tencent.liteav.demo.superplayer.ui.view.VolumeBrightnessProgressLayou
 public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
         PointSeekBar.OnSeekBarChangeListener, VipWatchView.VipWatchViewClickListener {
 
-    // UI控件
-    private LinearLayout                   mLayoutTop;                             // 顶部标题栏布局
-    private LinearLayout                   mLayoutBottom;                          // 底部进度条所在布局
-    private ImageView                      mIvPause;                               // 暂停播放按钮
-    private ImageView                      mIvPlayNext;                            // 播放下一个按钮
-    private ImageView                      mIvFullScreen;                          // 全屏按钮
-    private ImageView                      mIvDownload;                          // 全屏按钮
-    private TextView                       mTvTitle;                               // 视频名称文本
-    private TextView                       mTvBackToLive;                          // 返回直播文本
-    private ImageView                      mBackground;                            // 背景
-    private ImageView                      mIvBack;                                // 返回按钮
-    private ImageView                      mIvWatermark;                           // 水印
-    private TextView                       mTvCurrent;                             // 当前进度文本
-    private TextView                       mTvDuration;                            // 总时长文本
-    private PointSeekBar                   mSeekBarProgress;                       // 播放进度条
-    private LinearLayout                   mLayoutReplay;                          // 重播按钮所在布局
-    private ProgressBar                    mPbLiveLoading;                         // 加载圈
-    private ImageView                      mImageStartAndResume;                   // 开始播放的三角
-    private ImageView                      mImageCover;                            // 封面图
-    private VolumeBrightnessProgressLayout mGestureVolumeBrightnessProgressLayout; // 音量亮度调节布局
-    private VideoProgressLayout            mGestureVideoProgressLayout;            // 手势快进提示布局
-    private GestureDetector                mGestureDetector;                       // 手势检测监听器
-    private VideoGestureDetector           mVideoGestureDetector;                  // 手势控制工具
-    private boolean                        isShowing;                              // 自身是否可见
-    private boolean                        mIsChangingSeekBarProgress;             // 进度条是否正在拖动，避免SeekBar由于视频播放的update而跳动
-    private SuperPlayerDef.PlayerType      mPlayType         = SuperPlayerDef.PlayerType.VOD;                          // 当前播放视频类型
-    private SuperPlayerDef.PlayerState     mCurrentPlayState = SuperPlayerDef.PlayerState.END;                 // 当前播放状态
-    private long                           mDuration;                              // 视频总时长
-    private long                           mLivePushDuration;                      // 直播推流总时长
-    private long                           mProgress;                              // 当前播放进度
-    private Bitmap                         mBackgroundBmp;                         // 背景图
-    private Bitmap                         mWaterMarkBmp;                          // 水印图
-    private float                          mWaterMarkBmpX;                         // 水印x坐标
-    private float                          mWaterMarkBmpY;                         // 水印y坐标
-    private long                           mLastClickTime;                         // 上次点击事件的时间
-    private boolean                        mIsOpenGesture    = true;               // 是否开启手势
     private boolean                        enableSlider    = true;               // sandstalk 是否允许调节进度
-    private boolean                        isDestroy         = false;              // Activity 是否被销毁
+    private LinearLayout                   mLayoutTop;                             // Top title bar layout
+    private LinearLayout                   mLayoutBottom;                          // Bottom progress bar layout
+    private ImageView                      mIvPause;
+    private ImageView                      mIvPlayNext;
+    private ImageView                      mIvFullScreen;
+    private TextView                       mTvTitle;
+    private TextView                       mTvBackToLive;
+    private ImageView                      mBackground;
+    private ImageView                      mIvBack;
+    private ImageView                      mIvWatermark;
+    private TextView                       mTvCurrent;
+    private TextView                       mTvDuration;
+    private PointSeekBar                   mSeekBarProgress;
+    private LinearLayout                   mLayoutReplay;
+    private ProgressBar                    mPbLiveLoading;
+    private ImageView                      mImageStartAndResume;
+    private ImageView                      mImageCover;
+    // Volume and brightness adjustment layout
+    private VolumeBrightnessProgressLayout mGestureVolumeBrightnessProgressLayout;
+    // Gesture fast forward prompt layout
+    private VideoProgressLayout            mGestureVideoProgressLayout;
+    private GestureDetector                mGestureDetector;                       // Gesture detection listener
+    private VideoGestureDetector           mVideoGestureDetector;                  // Gesture control tool
+    private boolean                        isShowing;
+    private boolean                        mIsChangingSeekBarProgress;
+    private SuperPlayerDef.PlayerType      mPlayType         = SuperPlayerDef.PlayerType.VOD;
+    private SuperPlayerDef.PlayerState     mCurrentPlayState = SuperPlayerDef.PlayerState.END;
+    private long                           mDuration;
+    private long                           mLivePushDuration;
+    private long                           mProgress;
+    private Bitmap                         mBackgroundBmp;
+    private Bitmap                         mWaterMarkBmp;
+    private float                          mWaterMarkBmpX;
+    private float                          mWaterMarkBmpY;
+    private long                           mLastClickTime;
+    private boolean                        mIsOpenGesture    = true;
+    private boolean                        isDestroy         = false;
     private VideoGestureDetector.VideoGestureListener mVideoGestureListener;
     private ImageView                      mPiPIV;
     private Context                        mContext;
@@ -103,6 +115,8 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
     }
 
     /**
+     * Initialize control, gesture detection listener, brightness/volume/playback progress callback
+     *
      * 初始化控件、手势检测监听器、亮度/音量/播放进度的回调
      */
     private void initialize(Context context) {
@@ -110,7 +124,7 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
         mGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
-                if (isShowingVipView()) {   //当展示了试看页面的时候，不处理双击事件
+                if (isShowingVipView()) {   //When the preview page is displayed, do not handle double-click events
                     return true;
                 }
                 togglePlayState();
@@ -201,9 +215,6 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
         mVideoGestureDetector.setVideoGestureListener(mVideoGestureListener);
     }
 
-    /**
-     * 初始化view
-     */
     private void initView(Context context) {
         LayoutInflater.from(context).inflate(R.layout.superplayer_vod_player_window, this);
         mLayoutTop = (LinearLayout) findViewById(R.id.superplayer_rl_top);
@@ -221,23 +232,19 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
         mSeekBarProgress.setProgress(0);
         mSeekBarProgress.setMax(100);
         mIvFullScreen = (ImageView) findViewById(R.id.superplayer_iv_fullscreen);
-        mIvDownload = (ImageView) findViewById(R.id.superplayer_iv_download);
         mTvBackToLive = (TextView) findViewById(R.id.superplayer_tv_back_to_live);
         mPbLiveLoading = (ProgressBar) findViewById(R.id.superplayer_pb_live);
         mImageCover = (ImageView) findViewById(R.id.superplayer_cover_view);
         mImageStartAndResume = (ImageView) findViewById(R.id.superplayer_resume);
-
         mIvPlayNext = (ImageView) findViewById(R.id.superplayer_iv_play_next);
         mPiPIV = (ImageView) findViewById(R.id.superplayer_iv_pip);
         mImageStartAndResume.setOnClickListener(this);
 
         mIvBack.setOnClickListener(this);
-        mTvDuration.setOnClickListener(this);
         mTvBackToLive.setOnClickListener(this);
         mIvPause.setOnClickListener(this);
         mIvPlayNext.setOnClickListener(this);
         mIvFullScreen.setOnClickListener(this);
-        mIvDownload.setOnClickListener(this);
         mLayoutTop.setOnClickListener(this);
         mLayoutReplay.setOnClickListener(this);
         mPiPIV.setOnClickListener(this);
@@ -259,6 +266,10 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
     }
 
     /**
+     * Switch playback status
+     * <p>
+     * Double-clicking or clicking the play/pause button will trigger this method
+     *
      * 切换播放状态
      * <p>
      * 双击和点击播放/暂停按钮会触发此方法
@@ -284,6 +295,8 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
     }
 
     /**
+     * Switch the visibility of itself
+     *
      * 切换自身的可见性
      */
     private void toggle() {
@@ -334,11 +347,16 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
     }
 
     /**
+     * Set watermark
+     *
      * 设置水印
      *
-     * @param bmp 水印图
-     * @param x   水印的x坐标
-     * @param y   水印的y坐标
+     * @param bmp Watermark image.
+     *            水印图
+     * @param x   X coordinate of watermark
+     *            水印的x坐标
+     * @param y   Y coordinate of watermark
+     *            水印的y坐标
      */
     @Override
     public void setWatermark(final Bitmap bmp, float x, float y) {
@@ -368,6 +386,8 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
     }
 
     /**
+     * Show control
+     *
      * 显示控件
      */
     @Override
@@ -386,6 +406,8 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
     }
 
     /**
+     * Hide control
+     *
      * 隐藏控件
      */
     @Override
@@ -415,6 +437,7 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
                 mIvPause.setImageResource(R.drawable.superplayer_ic_vod_play_normal);
                 break;
             case PLAYING:
+                // sandstalk
                 mSeekBarProgress.setEnabled(enableSlider);
                 mIvPause.setImageResource(R.drawable.superplayer_ic_vod_pause_normal);
                 toggleView(mImageStartAndResume, false);
@@ -443,9 +466,9 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
     }
 
     /**
-     * 更新视频名称
+     * Update video name
      *
-     * @param title 视频名称
+     * 更新视频名称
      */
     @Override
     public void updateTitle(String title) {
@@ -453,10 +476,9 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
     }
 
     /**
-     * 更新视频播放进度
+     * Update video playback progress
      *
-     * @param current  当前进度(秒)
-     * @param duration 视频总时长(秒)
+     * 更新视频播放进度
      */
     @Override
     public void updateVideoProgress(long current, long duration, long playable) {
@@ -527,10 +549,19 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
         }
     }
 
+
+    @Override
+    public void updateVipInfo(int position) {
+        super.updateVipInfo(position);
+        if (mPlayType == SuperPlayerDef.PlayerType.VOD) {
+            mVipWatchView.setCurrentTime(position);
+        }
+    }
+
     /**
-     * 设置背景
+     * Set background
      *
-     * @param bitmap 背景图
+     * 设置背景
      */
     @Override
     public void setBackground(final Bitmap bitmap) {
@@ -548,6 +579,8 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
     }
 
     /**
+     * Set the image displayed by the target ImageView
+     *
      * 设置目标ImageView显示的图片
      */
     private void setBitmap(ImageView view, Bitmap bitmap) {
@@ -560,6 +593,8 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
     }
 
     /**
+     * Show background
+     *
      * 显示背景
      */
     @Override
@@ -590,6 +625,8 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
     }
 
     /**
+     * Hide background
+     *
      * 隐藏背景
      */
     @Override
@@ -620,6 +657,9 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
     }
 
     /**
+     * Override touch event listener to implement gesture control for adjusting brightness,
+     * volume, and playback progress
+     *
      * 重写触摸事件监听，实现手势调节亮度、音量以及播放进度
      */
     @Override
@@ -673,31 +713,28 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
         return true;
     }
 
-    /**
-     * 设置点击事件监听
-     */
     @Override
     public void onClick(View view) {
-        if (System.currentTimeMillis() - mLastClickTime < 300) { //限制点击频率
+        if (System.currentTimeMillis() - mLastClickTime < 300) { // Limit click frequency
             return;
         }
         mLastClickTime = System.currentTimeMillis();
         int id = view.getId();
-        if (id == R.id.superplayer_iv_back) { //顶部标题栏
+        if (id == R.id.superplayer_iv_back) {
             if (mControllerCallback != null) {
                 mControllerCallback.onBackPressed(SuperPlayerDef.PlayerMode.WINDOW);
             }
-        } else if (id == R.id.superplayer_iv_pause || id == R.id.superplayer_resume) { //暂停\播放按钮
+        } else if (id == R.id.superplayer_iv_pause || id == R.id.superplayer_resume) {
             togglePlayState();
-        } else if (id == R.id.superplayer_iv_fullscreen || id == R.id.superplayer_tv_duration) { //全屏按钮
+        } else if (id == R.id.superplayer_iv_fullscreen) {
             if (mControllerCallback != null) {
                 mControllerCallback.onSwitchPlayMode(SuperPlayerDef.PlayerMode.FULLSCREEN);
             }
-        } else if (id == R.id.superplayer_ll_replay) { //重播按钮
+        } else if (id == R.id.superplayer_ll_replay) {
             if (mControllerCallback != null) {
                 mControllerCallback.onResume();
             }
-        } else if (id == R.id.superplayer_tv_back_to_live) { //返回直播按钮
+        } else if (id == R.id.superplayer_tv_back_to_live) {
             if (mControllerCallback != null) {
                 mControllerCallback.onResumeLive();
             }
@@ -708,10 +745,6 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
         } else if (id == R.id.superplayer_iv_pip) {
             if (mControllerCallback != null) {
                 mControllerCallback.enterPictureInPictureMode();
-            }
-        } else if (id == R.id.superplayer_iv_download) {
-            if (mControllerCallback != null) {
-                mControllerCallback.onClickDownload();
             }
         }
     }
@@ -749,7 +782,7 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
         switch (mPlayType) {
             case VOD:
                 if (curProgress >= 0 && curProgress <= maxProgress) {
-                    // 关闭重播按钮
+                    // Close replay button
                     toggleView(mLayoutReplay, false);
                     float percentage = ((float) curProgress) / maxProgress;
                     int position = (int) (mDuration * percentage);
@@ -834,4 +867,3 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
                 .hasPipPermission((Activity) mContext) ? VISIBLE : GONE);
     }
 }
-
