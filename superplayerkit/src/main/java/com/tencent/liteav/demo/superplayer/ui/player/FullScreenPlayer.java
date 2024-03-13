@@ -366,6 +366,9 @@ public class FullScreenPlayer extends AbsPlayer implements View.OnClickListener,
         mIvPlayForward = findViewById(R.id.superplayer_play_forward);
         mIvPlayBackward = findViewById(R.id.superplayer_play_backward);
 
+        mIvSoundTrack.setVisibility(View.GONE);
+        mIvSubtitle.setVisibility(View.GONE);
+
         mSeekBarProgress = (PointSeekBar) findViewById(R.id.superplayer_seekbar_progress);
         mSeekBarProgress.setProgress(0);
         mSeekBarProgress.setOnPointClickListener(this);
@@ -1280,12 +1283,14 @@ public class FullScreenPlayer extends AbsPlayer implements View.OnClickListener,
 
     public void setVodSelectionViewPositionAndData(List<TXTrackInfo> models) {
         mVodSoundTrackView.setModelList(models);
-        mIvSoundTrack.setVisibility(models.size() == 0 ? GONE : VISIBLE);
+        // sandstalk
+        //mIvSoundTrack.setVisibility(models.size() == 0 ? GONE : VISIBLE);
     }
 
     public void setVodSubtitlesViewPositionAndData(List<TXTrackInfo> models) {
         mVodSubtitlesView.setModelList(models);
-        mIvSubtitle.setVisibility(models.size() == 0 ? GONE : VISIBLE);
+        // sandstalk
+        //mIvSubtitle.setVisibility(models.size() == 0 ? GONE : VISIBLE);
     }
 
     /**

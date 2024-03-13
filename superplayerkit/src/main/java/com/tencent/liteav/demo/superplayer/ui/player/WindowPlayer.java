@@ -316,8 +316,9 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
     }
 
     private void updateStartUI(boolean isAutoPlay) {
-        mPiPIV.setVisibility((mIsShowPIPIv && PictureInPictureHelper
-                .hasPipPermission((Activity) mContext)) ? VISIBLE : GONE);
+        // sandstalk
+        //mPiPIV.setVisibility((mIsShowPIPIv && PictureInPictureHelper
+                //.hasPipPermission((Activity) mContext)) ? VISIBLE : GONE);
         if (isAutoPlay) {
             toggleView(mImageStartAndResume, false);
             toggleView(mPbLiveLoading, true);
@@ -395,6 +396,11 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
         isShowing = true;
         mLayoutTop.setVisibility(View.VISIBLE);
         mLayoutBottom.setVisibility(View.VISIBLE);
+        // sandstalk
+        if (mIsShowPIPIv) {
+          mPiPIV.setVisibility((mIsShowPIPIv) && PictureInPictureHelper
+                .hasPipPermission((Activity) mContext) ? VISIBLE : GONE);
+        }
 
         if (mPlayType == SuperPlayerDef.PlayerType.LIVE_SHIFT) {
             mTvBackToLive.setVisibility(View.VISIBLE);
@@ -415,6 +421,7 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
         isShowing = false;
         mLayoutTop.setVisibility(View.GONE);
         mLayoutBottom.setVisibility(View.GONE);
+        mPiPIV.setVisibility(View.GONE);
 
         if (mPlayType == SuperPlayerDef.PlayerType.LIVE_SHIFT) {
             mTvBackToLive.setVisibility(View.GONE);
@@ -863,7 +870,5 @@ public class WindowPlayer extends AbsPlayer implements View.OnClickListener,
 
     public void showPIPIV(boolean isShow) {
         mIsShowPIPIv = isShow;
-        mPiPIV.setVisibility((mIsShowPIPIv) && PictureInPictureHelper
-                .hasPipPermission((Activity) mContext) ? VISIBLE : GONE);
     }
 }

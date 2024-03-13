@@ -153,7 +153,6 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
     ColorDrawable colorDrawable = new ColorDrawable();
     colorDrawable.setColor(Color.BLACK);
     superPlayerView.setBackground(colorDrawable);
-    superPlayerView.showPIPIV(true);
 
     addView(superPlayerView);
     superPlayerView.showOrHideBackBtn(false);

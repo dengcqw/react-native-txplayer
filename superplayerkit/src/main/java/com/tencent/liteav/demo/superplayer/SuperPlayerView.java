@@ -325,9 +325,10 @@ public class SuperPlayerView extends RelativeLayout
     }
 
     private void playWithModelInner(SuperPlayerModel model, boolean needChangeUI) {
-        if (needChangeUI) {
-            mWindowPlayer.showPIPIV(model.vipWatchMode == null);
-        }
+      // sandstalk
+        //if (needChangeUI) {
+            //mWindowPlayer.showPIPIV(model.vipWatchMode == null);
+        //}
         mPlayAction = mCurrentSuperPlayerModel.playAction;
         if (mPlayAction == PLAY_ACTION_AUTO_PLAY || mPlayAction == PLAY_ACTION_PRELOAD) {
             mSuperPlayer.play(model);
@@ -498,6 +499,7 @@ public class SuperPlayerView extends RelativeLayout
         }
     }
 
+    private int oldValue = -1;
     /**
      * Control whether to display in full screen.
      *
@@ -512,6 +514,7 @@ public class SuperPlayerView extends RelativeLayout
                 if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
                     decorView.setSystemUiVisibility(View.GONE);
                 } else if (Build.VERSION.SDK_INT >= 19) {
+                    oldValue = decorView.getSystemUiVisibility();
                     int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
                     decorView.setSystemUiVisibility(uiOptions);
@@ -524,7 +527,10 @@ public class SuperPlayerView extends RelativeLayout
                 if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
                     decorView.setSystemUiVisibility(View.VISIBLE);
                 } else if (Build.VERSION.SDK_INT >= 19) {
-                    decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                    if (oldValue > 0) {
+                        decorView.setSystemUiVisibility(oldValue);
+                    }
+                    oldValue = -1;
                 }
             }
         }
@@ -540,7 +546,8 @@ public class SuperPlayerView extends RelativeLayout
     public void showOrHideBackBtn(boolean isShow) {
         if (mWindowPlayer != null) {
             mWindowPlayer.showOrHideBackBtn(isShow);
-            mWindowPlayer.showPIPIV(false);
+            // sandstalk
+            //mWindowPlayer.showPIPIV(false);
         }
     }
 

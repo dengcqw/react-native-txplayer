@@ -115,7 +115,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="10dp"
             android:src="@drawable/superplayer_ic_vod_pause_normal" />
         <!--播放位置-->
         <TextView
@@ -167,6 +167,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_gravity="center_vertical"
+            android:layout_marginRight="10dp"
             android:src="@drawable/superplayer_ic_vod_fullscreen" />
     </LinearLayout>
 
