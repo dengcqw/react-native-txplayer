@@ -295,6 +295,8 @@
 - (UIView *)pipCell {
     if (!_pipCell) {
         _pipCell = [UIView new];
+        // sandstalk 隐藏
+        _pipCell.alpha =  0;
         _pipCell.m_width(MoreViewWidth).m_height(50).m_left(10);
         
         UILabel *hd = [UILabel new];
