@@ -65,6 +65,7 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   public void onDropViewInstance(TxplayerView view) {
     super.onDropViewInstance(view);
     view.stopPlay();
+    view.destroy();
   }
 
   @Nullable
@@ -134,7 +135,8 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
       return;
     }
     String oriention  = args.getString(0);
-    root.switchToOrientation(oriention);
+    String force  = args.getString(1);
+    root.switchToOrientation(oriention, "1".equals(force));
   }
 
   public Map getExportedCustomBubblingEventTypeConstants() {

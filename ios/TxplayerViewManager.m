@@ -96,10 +96,10 @@ RCT_EXPORT_METHOD(addDanmaku:(nonnull NSNumber *) reactTag danmakuInfo:(NSDictio
     }];
 }
 
-RCT_EXPORT_METHOD(switchToOrientation:(nonnull NSNumber *) reactTag oriention: (NSString *)oriention) {
+RCT_EXPORT_METHOD(switchToOrientation:(nonnull NSNumber *) reactTag oriention: (NSString *)oriention force: (NSString *)force) {
     [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *,UIView *> *viewRegistry) {
         TxplayerView * player  = (TxplayerView *) viewRegistry[reactTag];
-        [player switchToOrientation:oriention];
+        [player switchToOrientation:oriention force: force];
     }];
 }
 

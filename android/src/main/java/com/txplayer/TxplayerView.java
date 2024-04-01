@@ -382,7 +382,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
     superPlayerView.setDanmuData(danmuContentList);
   }
 
-  public void switchToOrientation(String oriention) {
+  public void switchToOrientation(String oriention, boolean force) {
     if (!enableFullScreen) {
       return;
     }
@@ -395,7 +395,9 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
 
     if ("portrait".equals(oriention)) {
       if(!isFullScreenPlay()) return;
-      if (superPlayerView.getFullscreenPlayer().isLockScreen()) return;
+      if (!force) {
+        if (superPlayerView.getFullscreenPlayer().isLockScreen()) return;
+      }
       superPlayerView.switchToPortrait();
     }
 
@@ -436,7 +438,9 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
   }
 
   public void destroy() {
+    Log.d("Txplayer", "destroy: " + getId());
     if (superPlayerView != null) {
+      ((ViewGroup) superPlayerView.getParent()).removeView(superPlayerView);
       superPlayerView.setPlayerViewCallback(null);
       superPlayerView.resetPlayer();
       superPlayerView.release();
@@ -491,6 +495,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
       isPlaying = false;
       keepScreen(false);
     }
+    Log.d("Txplayer", "onDetachedFromWindow: " + getId());
     super.onDetachedFromWindow();
   }
 

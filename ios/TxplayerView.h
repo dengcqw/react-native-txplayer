@@ -53,7 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)stopPlay;
 - (void)togglePlay;
 - (void)prepareDanmaku:(NSDictionary *)danmakus;
-- (void)switchToOrientation:(NSString *)orientation;
+- (void)switchToOrientation:(NSString *)orientation force:(NSString *)force;
 - (void)seekTo:(NSNumber *)second;
 - (void)startPip;
 - (void)stopPip;

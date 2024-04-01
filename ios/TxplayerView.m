@@ -208,7 +208,7 @@ static int s_playerCount = 0;
 }
 
 // 自动旋转
-- (void)switchToOrientation:(NSString *)orientation {
+- (void)switchToOrientation:(NSString *)orientation force:(NSString *)force {
 
     if (!self.enableFullScreen.boolValue) return;
 
@@ -224,7 +224,9 @@ static int s_playerCount = 0;
     if ([_playerView.controlView isKindOfClass:[SPDefaultControlView class]]) {
         SPDefaultControlView *controlView = (SPDefaultControlView *)_playerView.controlView;
         if (controlView.isFullScreen) { // 当前全屏
-            if (controlView.isLockScreen) return;
+            if (![@"1" isEqualToString:force]) {
+                if (controlView.isLockScreen) return;
+            }
             if (newOri == UIInterfaceOrientationUnknown) { // 旋转至横屏
                 self.orientation = newOri;
 
