@@ -41,7 +41,7 @@ export type TxplayerViewApi = {
   stopPlay: () => void;
   togglePlay: () => void;
   addDanmaku: (contents: string[]) => void;
-  switchToOrientation: (oriention: string) => void;
+  switchToOrientation: (oriention: string, force: string) => void;
 };
 
 export type PlayTimeType = {
@@ -101,8 +101,8 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, TxplayerViewApi>((props
       addDanmaku: (contents: string[]) => {
         UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.addDanmaku, [contents]);
       },
-      switchToOrientation: (oriention: string) => {
-        UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.switchToOrientation, [oriention]);
+      switchToOrientation: (oriention: string, force: string) => {
+        UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.switchToOrientation, [oriention, force || '0']);
       },
       togglePlay: () => {
         UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.togglePlay, []);
