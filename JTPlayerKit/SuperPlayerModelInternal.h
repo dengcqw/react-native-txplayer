@@ -9,7 +9,6 @@
 #import "SPPlayCGIParseResult.h"
 #import "SPVideoFrameDescription.h"
 #import "SuperPlayerModel.h"
-#import "TXBitrateItem.h"
 
 @class TXImageSprite;
 

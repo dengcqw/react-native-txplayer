@@ -7,7 +7,7 @@
 
 #import "TxplayerView.h"
 #import <Masonry/Masonry.h>
-#import <react-native-orientation-locker/Orientation.h>
+#import "react_native_orientation_locker/Orientation.h"
 
 #import "SuperPlayer.h"
 #import "UIView+MMLayout.h"

@@ -6,10 +6,10 @@
 //  Copyright © 2022 Tencent. All rights reserved.
 
 #import <UIKit/UIKit.h>
-#import "TXTrackInfo.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class TXTrackInfo;
 @protocol SuperPlayerSubtitlesViewDelegate <NSObject>
     
 - (void)chooseSubtitlesInfo:(TXTrackInfo *)info preSubtitlesInfo:(TXTrackInfo *)preInfo;

@@ -1252,10 +1252,10 @@ TXLiveBaseDelegate,TXLivePlayListener,TXVodPlayListener>
     if (!self.isPauseByUser && (self.state != StateStopped && self.state != StateFailed)) {
         
         if (self.playerConfig.pipAutomatic == YES) {
-            if (![TXVodPlayer isSupportSeamlessPictureInPicture]) {
-                [_vodPlayer pause];
-                self.state = StatePause;
-            }
+            //if (![TXVodPlayer isSupportSeamlessPictureInPicture]) {
+                //[_vodPlayer pause];
+                //self.state = StatePause;
+            //}
         } else {
             // sandstalk
             //[_vodPlayer pause];
@@ -1862,7 +1862,7 @@ TXLiveBaseDelegate,TXLivePlayListener,TXVodPlayListener>
         [self.vodPlayer setMirror:self.playerConfig.mirror];
         [self.vodPlayer setMute:self.playerConfig.mute];
         [self.vodPlayer setRenderMode:self.playerConfig.renderMode];
-        [TXVodPlayer setPictureInPictureSeamlessEnabled:self.playerConfig.pipAutomatic];
+        //[TXVodPlayer setPictureInPictureSeamlessEnabled:self.playerConfig.pipAutomatic];
     }
     if (reload) {
         if (!self.isLive) self.startTime = [self.vodPlayer currentPlaybackTime];
