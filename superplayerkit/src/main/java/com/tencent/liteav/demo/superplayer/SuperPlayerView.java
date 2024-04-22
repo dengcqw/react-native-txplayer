@@ -1143,6 +1143,10 @@ public class SuperPlayerView extends RelativeLayout
             mWindowPlayer.updatePlayState(SuperPlayerDef.PlayerState.INIT);
             mFullScreenPlayer.updatePlayState(SuperPlayerDef.PlayerState.INIT);
             actonOfPreloadOnPlayPrepare();
+            // sandstalk
+            if (mPlayerViewCallback != null) {
+                mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.INIT.ordinal());
+            }
             if (mWatcher != null) {
                 mWatcher.stop();
             }
@@ -1154,6 +1158,10 @@ public class SuperPlayerView extends RelativeLayout
             mFullScreenPlayer.updatePlayState(SuperPlayerDef.PlayerState.PLAYING);
             updateTitle(name);
             mWindowPlayer.hideBackground();
+            // sandstalk
+            if (mPlayerViewCallback != null) {
+                mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.PLAYING.ordinal());
+            }
             if (mDanmuView != null && mDanmuView.isPrepared() && mDanmuView.isPaused()) {
                 mDanmuView.resume();
             }
@@ -1167,6 +1175,10 @@ public class SuperPlayerView extends RelativeLayout
         public void onPlayPause() {
             mWindowPlayer.updatePlayState(SuperPlayerDef.PlayerState.PAUSE);
             mFullScreenPlayer.updatePlayState(SuperPlayerDef.PlayerState.PAUSE);
+            // sandstalk
+            if (mPlayerViewCallback != null) {
+                mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.PAUSE.ordinal());
+            }
         }
 
         @Override
@@ -1179,6 +1191,10 @@ public class SuperPlayerView extends RelativeLayout
             } else {
                 mWindowPlayer.updatePlayState(SuperPlayerDef.PlayerState.END);
                 mFullScreenPlayer.updatePlayState(SuperPlayerDef.PlayerState.END);
+                // sandstalk
+                if (mPlayerViewCallback != null) {
+                    mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.END.ordinal());
+                }
                 // sync End-State to PIP
                 mPictureInPictureHelper.updatePictureInPictureActions(R.drawable.superplayer_ic_vod_play_normal, "",
                         PictureInPictureHelper.PIP_CONTROL_TYPE_PLAY, PictureInPictureHelper.PIP_REQUEST_TYPE_PLAY);
@@ -1195,10 +1211,18 @@ public class SuperPlayerView extends RelativeLayout
                 if (isCallResume) {
                     mWindowPlayer.updatePlayState(SuperPlayerDef.PlayerState.LOADING);
                     mFullScreenPlayer.updatePlayState(SuperPlayerDef.PlayerState.LOADING);
+                    // sandstalk
+                    if (mPlayerViewCallback != null) {
+                        mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.LOADING.ordinal());
+                    }
                 }
             } else {
                 mWindowPlayer.updatePlayState(SuperPlayerDef.PlayerState.LOADING);
                 mFullScreenPlayer.updatePlayState(SuperPlayerDef.PlayerState.LOADING);
+                // sandstalk
+                if (mPlayerViewCallback != null) {
+                    mPlayerViewCallback.superPlayerDidChangeState(SuperPlayerDef.PlayerState.LOADING.ordinal());
+                }
             }
             if (mWatcher != null) {
                 mWatcher.enterLoading();

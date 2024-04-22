@@ -8,12 +8,13 @@ public class SuperPlayerDef {
         FLOAT
     }
 
+    // sandstalk
     public enum PlayerState {
-        INIT,
-        PLAYING,
-        PAUSE,
-        LOADING,
-        END
+      INIT,       //初始状态
+      PAUSE,      // 暂停中
+      LOADING,    // 缓冲中
+      PLAYING,    // 播放中
+      END         // 结束播放
     }
 
     public enum PlayerType {

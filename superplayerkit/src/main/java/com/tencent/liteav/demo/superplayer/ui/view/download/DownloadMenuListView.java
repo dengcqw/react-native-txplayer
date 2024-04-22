@@ -98,7 +98,10 @@ public class DownloadMenuListView extends RelativeLayout
         mDownloadQualityListAdapter.setOnItemClickListener(this);
 
         File sdcardDir = getContext().getExternalFilesDir(null);
-        VideoDownloadCenter.getInstance().setDownloadDirPath(sdcardDir.getAbsolutePath());
+        // Sandstalk
+        // 和app内的下载有冲突
+        // 导致listener被覆盖
+        // VideoDownloadCenter.getInstance().setDownloadDirPath(sdcardDir.getAbsolutePath());
     }
 
     /**
