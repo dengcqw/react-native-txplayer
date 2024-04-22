@@ -499,7 +499,6 @@ public class SuperPlayerView extends RelativeLayout
         }
     }
 
-    private int oldValue = -1;
     /**
      * Control whether to display in full screen.
      *
@@ -514,7 +513,6 @@ public class SuperPlayerView extends RelativeLayout
                 if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
                     decorView.setSystemUiVisibility(View.GONE);
                 } else if (Build.VERSION.SDK_INT >= 19) {
-                    oldValue = decorView.getSystemUiVisibility();
                     int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
                     decorView.setSystemUiVisibility(uiOptions);
@@ -527,10 +525,7 @@ public class SuperPlayerView extends RelativeLayout
                 if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
                     decorView.setSystemUiVisibility(View.VISIBLE);
                 } else if (Build.VERSION.SDK_INT >= 19) {
-                    if (oldValue > 0) {
-                        decorView.setSystemUiVisibility(oldValue);
-                    }
-                    oldValue = -1;
+                    decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
                 }
             }
         }
