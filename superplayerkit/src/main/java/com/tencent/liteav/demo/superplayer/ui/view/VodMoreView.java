@@ -358,7 +358,8 @@ public class VodMoreView extends RelativeLayout implements RadioGroup.OnCheckedC
         mVolumeBroadcastReceiver = new VolumeBroadcastReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(VOLUME_CHANGED_ACTION);
-        mContext.registerReceiver(mVolumeBroadcastReceiver, filter);
+        // mContext.registerReceiver(mVolumeBroadcastReceiver, filter);
+        ContextCompat.registerReceiver(mContext, mVolumeBroadcastReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     /**

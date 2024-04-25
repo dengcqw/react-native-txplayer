@@ -80,7 +80,8 @@ public class PictureInPictureHelper implements ServiceConnection {
                 }
             }
         };
-        ((Activity) mContext).registerReceiver(mReceiver, new IntentFilter(PIP_ACTION_MEDIA_CONTROL));
+        //((Activity) mContext).registerReceiver(mReceiver, new IntentFilter(PIP_ACTION_MEDIA_CONTROL));
+        ContextCompat.registerReceiver(mContext, mReceiver, new IntentFilter(PIP_ACTION_MEDIA_CONTROL), ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     public void setListener(OnPictureInPictureClickListener listener) {

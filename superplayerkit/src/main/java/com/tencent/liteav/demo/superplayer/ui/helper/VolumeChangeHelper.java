@@ -31,7 +31,8 @@ public class VolumeChangeHelper {
         IntentFilter filter = new IntentFilter();
         filter.addAction(VOLUME_CHANGE_ACTION);
         if (mVolumeBroadCastReceiver != null) {
-            mContext.registerReceiver(mVolumeBroadCastReceiver,filter);
+            //mContext.registerReceiver(mVolumeBroadCastReceiver,filter);
+            ContextCompat.registerReceiver(mContext, mVolumeBroadCastReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
         }
     }
 
