@@ -15,6 +15,7 @@ import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Rational;
+import androidx.core.content.ContextCompat;
 
 import androidx.annotation.DrawableRes;
 
