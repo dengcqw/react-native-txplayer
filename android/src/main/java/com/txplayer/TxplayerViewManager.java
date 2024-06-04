@@ -319,7 +319,12 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
     super.onAfterUpdateTransaction(view);
     Log.d("Txplayer", "onAfterUpdateTransaction: " + view.getId());
     if (view.needAutoStart()) {
-      view.startPlay();
+      new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+        @Override
+        public void run() {
+          view.startPlay();
+        }
+      }, 200);
     }
   }
 }

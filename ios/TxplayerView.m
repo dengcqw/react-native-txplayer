@@ -526,7 +526,9 @@ static int s_playerCount = 0;
     //   autoPlay = 0 preload = 1 manualPlay = 2
     if (self.playType.intValue != 2) {
         if ([changedProps containsObject:@"fileId"] || [changedProps containsObject:@"videoURL"]) {
-            [self startPlay];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self startPlay];
+            });
         }
     }
 }
