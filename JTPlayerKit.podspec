@@ -24,7 +24,7 @@ Pod::Spec.new do |spec|
     ]
     
     spec.subspec "Player" do |s|
-        s.source_files = 'JTPlayerKit/**/*.{h,m}'
+        s.source_files = 'JTPlayerKit/**/*.{h,m,mm}'
         s.private_header_files = 'JTPlayerKit/Utils/TXBitrateItemHelper.h', 'JTPlayerKit/Views/SuperPlayerView+Private.h'
         s.resource = 'JTPlayerKit/Resource/*'
         s.dependency "TXLiteAVSDK_Professional"

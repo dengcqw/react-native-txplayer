@@ -8,9 +8,18 @@
 #import <UIKit/UIKit.h>
 #import <React/RCTComponent.h>
 
+#ifdef RCT_NEW_ARCH_ENABLED
+#import <react/renderer/components/rntxplayer/EventEmitters.h>
+#endif
+
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface TxplayerView : UIView
+
+#ifdef RCT_NEW_ARCH_ENABLED
+@property(nonatomic) facebook::react::SharedViewEventEmitter eventEmitter;
+#endif
 
 // 播放时间
 @property (nonatomic, copy) RCTBubblingEventBlock onPlayTimeChange;
@@ -57,6 +66,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)seekTo:(NSNumber *)second;
 - (void)startPip;
 - (void)stopPip;
+
 @end
 
 

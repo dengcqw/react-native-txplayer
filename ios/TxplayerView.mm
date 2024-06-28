@@ -199,12 +199,18 @@ static int s_playerCount = 0;
 
 - (void)stopPlay {
     [self.playerView pause];
-    
-    if(self.onPlayStateChange != nil){
+#ifdef RCT_NEW_ARCH_ENABLED
+    if (self.eventEmitter != nullptr) {
+        std::dynamic_pointer_cast<const facebook::react::TxplayerViewEventEmitter>(self.eventEmitter)
+        ->onPlayStateChange(facebook::react::TxplayerViewEventEmitter::onPlayStateChange{.state = StatePause});
+    }
+#else
+    if(self.onPlayStateChange != nil) {
         self.onPlayStateChange(@{
             @"state": [NSNumber numberWithInteger:StatePause]
         });
     }
+#endif
 }
 
 // 自动旋转
@@ -294,11 +300,18 @@ static int s_playerCount = 0;
         [self keepScreen:self.isPlaying];
     }
     [self playTimeDidChange:YES];
+#ifdef RCT_NEW_ARCH_ENABLED
+    if (self.eventEmitter != nullptr) {
+        std::dynamic_pointer_cast<const facebook::react::TxplayerViewEventEmitter>(self.eventEmitter)
+        ->onPlayStateChange(facebook::react::TxplayerViewEventEmitter::onPlayStateChange{.state = StateStopped});
+    }
+#else
     if(self.onPlayStateChange != nil) {
         self.onPlayStateChange(@{
             @"state": [NSNumber numberWithInteger:StateStopped]
         });
     }
+#endif
 }
 
 - (void)changeToFullscreen:(BOOL)fullScreen {
@@ -315,9 +328,16 @@ static int s_playerCount = 0;
 }
 
 - (void)superPlayerDidSelectDownload:(SuperPlayerView *)player{
+#ifdef RCT_NEW_ARCH_ENABLED
+    if (self.eventEmitter != nullptr) {
+        std::dynamic_pointer_cast<const facebook::react::TxplayerViewEventEmitter>(self.eventEmitter)
+        ->onDownload(facebook::react::TxplayerViewEventEmitter::onDownload{});
+    }
+#else
     if(self.onDownload){
         self.onDownload(@{});
     }
+#endif
 }
 
 // 横屏代理方法
@@ -348,9 +368,17 @@ static int s_playerCount = 0;
     }
     // 横屏后，初始化状态
     self.orientation = UIInterfaceOrientationUnknown;
+    
+#ifdef RCT_NEW_ARCH_ENABLED
+    if (self.eventEmitter != nullptr) {
+        std::dynamic_pointer_cast<const facebook::react::TxplayerViewEventEmitter>(self.eventEmitter)
+        ->onFullscreen(facebook::react::TxplayerViewEventEmitter::onFullscreen{.fullscreen = 1});
+    }
+#else
     if (self.onFullscreen) {
         self.onFullscreen(@{@"fullscreen": @1});
     }
+#endif
 }
 
 - (void)backHookAction {
@@ -370,9 +398,16 @@ static int s_playerCount = 0;
         [self.viewController.navigationController popViewControllerAnimated:NO];
     }
     self.playerView.fatherView = self;
+#ifdef RCT_NEW_ARCH_ENABLED
+    if (self.eventEmitter != nullptr) {
+        std::dynamic_pointer_cast<const facebook::react::TxplayerViewEventEmitter>(self.eventEmitter)
+        ->onFullscreen(facebook::react::TxplayerViewEventEmitter::onFullscreen{.fullscreen = 0});
+    }
+#else
     if (self.onFullscreen) {
         self.onFullscreen(@{@"fullscreen": @0});
     }
+#endif
 }
 
 - (void)singleTapClick {
@@ -387,11 +422,18 @@ static int s_playerCount = 0;
         [self keepScreen:self.isPlaying];
     }
     if (state == StateStopped) return;
+#ifdef RCT_NEW_ARCH_ENABLED
+    if (self.eventEmitter != nullptr) {
+        std::dynamic_pointer_cast<const facebook::react::TxplayerViewEventEmitter>(self.eventEmitter)
+        ->onPlayStateChange(facebook::react::TxplayerViewEventEmitter::onPlayStateChange{.state = state});
+    }
+#else
     if(self.onPlayStateChange != nil){
         self.onPlayStateChange(@{
             @"state": [NSNumber numberWithInteger:state]
         });
     }
+#endif
 }
 
 #pragma mark - SuperPlayerPlayListener
@@ -416,11 +458,23 @@ static int s_playerCount = 0;
 }
 
 - (void)playTimeDidChange:(BOOL)isFinish {
+    unsigned long totalTime = self.playerView.playDuration ;
+    unsigned long progressTime = self.playerView.playCurrentTime;
+    unsigned long remainTime = totalTime - progressTime;
+    BOOL finish = isFinish || remainTime == 0;
+
+#ifdef RCT_NEW_ARCH_ENABLED
+    if (self.eventEmitter != nullptr) {
+        std::dynamic_pointer_cast<const facebook::react::TxplayerViewEventEmitter>(self.eventEmitter)
+        ->onPlayTimeChange(facebook::react::TxplayerViewEventEmitter::onPlayTimeChange{
+            .totalTime = totalTime,
+            .progressTime = progressTime,
+            .remainTime = remainTime,
+            .isFinish = isFinish
+        });
+    }
+#else
     if (self.onPlayTimeChange != nil) {
-        unsigned long totalTime = self.playerView.playDuration ;
-        unsigned long progressTime = self.playerView.playCurrentTime;
-        unsigned long remainTime = totalTime - progressTime;
-        BOOL finish = isFinish || remainTime == 0;
         self.onPlayTimeChange(@{
             @"totalTime": [NSNumber numberWithUnsignedLong:totalTime],
             @"progressTime": [NSNumber numberWithUnsignedLong:progressTime],
@@ -428,6 +482,7 @@ static int s_playerCount = 0;
             @"isFinish": [NSNumber numberWithBool: finish]
         });
     }
+#endif
 }
 
 #pragma mark - JTDanmakuDelegate

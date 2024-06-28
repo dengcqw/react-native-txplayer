@@ -1,24 +1,8 @@
 import * as React from 'react';
-import { findNodeHandle, UIManager, requireNativeComponent, type NativeSyntheticEvent, Platform, NativeModules } from 'react-native';
+import { useMergeRefs, type NativeSyntheticEvent, Platform, NativeModules } from 'react-native';
+import TxplayerViewNative, { Commands } from './TxplayerViewNativeComponent'
 
 const TxplayerViewMgr = Platform.OS === 'ios' ? NativeModules.TxplayerView : NativeModules.TxplayerNativeModule
-
-const ComponentName = 'TxplayerView';
-const Commands = Platform.OS === 'ios' ? {
-  startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay!,
-  stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay!,
-  addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku!,
-  switchToOrientation: UIManager.getViewManagerConfig(ComponentName).Commands.switchToOrientation!,
-  seekTo: UIManager.getViewManagerConfig(ComponentName).Commands.seekTo!,
-  togglePlay: UIManager.getViewManagerConfig(ComponentName).Commands.togglePlay!
-}: {
-  startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay!.toString(),
-  stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay!.toString(),
-  addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku!.toString(),
-  switchToOrientation: UIManager.getViewManagerConfig(ComponentName).Commands.switchToOrientation!.toString(),
-  seekTo: UIManager.getViewManagerConfig(ComponentName).Commands.seekTo!.toString(),
-  togglePlay: UIManager.getViewManagerConfig(ComponentName).Commands.togglePlay!.toString()
-}
 
 export enum SuperPlayerState {
   StateFailed = 0, // 播放失败
@@ -81,41 +65,44 @@ export type TxplayerViewProps = {
   onFullscreen: (fullscreen: number) => void; // 1 yes 0 no
 };
 
-const TxplayerViewNative = requireNativeComponent<TxplayerViewProps>(ComponentName);
+const TxplayerView = React.forwardRef<TxplayerViewProps, TxplayerViewApi>((props, forwardedRef): React.ReactNode => {
+  const nativeRef = React.useRef<React.ElementRef<typeof TxplayerViewNative> | null>(null);
 
-const TxplayerView = React.forwardRef<TxplayerViewProps, TxplayerViewApi>((props, ref) => {
-  const nativeRef = React.useRef<typeof TxplayerViewNative>();
+  const ref = useMergeRefs(nativeRef, forwardedRef);
 
   React.useImperativeHandle<any, TxplayerViewApi>(
-    ref,
+    forwardedRef,
     () => ({
       startPlay: () => {
-        try {
-          UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.startPlay, []);
-        } catch (e) {
-        }
+        //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.startPlay, []);
+        Commands.startPlay(nativeRef)
       },
       stopPlay: () => {
-        UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.stopPlay, []);
+        //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.stopPlay, []);
+        Commands.stopPlay(nativeRef)
       },
       addDanmaku: (contents: string[]) => {
-        UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.addDanmaku, [contents]);
+        //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.addDanmaku, [contents]);
+        Commands.addDanmaku(nativeRef, contents)
       },
       switchToOrientation: (oriention: string, force: string) => {
-        UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.switchToOrientation, [oriention, force || '0']);
+        //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.switchToOrientation, [oriention, force || '0']);
+        Commands.switchToOrientation(nativeRef, oriention, force)
       },
       togglePlay: () => {
-        UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.togglePlay, []);
+        //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.togglePlay, []);
+        Commands.togglePlay(nativeRef)
       },
       seekTo: (second: number) => {
-        UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.seekTo, [second]);
+        //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.seekTo, [second]);
+        Commands.seekTo(nativeRef, second)
       }
     }),
     []
   );
 
   // @ts-ignore
-  return <TxplayerViewNative {...props} ref={nativeRef} />;
+  return <TxplayerViewNative {...props} ref={ref} />;
 });
 
 // @ts-ignore

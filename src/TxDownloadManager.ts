@@ -1,22 +1,32 @@
-import { NativeModules, NativeEventEmitter } from 'react-native';
+import { NativeModules, TurboModuleRegistry, NativeEventEmitter } from 'react-native';
 
-const emitter = new NativeEventEmitter(NativeModules.TxDownloadManager);
+const TxDownloadManager = TurboModuleRegistry
+  ? TurboModuleRegistry.get('TxDownloadManager')
+  : NativeModules['TxDownloadManager'];
 
-function isLoaded() {
-  // @ts-ignore
-  return global.TXD_getDownloadList != null;
+if (!TxDownloadManager) {
+  throw new Error('[@jtreact/react-native-txlayer]: NativeModule: TxDownloadManager is null.');
 }
 
-if (!isLoaded()) {
-  const result = NativeModules.TxDownloadManager?.install();
-  if (!result && !isLoaded()) {
-    throw new Error('JSI bindings were not installed for: TxDownloadManager Module');
+if (NativeModules['TxDownloadManager']) {
+  function isLoaded() {
+    // @ts-ignore
+    return global.TXD_getDownloadList != null;
   }
 
   if (!isLoaded()) {
-    throw new Error('JSI bindings were not installed for: TxDownloadManager Module');
+    const result = NativeModules.TxDownloadManager?.install();
+    if (!result && !isLoaded()) {
+      throw new Error('JSI bindings were not installed for: TxDownloadManager Module');
+    }
+
+    if (!isLoaded()) {
+      throw new Error('JSI bindings were not installed for: TxDownloadManager Module');
+    }
   }
 }
+
+const emitter = new NativeEventEmitter(TxDownloadManager);
 
 export interface VideoInfo {
   appId: string;
@@ -66,17 +76,29 @@ export const startDownload = (videoInfo: VideoInfo) => {
   }
 };
 export const stopDownload = (fileId: string, appId: string) => {
-  // @ts-ignore
-  global.TXD_stopDownload(fileId, appId);
+  if (TurboModuleRegistry) {
+    TxDownloadManager.stopDownload(fileId, appId);
+  } else {
+    // @ts-ignore
+    global.TXD_stopDownload(fileId, appId);
+  }
 };
 export const deleteDownload = (fileId: string, appId: string) => {
-  // @ts-ignore
-  global.TXD_deleteDownload(fileId, appId);
+  if (TurboModuleRegistry) {
+    TxDownloadManager.deleteDownload(fileId, appId);
+  } else {
+    // @ts-ignore
+    //global.TXD_deleteDownload(fileId, appId);
+  }
 };
 export const getDownloadList = (): DownloadInfo[] => {
   try {
-    // @ts-ignore
-    return JSON.parse(global.TXD_getDownloadList());
+    if (TurboModuleRegistry) {
+      return TxDownloadManager.getDownloadList();
+    } else {
+      // @ts-ignore
+      return JSON.parse(global.TXD_getDownloadList());
+    }
   } catch (e) {
     console.log('----> TxDownloadManager getDownloadList err', e);
     return [];
@@ -87,23 +109,18 @@ export type DownloadEventType = {
   name: 'progress' | 'finish' | 'start' | 'stop' | 'error';
   fileId: string;
   progress?: number;
-  downloaded?: number
+  downloaded?: number;
 };
 
-type Unsubscribe = () => void
-export const subscribeEvent = (fileId: string, cb: (value: DownloadEventType) => void): Unsubscribe  => {
-  const subscription = emitter.addListener(
-  'TxDownloadEvent',
-    (value) => {
-      console.log('----> download event', value)
-      if (value.fileId === fileId) {
-        cb && cb(value)
-      }
+type Unsubscribe = () => void;
+export const subscribeEvent = (fileId: string, cb: (value: DownloadEventType) => void): Unsubscribe => {
+  const subscription = emitter.addListener('TxDownloadEvent', (value) => {
+    console.log('----> download event', value);
+    if (value.fileId === fileId) {
+      cb && cb(value);
     }
-  );
+  });
   return () => {
     subscription.remove();
-  }
-}
-
-
+  };
+};

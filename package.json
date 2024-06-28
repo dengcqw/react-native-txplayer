@@ -42,11 +42,7 @@
     "bootstrap": "yarn example && yarn install && yarn example pods",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build"
   },
-  "keywords": [
-    "react-native",
-    "ios",
-    "android"
-  ],
+  "keywords": ["react-native", "ios", "android"],
   "repository": "https://github.com/dengcqw/react-native-txplayer/react-native-txplayer",
   "author": "dengjinlong <dengjinlong@jtexpress.com> (https://github.com/dengcqw/react-native-txplayer)",
   "license": "MIT",
@@ -87,18 +83,12 @@
   "packageManager": "^yarn@1.22.15",
   "jest": {
     "preset": "react-native",
-    "modulePathIgnorePatterns": [
-      "<rootDir>/example/node_modules",
-      "<rootDir>/lib/"
-    ]
+    "modulePathIgnorePatterns": ["<rootDir>/example/node_modules", "<rootDir>/lib/"]
   },
-"  publishConfig": { "@jtreact:registry":"http://code.jms.com/api/v4/projects/11871/packages/npm/" },
+  "  publishConfig": { "@jtreact:registry": "http://code.jms.com/api/v4/projects/11871/packages/npm/" },
   "eslintConfig": {
     "root": true,
-    "extends": [
-      "@react-native-community",
-      "prettier"
-    ],
+    "extends": ["@react-native-community", "prettier"],
     "rules": {
       "prettier/prettier": [
         "error",
@@ -112,10 +102,7 @@
       ]
     }
   },
-  "eslintIgnore": [
-    "node_modules/",
-    "lib/"
-  ],
+  "eslintIgnore": ["node_modules/", "lib/"],
   "prettier": {
     "quoteProps": "consistent",
     "singleQuote": true,
@@ -136,5 +123,13 @@
         }
       ]
     ]
+  },
+  "codegenConfig": {
+    "name": "rntxplayer",
+    "type": "all",
+    "jsSrcsDir": "./src",
+    "android": {
+      "javaPackageName": "com.test.fastimage"
+    }
   }
 }
