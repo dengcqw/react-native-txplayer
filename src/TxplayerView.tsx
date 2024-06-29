@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { useMergeRefs, type NativeSyntheticEvent, Platform, NativeModules } from 'react-native';
-import TxplayerViewNative, { Commands } from './TxplayerViewNativeComponent'
+import { type NativeSyntheticEvent, Platform, NativeModules } from 'react-native';
+import TxplayerViewNative, { Commands } from './TxplayerViewNativeComponent';
 
-const TxplayerViewMgr = Platform.OS === 'ios' ? NativeModules.TxplayerView : NativeModules.TxplayerNativeModule
+const TxplayerViewMgr = Platform.OS === 'ios' ? NativeModules.TxplayerView : NativeModules.TxplayerNativeModule;
 
 export enum SuperPlayerState {
   StateFailed = 0, // 播放失败
@@ -65,60 +65,69 @@ export type TxplayerViewProps = {
   onFullscreen: (fullscreen: number) => void; // 1 yes 0 no
 };
 
-const TxplayerView = React.forwardRef<TxplayerViewProps, TxplayerViewApi>((props, forwardedRef): React.ReactNode => {
-  const nativeRef = React.useRef<React.ElementRef<typeof TxplayerViewNative> | null>(null);
+type ForwardedType = React.ElementRef<typeof TxplayerViewNative>
 
-  const ref = useMergeRefs(nativeRef, forwardedRef);
+const TxplayerView = React.forwardRef<TxplayerViewProps, ForwardedType>((props, forwardedRef): React.ReactNode => {
+  const nativeRef = React.useRef<React.ElementRef<typeof TxplayerViewNative> | null>(null);
 
   React.useImperativeHandle<any, TxplayerViewApi>(
     forwardedRef,
     () => ({
       startPlay: () => {
         //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.startPlay, []);
-        Commands.startPlay(nativeRef)
+        if (nativeRef.current) {
+          Commands.startPlay(nativeRef.current);
+        }
       },
       stopPlay: () => {
         //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.stopPlay, []);
-        Commands.stopPlay(nativeRef)
+        if (nativeRef.current) {
+          Commands.stopPlay(nativeRef.current);
+        }
       },
       addDanmaku: (contents: string[]) => {
         //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.addDanmaku, [contents]);
-        Commands.addDanmaku(nativeRef, contents)
+        if (nativeRef.current) {
+          Commands.addDanmaku(nativeRef.current, contents);
+        }
       },
       switchToOrientation: (oriention: string, force: string) => {
         //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.switchToOrientation, [oriention, force || '0']);
-        Commands.switchToOrientation(nativeRef, oriention, force)
+        if (nativeRef.current) {
+          Commands.switchToOrientation(nativeRef.current, oriention, force);
+        }
       },
       togglePlay: () => {
         //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.togglePlay, []);
-        Commands.togglePlay(nativeRef)
+        if (nativeRef.current) {
+          Commands.togglePlay(nativeRef.current);
+        }
       },
       seekTo: (second: number) => {
         //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.seekTo, [second]);
-        Commands.seekTo(nativeRef, second)
-      }
+        if (nativeRef.current) {
+          Commands.seekTo(nativeRef.current, second);
+        }
+      },
     }),
     []
   );
 
   // @ts-ignore
-  return <TxplayerViewNative {...props} ref={ref} />;
+  return <TxplayerViewNative {...props} ref={nativeRef} />;
 });
 
 // @ts-ignore
 export const stopAllPlay = () => {
- TxplayerViewMgr && TxplayerViewMgr.stopAllPlay && TxplayerViewMgr.stopAllPlay()
-}
-
+  TxplayerViewMgr && TxplayerViewMgr.stopAllPlay && TxplayerViewMgr.stopAllPlay();
+};
 
 export const startPip = () => {
- TxplayerViewMgr && TxplayerViewMgr.startPip && TxplayerViewMgr.startPip()
-}
+  TxplayerViewMgr && TxplayerViewMgr.startPip && TxplayerViewMgr.startPip();
+};
 
 export const stopPip = () => {
- TxplayerViewMgr && TxplayerViewMgr.stopPip && TxplayerViewMgr.stopPip()
-}
-
+  TxplayerViewMgr && TxplayerViewMgr.stopPip && TxplayerViewMgr.stopPip();
+};
 
 export default TxplayerView;
-
