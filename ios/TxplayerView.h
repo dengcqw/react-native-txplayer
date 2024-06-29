@@ -75,7 +75,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface FeedBaseFullScreenViewController : UIViewController
 ///视频窗口
 @property (nonatomic, strong) SuperPlayerView *playerView;
-@property (nonatomic,assign) NSUInteger orientation;
+@property (nonatomic,assign) UIInterfaceOrientation orientation;
 @property (nonatomic,assign) BOOL enableRotate;
 
 - (UIView *)screenView;

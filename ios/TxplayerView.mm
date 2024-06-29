@@ -92,7 +92,7 @@ static int s_playerCount = 0;
 
 @property(nonatomic, strong) JTDanmakuView *danmakuView;
 @property (nonatomic,strong) NSMutableArray *danmakus;
-@property (nonatomic,assign) NSUInteger orientation;
+@property (nonatomic,assign) UIInterfaceOrientation orientation;
 @property (nonatomic,assign) NSInteger lastTime;
 @property (nonatomic,assign) BOOL isPlaying;
 @end
@@ -202,7 +202,7 @@ static int s_playerCount = 0;
 #ifdef RCT_NEW_ARCH_ENABLED
     if (self.eventEmitter != nullptr) {
         std::dynamic_pointer_cast<const facebook::react::TxplayerViewEventEmitter>(self.eventEmitter)
-        ->onPlayStateChange(facebook::react::TxplayerViewEventEmitter::onPlayStateChange{.state = StatePause});
+        ->onPlayStateChange(facebook::react::TxplayerViewEventEmitter::OnPlayStateChange{.state = StatePause});
     }
 #else
     if(self.onPlayStateChange != nil) {
@@ -303,7 +303,7 @@ static int s_playerCount = 0;
 #ifdef RCT_NEW_ARCH_ENABLED
     if (self.eventEmitter != nullptr) {
         std::dynamic_pointer_cast<const facebook::react::TxplayerViewEventEmitter>(self.eventEmitter)
-        ->onPlayStateChange(facebook::react::TxplayerViewEventEmitter::onPlayStateChange{.state = StateStopped});
+        ->onPlayStateChange(facebook::react::TxplayerViewEventEmitter::OnPlayStateChange{.state = StateStopped});
     }
 #else
     if(self.onPlayStateChange != nil) {
@@ -331,7 +331,7 @@ static int s_playerCount = 0;
 #ifdef RCT_NEW_ARCH_ENABLED
     if (self.eventEmitter != nullptr) {
         std::dynamic_pointer_cast<const facebook::react::TxplayerViewEventEmitter>(self.eventEmitter)
-        ->onDownload(facebook::react::TxplayerViewEventEmitter::onDownload{});
+        ->onDownload(facebook::react::TxplayerViewEventEmitter::OnDownload{});
     }
 #else
     if(self.onDownload){
@@ -372,7 +372,7 @@ static int s_playerCount = 0;
 #ifdef RCT_NEW_ARCH_ENABLED
     if (self.eventEmitter != nullptr) {
         std::dynamic_pointer_cast<const facebook::react::TxplayerViewEventEmitter>(self.eventEmitter)
-        ->onFullscreen(facebook::react::TxplayerViewEventEmitter::onFullscreen{.fullscreen = 1});
+        ->onFullscreen(facebook::react::TxplayerViewEventEmitter::OnFullscreen{.fullscreen = 1});
     }
 #else
     if (self.onFullscreen) {
@@ -401,7 +401,7 @@ static int s_playerCount = 0;
 #ifdef RCT_NEW_ARCH_ENABLED
     if (self.eventEmitter != nullptr) {
         std::dynamic_pointer_cast<const facebook::react::TxplayerViewEventEmitter>(self.eventEmitter)
-        ->onFullscreen(facebook::react::TxplayerViewEventEmitter::onFullscreen{.fullscreen = 0});
+        ->onFullscreen(facebook::react::TxplayerViewEventEmitter::OnFullscreen{.fullscreen = 0});
     }
 #else
     if (self.onFullscreen) {
@@ -425,7 +425,7 @@ static int s_playerCount = 0;
 #ifdef RCT_NEW_ARCH_ENABLED
     if (self.eventEmitter != nullptr) {
         std::dynamic_pointer_cast<const facebook::react::TxplayerViewEventEmitter>(self.eventEmitter)
-        ->onPlayStateChange(facebook::react::TxplayerViewEventEmitter::onPlayStateChange{.state = state});
+        ->onPlayStateChange(facebook::react::TxplayerViewEventEmitter::OnPlayStateChange{.state = static_cast<int>(state)});
     }
 #else
     if(self.onPlayStateChange != nil){
@@ -466,10 +466,10 @@ static int s_playerCount = 0;
 #ifdef RCT_NEW_ARCH_ENABLED
     if (self.eventEmitter != nullptr) {
         std::dynamic_pointer_cast<const facebook::react::TxplayerViewEventEmitter>(self.eventEmitter)
-        ->onPlayTimeChange(facebook::react::TxplayerViewEventEmitter::onPlayTimeChange{
-            .totalTime = totalTime,
-            .progressTime = progressTime,
-            .remainTime = remainTime,
+        ->onPlayTimeChange(facebook::react::TxplayerViewEventEmitter::OnPlayTimeChange{
+            .totalTime = static_cast<int>(totalTime),
+            .progressTime = static_cast<int>(progressTime),
+            .remainTime = static_cast<int>(remainTime),
             .isFinish = isFinish
         });
     }

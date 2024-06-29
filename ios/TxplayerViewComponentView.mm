@@ -15,8 +15,13 @@
 #import <react/renderer/components/rntxplayer/ComponentDescriptors.h>
 #import <react/renderer/components/rntxplayer/Props.h>
 #import <react/renderer/components/rntxplayer/EventEmitters.h>
+#import <react/renderer/components/rntxplayer/RCTComponentViewHelpers.h>
 
 using namespace facebook::react;
+
+@interface TxplayerViewComponentView() <RCTTxplayerViewViewProtocol>
+
+@end
 
 @implementation TxplayerViewComponentView
 {
@@ -58,6 +63,31 @@ using namespace facebook::react;
     [super prepareForRecycle];
     txplayerView = [[TxplayerView alloc] initWithFrame:self.bounds];
     self.contentView = txplayerView;
+}
+
+
+- (void)startPlay {
+    [txplayerView startPlay];
+}
+
+- (void)stopPlay {
+    [txplayerView stopPlay];
+}
+
+- (void)togglePlay {
+    [txplayerView togglePlay];
+}
+
+- (void)addDanmaku:(const NSArray *)contents {
+//    [txplayerView prepareDanmaku:contents];
+}
+
+- (void)switchToOrientation:(NSString *)oriention force:(NSString *)force {
+    [txplayerView switchToOrientation:oriention force:force];
+}
+
+- (void)seekTo:(NSInteger)second {
+    [txplayerView seekTo:@(second)];
 }
 
 @end

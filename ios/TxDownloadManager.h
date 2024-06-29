@@ -3,7 +3,7 @@
 #import <React/RCTEventEmitter.h>
 
 #ifdef RCT_NEW_ARCH_ENABLED
-#import <rntxplaper/rntxplaper.h>
+#import <rntxplayer/rntxplayer.h>
 #endif
 
 @interface TxDownloadManager : RCTEventEmitter <
