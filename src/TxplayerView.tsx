@@ -65,7 +65,7 @@ export type TxplayerViewProps = {
   onFullscreen: (fullscreen: number) => void; // 1 yes 0 no
 };
 
-type ForwardedType = React.ElementRef<typeof TxplayerViewNative>
+type ForwardedType = React.ElementRef<typeof TxplayerViewNative>;
 
 const TxplayerView = React.forwardRef<TxplayerViewProps, ForwardedType>((props, forwardedRef): React.ReactNode => {
   const nativeRef = React.useRef<React.ElementRef<typeof TxplayerViewNative> | null>(null);
@@ -76,37 +76,55 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, ForwardedType>((props, 
       startPlay: () => {
         //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.startPlay, []);
         if (nativeRef.current) {
-          Commands.startPlay(nativeRef.current);
+          const ref = nativeRef.current;
+          setTimeout(() => {
+            Commands.startPlay(ref);
+          }, 10);
         }
       },
       stopPlay: () => {
         //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.stopPlay, []);
         if (nativeRef.current) {
-          Commands.stopPlay(nativeRef.current);
+          const ref = nativeRef.current;
+          setTimeout(() => {
+            Commands.stopPlay(ref);
+          }, 10);
         }
       },
       addDanmaku: (contents: string[]) => {
         //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.addDanmaku, [contents]);
         if (nativeRef.current) {
-          Commands.addDanmaku(nativeRef.current, contents);
+          const ref = nativeRef.current;
+          setTimeout(() => {
+            Commands.addDanmaku(ref, contents);
+          }, 10);
         }
       },
       switchToOrientation: (oriention: string, force: string) => {
         //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.switchToOrientation, [oriention, force || '0']);
         if (nativeRef.current) {
-          Commands.switchToOrientation(nativeRef.current, oriention, force);
+          const ref = nativeRef.current;
+          setTimeout(() => {
+            Commands.switchToOrientation(ref, oriention, force);
+          }, 10);
         }
       },
       togglePlay: () => {
         //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.togglePlay, []);
         if (nativeRef.current) {
-          Commands.togglePlay(nativeRef.current);
+          const ref = nativeRef.current;
+          setTimeout(() => {
+            Commands.togglePlay(ref);
+          }, 10);
         }
       },
       seekTo: (second: number) => {
         //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.seekTo, [second]);
         if (nativeRef.current) {
-          Commands.seekTo(nativeRef.current, second);
+          const ref = nativeRef.current;
+          setTimeout(() => {
+            Commands.seekTo(ref, second);
+          }, 10);
         }
       },
     }),

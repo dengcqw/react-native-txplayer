@@ -67,6 +67,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)startPip;
 - (void)stopPip;
 
+- (void)didSetProps:(__unused NSArray<NSString *> *)changedProps;
+
 @end
 
 
