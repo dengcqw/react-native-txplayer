@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { type NativeSyntheticEvent, Platform, NativeModules } from 'react-native';
+import { type NativeSyntheticEvent, Platform, NativeModules, findNodeHandle, UIManager } from 'react-native';
 import TxplayerViewNative, { Commands } from './TxplayerViewNativeComponent';
 
 const TxplayerViewMgr = Platform.OS === 'ios' ? NativeModules.TxplayerView : NativeModules.TxplayerNativeModule;
@@ -74,57 +74,75 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, ForwardedType>((props, 
     forwardedRef,
     () => ({
       startPlay: () => {
-        //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.startPlay, []);
-        if (nativeRef.current) {
-          const ref = nativeRef.current;
-          setTimeout(() => {
-            Commands.startPlay(ref);
-          }, 10);
+        if (TxplayerViewNative) {
+          if (nativeRef.current) {
+            const ref = nativeRef.current;
+            setTimeout(() => {
+              Commands.startPlay(ref);
+            }, 10);
+          }
+        } else {
+          //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.startPlay, []);
         }
       },
       stopPlay: () => {
-        //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.stopPlay, []);
-        if (nativeRef.current) {
-          const ref = nativeRef.current;
-          setTimeout(() => {
-            Commands.stopPlay(ref);
-          }, 10);
+        if (TxplayerViewNative) {
+          if (nativeRef.current) {
+            const ref = nativeRef.current;
+            setTimeout(() => {
+              Commands.stopPlay(ref);
+            }, 10);
+          }
+        } else {
+          //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.stopPlay, []);
         }
       },
       addDanmaku: (contents: string[]) => {
-        //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.addDanmaku, [contents]);
-        if (nativeRef.current) {
-          const ref = nativeRef.current;
-          setTimeout(() => {
-            Commands.addDanmaku(ref, contents);
-          }, 10);
+        if (TxplayerViewNative) {
+          if (nativeRef.current) {
+            const ref = nativeRef.current;
+            setTimeout(() => {
+              Commands.addDanmaku(ref, contents);
+            }, 10);
+          }
+        } else {
+          //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.addDanmaku, [contents]);
         }
       },
       switchToOrientation: (oriention: string, force: string) => {
-        //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.switchToOrientation, [oriention, force || '0']);
-        if (nativeRef.current) {
-          const ref = nativeRef.current;
-          setTimeout(() => {
-            Commands.switchToOrientation(ref, oriention, force);
-          }, 10);
+        if (TxplayerViewNative) {
+          if (nativeRef.current) {
+            const ref = nativeRef.current;
+            setTimeout(() => {
+              Commands.switchToOrientation(ref, oriention, force);
+            }, 10);
+          }
+        } else {
+          //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.switchToOrientation, [oriention, force || '0']);
         }
       },
       togglePlay: () => {
-        //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.togglePlay, []);
-        if (nativeRef.current) {
-          const ref = nativeRef.current;
-          setTimeout(() => {
-            Commands.togglePlay(ref);
-          }, 10);
+        if (TxplayerViewNative) {
+          if (nativeRef.current) {
+            const ref = nativeRef.current;
+            setTimeout(() => {
+              Commands.togglePlay(ref);
+            }, 10);
+          }
+        } else {
+          //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.togglePlay, []);
         }
       },
       seekTo: (second: number) => {
-        //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.seekTo, [second]);
-        if (nativeRef.current) {
-          const ref = nativeRef.current;
-          setTimeout(() => {
-            Commands.seekTo(ref, second);
-          }, 10);
+        if (TxplayerViewNative) {
+          if (nativeRef.current) {
+            const ref = nativeRef.current;
+            setTimeout(() => {
+              Commands.seekTo(ref, second);
+            }, 10);
+          }
+        } else {
+          //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.seekTo, [second]);
         }
       },
     }),

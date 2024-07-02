@@ -61,9 +61,57 @@ RCT_EXPORT_MODULE(TxDownloadManager)
     self.hasListeners = NO;
 }
 
+RCT_EXPORT_METHOD(addListener : (NSString *)eventName) {
+  // Keep: Required for RN built in Event Emitter Calls.
+}
+
+RCT_EXPORT_METHOD(removeListeners : (NSInteger)count) {
+  // Keep: Required for RN built in Event Emitter Calls.
+}
+
 + (BOOL)requiresMainQueueSetup {
     return YES;
 }
+
+- (TXVodDownloadManager *)getDownloadMgr {
+    TXVodDownloadManager * mgr = [TXVodDownloadManager shareInstance];
+    if (mgr.delegate != self) {
+        mgr.delegate = self;
+    }
+    return mgr;
+}
+
+#ifdef RCT_NEW_ARCH_ENABLED
+- (void)startDownload:(JS::NativeTxDownloadManagerModule::VideoInfo &)videoInfo {
+    NSLog(@"TxPlayer: startDownload");
+    
+    TXVodDownloadDataSource *dataSource = [[TXVodDownloadDataSource alloc] init];
+    dataSource.appId = [videoInfo.appId() integerValue];
+    dataSource.fileId = videoInfo.fileId();
+    dataSource.pSign = videoInfo.sign();
+    dataSource.quality = TXVodQualityHD;
+    dataSource.userName = @"default";
+    [[self getDownloadMgr] startDownload:dataSource];
+}
+- (void)stopDownload:(NSString *)videoFileId appId:(NSString *)appId {
+    NSLog(@"TxPlayer: stopDownload %@ %@", appId, videoFileId);
+    id mediaInfo =[[self getDownloadMgr] getDownloadMediaInfo:[appId integerValue] fileId:videoFileId qualityId:TXVodQualityHD userName:@"default"];
+    [[self getDownloadMgr] stopDownload:mediaInfo];
+}
+- (void)deleteDownload:(NSString *)videoFileId appId:(NSString *)appId {
+    id mediaInfo =[[self getDownloadMgr] getDownloadMediaInfo:[appId integerValue] fileId:videoFileId qualityId:TXVodQualityHD userName:@"default"];
+    [[self getDownloadMgr] stopDownload:mediaInfo];
+    BOOL ret = [[self getDownloadMgr] deleteDownloadMediaInfo:mediaInfo];
+    NSLog(@"TxPlayer: deleteDownload %@ %@ %@", appId, videoFileId, @(ret));
+}
+- (NSArray<NSDictionary *> *)getDownloadList {
+    NSArray<TXVodDownloadMediaInfo *> * array = [[self getDownloadMgr] getDownloadMediaInfoList];
+    
+    if (array == nil) return @[];
+    return getDownloanInfos(array);
+}
+
+#else
 
 // Installing JSI Bindings as done by
 // https://github.com/mrousavy/react-native-mmkv
@@ -85,19 +133,11 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
     return @true;
 }
 
-- (TXVodDownloadManager *)getDownloadMgr {
-    TXVodDownloadManager * mgr = [TXVodDownloadManager shareInstance];
-    if (mgr.delegate != self) {
-        mgr.delegate = self;
-    }
-    return mgr;
-}
-
-RCT_EXPORT_METHOD(startDownload:(NSString *)videoInfo) {
+- (void)startDownload:(NSString *)videoInfo {
     NSError* error;
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:[videoInfo dataUsingEncoding:(NSUTF8StringEncoding)] options:(kNilOptions) error:&error];
     NSLog(@"TxPlayer: startDownload");
-    
+
     TXVodDownloadDataSource *dataSource = [[TXVodDownloadDataSource alloc] init];
     dataSource.appId = [dict[@"appId"] integerValue];
     dataSource.fileId = dict[@"fileId"];
@@ -106,63 +146,27 @@ RCT_EXPORT_METHOD(startDownload:(NSString *)videoInfo) {
     dataSource.userName = @"default";
     [[self getDownloadMgr] startDownload:dataSource];
 }
-
-RCT_EXPORT_METHOD(stopDownload:(NSString *)videoFileId appId:(NSString *)appId) {
+- (void)stopDownload:(NSString *)videoFileId appId:(NSString *)appId {
     NSLog(@"TxPlayer: stopDownload %@ %@", appId, videoFileId);
     id mediaInfo =[[self getDownloadMgr] getDownloadMediaInfo:[appId integerValue] fileId:videoFileId qualityId:TXVodQualityHD userName:@"default"];
     [[self getDownloadMgr] stopDownload:mediaInfo];
 }
-
-RCT_EXPORT_METHOD(deleteDownload:(NSString *)videoFileId appId:(NSString *)appId) {
+- (void)deleteDownload:(NSString *)videoFileId appId:(NSString *)appId {
     id mediaInfo =[[self getDownloadMgr] getDownloadMediaInfo:[appId integerValue] fileId:videoFileId qualityId:TXVodQualityHD userName:@"default"];
     [[self getDownloadMgr] stopDownload:mediaInfo];
     BOOL ret = [[self getDownloadMgr] deleteDownloadMediaInfo:mediaInfo];
     NSLog(@"TxPlayer: deleteDownload %@ %@ %@", appId, videoFileId, @(ret));
 }
-
-RCT_EXPORT_METHOD(getDownloadList) {
+- (NSString *)getDownloadList {
     NSArray<TXVodDownloadMediaInfo *> * array = [[self getDownloadMgr] getDownloadMediaInfoList];
-    
+
     if (array == nil) array = @[];
     NSError* error;
     NSData *str = [NSJSONSerialization dataWithJSONObject:getDownloanInfos(array) options:NSJSONWritingFragmentsAllowed error:&error];
     NSLog(@"TxPlayer: getDownloadList %@, %@", @(array.count), [error localizedDescription]);
-//    return [[NSString alloc] initWithData:str encoding:NSUTF8StringEncoding];
+    return [[NSString alloc] initWithData:str encoding:NSUTF8StringEncoding];
 }
-
-//- (void)startDownload:(NSString *)videoInfo {
-//    NSError* error;
-//    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:[videoInfo dataUsingEncoding:(NSUTF8StringEncoding)] options:(kNilOptions) error:&error];
-//    NSLog(@"TxPlayer: startDownload");
-//    
-//    TXVodDownloadDataSource *dataSource = [[TXVodDownloadDataSource alloc] init];
-//    dataSource.appId = [dict[@"appId"] integerValue];
-//    dataSource.fileId = dict[@"fileId"];
-//    dataSource.pSign = dict[@"sign"];
-//    dataSource.quality = TXVodQualityHD;
-//    dataSource.userName = @"default";
-//    [[self getDownloadMgr] startDownload:dataSource];
-//}
-//- (void)stopDownload:(NSString *)videoFileId appId:(NSString *)appId {
-//    NSLog(@"TxPlayer: stopDownload %@ %@", appId, videoFileId);
-//    id mediaInfo =[[self getDownloadMgr] getDownloadMediaInfo:[appId integerValue] fileId:videoFileId qualityId:TXVodQualityHD userName:@"default"];
-//    [[self getDownloadMgr] stopDownload:mediaInfo];
-//}
-//- (void)deleteDownload:(NSString *)videoFileId appId:(NSString *)appId {
-//    id mediaInfo =[[self getDownloadMgr] getDownloadMediaInfo:[appId integerValue] fileId:videoFileId qualityId:TXVodQualityHD userName:@"default"];
-//    [[self getDownloadMgr] stopDownload:mediaInfo];
-//    BOOL ret = [[self getDownloadMgr] deleteDownloadMediaInfo:mediaInfo];
-//    NSLog(@"TxPlayer: deleteDownload %@ %@ %@", appId, videoFileId, @(ret));
-//}
-//- (NSString *)getDownloadList {
-//    NSArray<TXVodDownloadMediaInfo *> * array = [[self getDownloadMgr] getDownloadMediaInfoList];
-//    
-//    if (array == nil) array = @[];
-//    NSError* error;
-//    NSData *str = [NSJSONSerialization dataWithJSONObject:getDownloanInfos(array) options:NSJSONWritingFragmentsAllowed error:&error];
-//    NSLog(@"TxPlayer: getDownloadList %@, %@", @(array.count), [error localizedDescription]);
-//    return [[NSString alloc] initWithData:str encoding:NSUTF8StringEncoding];
-//}
+#endif
 
 - (void)onDownloadError:(TXVodDownloadMediaInfo *)mediaInfo errorCode:(TXDownloadError)code errorMsg:(NSString *)msg {
     NSLog(@"TxPlayer: onDownloadError %@ %@", mediaInfo.dataSource.fileId, msg);
@@ -221,7 +225,9 @@ RCT_EXPORT_METHOD(getDownloadList) {
 {
     return std::make_shared<facebook::react::NativeTxDownloadManagerModuleSpecJSI>(params);
 }
-#endif
+
+@end
+#else
 
 @end
 
@@ -235,9 +241,9 @@ static void install(jsi::Runtime &jsiRuntime, TxDownloadManager *manager) {
                                                                       const Value *arguments,
                                                                       size_t count) -> Value {
         
-//        jsi::String downloadList = convertNSStringToJSIString(runtime, [manager getDownloadList]);
+        jsi::String downloadList = convertNSStringToJSIString(runtime, [manager getDownloadList]);
         
-//        return Value(runtime, downloadList);
+        return Value(runtime, downloadList);
         return Value(true);
     });
     
@@ -254,7 +260,7 @@ static void install(jsi::Runtime &jsiRuntime, TxDownloadManager *manager) {
         
         NSString *videoInfo = convertJSIStringToNSString(runtime, arguments[0].getString(runtime));
         
-//        [manager startDownload:videoInfo];
+        [manager startDownload:videoInfo];
         
         return Value(true);
     });
@@ -299,3 +305,5 @@ static void install(jsi::Runtime &jsiRuntime, TxDownloadManager *manager) {
     
     jsiRuntime.global().setProperty(jsiRuntime, "TXD_deleteDownload", std::move(deleteDownload));
 }
+
+#endif

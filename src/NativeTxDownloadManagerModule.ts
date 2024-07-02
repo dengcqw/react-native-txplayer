@@ -9,7 +9,7 @@ import type {
 type VideoInfo = Readonly<{
   appId: string;
   fileId: string;
-  pSign: string;
+  sign: string;
 }>
 
 type DownloadInfo = Readonly<{
@@ -23,10 +23,10 @@ type DownloadInfo = Readonly<{
   downloadSegments: Int32;
   progress: Float;
   playPath: string;
-  speed: Float;
+  speed: Int32;
   downloadState: Int32;
   preferredResolution: Int32;
-  isResourceBroken: Int32;
+  isResourceBroken: boolean;
 }>
 
 export interface Spec extends TurboModule {
@@ -34,6 +34,8 @@ export interface Spec extends TurboModule {
   stopDownload: (fileId: string, appId: string) => void
   deleteDownload : (fileId: string, appId: string) => void
   getDownloadList : () => DownloadInfo[]
+  addListener(eventName: string): void;
+  removeListeners(count: Int32): void;
 }
 
 export default TurboModuleRegistry.get<Spec>("TxDownloadManager");

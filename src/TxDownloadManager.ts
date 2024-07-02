@@ -1,14 +1,7 @@
-import { NativeModules, TurboModuleRegistry, NativeEventEmitter } from 'react-native';
+import { NativeModules, NativeEventEmitter } from 'react-native';
+import TurboManager from './NativeTxDownloadManagerModule';
 
-const TxDownloadManager = TurboModuleRegistry
-  ? TurboModuleRegistry.get('TxDownloadManager')
-  : NativeModules['TxDownloadManager'];
-
-if (!TxDownloadManager) {
-  throw new Error('[@jtreact/react-native-txlayer]: NativeModule: TxDownloadManager is null.');
-}
-
-if (NativeModules['TxDownloadManager']) {
+if (TurboManager == null) {
   function isLoaded() {
     // @ts-ignore
     return global.TXD_getDownloadList != null;
@@ -26,12 +19,10 @@ if (NativeModules['TxDownloadManager']) {
   }
 }
 
-const emitter = new NativeEventEmitter(TxDownloadManager);
-
 export interface VideoInfo {
   appId: string;
   fileId: string;
-  pSign: string;
+  sign: string;
 }
 
 export interface DownloadInfo {
@@ -64,37 +55,42 @@ export interface DownloadInfo {
   // 偏好清晰度，查询播放状态时，需要与下载时保持一致。 默认720P
   preferredResolution: number;
   // 判断资源是否损坏，如下载完被删除等情况，默认值为NO
-  isResourceBroken: number;
+  isResourceBroken: boolean;
 }
 
 export const startDownload = (videoInfo: VideoInfo) => {
+  console.log('---->videoInfo', videoInfo)
   try {
-    // @ts-ignore
-    global.TXD_startDownload(JSON.stringify(videoInfo));
+    if (TurboManager) {
+      TurboManager.startDownload(videoInfo)
+    } else {
+      // @ts-ignore
+      global.TXD_startDownload(JSON.stringify(videoInfo));
+    }
   } catch (e) {
     console.log('----> TxDownloadManager startDownload err', e);
   }
 };
 export const stopDownload = (fileId: string, appId: string) => {
-  if (TurboModuleRegistry) {
-    TxDownloadManager.stopDownload(fileId, appId);
+  if (TurboManager) {
+    TurboManager.stopDownload(fileId, appId);
   } else {
     // @ts-ignore
     global.TXD_stopDownload(fileId, appId);
   }
 };
 export const deleteDownload = (fileId: string, appId: string) => {
-  if (TurboModuleRegistry) {
-    TxDownloadManager.deleteDownload(fileId, appId);
+  if (TurboManager) {
+    TurboManager.deleteDownload(fileId, appId);
   } else {
     // @ts-ignore
-    //global.TXD_deleteDownload(fileId, appId);
+    global.TXD_deleteDownload(fileId, appId);
   }
 };
 export const getDownloadList = (): DownloadInfo[] => {
   try {
-    if (TurboModuleRegistry) {
-      return TxDownloadManager.getDownloadList();
+    if (TurboManager) {
+      return TurboManager.getDownloadList();
     } else {
       // @ts-ignore
       return JSON.parse(global.TXD_getDownloadList());
@@ -113,7 +109,9 @@ export type DownloadEventType = {
 };
 
 type Unsubscribe = () => void;
+
 export const subscribeEvent = (fileId: string, cb: (value: DownloadEventType) => void): Unsubscribe => {
+  const emitter = new NativeEventEmitter(NativeModules.TxDownloadManager ? NativeModules.TxDownloadManager : TurboManager);
   const subscription = emitter.addListener('TxDownloadEvent', (value) => {
     console.log('----> download event', value);
     if (value.fileId === fileId) {
