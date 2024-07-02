@@ -62,11 +62,13 @@ RCT_EXPORT_MODULE(TxDownloadManager)
 }
 
 RCT_EXPORT_METHOD(addListener : (NSString *)eventName) {
+    [super addListener:eventName];
   // Keep: Required for RN built in Event Emitter Calls.
 }
 
 RCT_EXPORT_METHOD(removeListeners : (NSInteger)count) {
   // Keep: Required for RN built in Event Emitter Calls.
+    [super removeListeners:count];
 }
 
 + (BOOL)requiresMainQueueSetup {
