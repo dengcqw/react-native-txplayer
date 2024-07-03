@@ -67,6 +67,9 @@ export type TxplayerViewProps = {
 
 type ForwardedType = React.ElementRef<typeof TxplayerViewNative>;
 
+// @ts-ignore non-typed property
+const FABRIC_ENABLED = !!global?.nativeFabricUIManager;
+
 const TxplayerView = React.forwardRef<TxplayerViewProps, ForwardedType>((props, forwardedRef): React.ReactNode => {
   const nativeRef = React.useRef<React.ElementRef<typeof TxplayerViewNative> | null>(null);
 
@@ -74,7 +77,7 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, ForwardedType>((props, 
     forwardedRef,
     () => ({
       startPlay: () => {
-        if (TxplayerViewNative) {
+        if (FABRIC_ENABLED) {
           if (nativeRef.current) {
             const ref = nativeRef.current;
             setTimeout(() => {
@@ -86,7 +89,7 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, ForwardedType>((props, 
         }
       },
       stopPlay: () => {
-        if (TxplayerViewNative) {
+        if (FABRIC_ENABLED) {
           if (nativeRef.current) {
             const ref = nativeRef.current;
             setTimeout(() => {
@@ -98,7 +101,7 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, ForwardedType>((props, 
         }
       },
       addDanmaku: (contents: string[]) => {
-        if (TxplayerViewNative) {
+        if (FABRIC_ENABLED) {
           if (nativeRef.current) {
             const ref = nativeRef.current;
             setTimeout(() => {
@@ -110,7 +113,7 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, ForwardedType>((props, 
         }
       },
       switchToOrientation: (oriention: string, force: string) => {
-        if (TxplayerViewNative) {
+        if (FABRIC_ENABLED) {
           if (nativeRef.current) {
             const ref = nativeRef.current;
             setTimeout(() => {
@@ -122,7 +125,7 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, ForwardedType>((props, 
         }
       },
       togglePlay: () => {
-        if (TxplayerViewNative) {
+        if (FABRIC_ENABLED) {
           if (nativeRef.current) {
             const ref = nativeRef.current;
             setTimeout(() => {
@@ -134,7 +137,7 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, ForwardedType>((props, 
         }
       },
       seekTo: (second: number) => {
-        if (TxplayerViewNative) {
+        if (FABRIC_ENABLED) {
           if (nativeRef.current) {
             const ref = nativeRef.current;
             setTimeout(() => {
@@ -155,15 +158,15 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, ForwardedType>((props, 
 
 // @ts-ignore
 export const stopAllPlay = () => {
-  TxplayerViewMgr && TxplayerViewMgr.stopAllPlay && TxplayerViewMgr.stopAllPlay();
+  //TxplayerViewMgr && TxplayerViewMgr.stopAllPlay && TxplayerViewMgr.stopAllPlay();
 };
 
 export const startPip = () => {
-  TxplayerViewMgr && TxplayerViewMgr.startPip && TxplayerViewMgr.startPip();
+  //TxplayerViewMgr && TxplayerViewMgr.startPip && TxplayerViewMgr.startPip();
 };
 
 export const stopPip = () => {
-  TxplayerViewMgr && TxplayerViewMgr.stopPip && TxplayerViewMgr.stopPip();
+  //TxplayerViewMgr && TxplayerViewMgr.stopPip && TxplayerViewMgr.stopPip();
 };
 
 export default TxplayerView;
