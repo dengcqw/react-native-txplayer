@@ -2,7 +2,7 @@
   "name": "@jtreact/react-native-txplayer",
   "version": "0.1.66",
   "description": "封装腾讯云视频播放器superplayer",
-  "main": "lib/commonjs/index",
+  "main": "src/index.tsx",
   "module": "lib/module/index",
   "types": "lib/typescript/index.d.ts",
   "react-native": "src/index",
@@ -129,7 +129,7 @@
     "type": "all",
     "jsSrcsDir": "./src",
     "android": {
-      "javaPackageName": "com.test.fastimage"
+      "javaPackageName": "com.txplayer"
     }
   }
 }

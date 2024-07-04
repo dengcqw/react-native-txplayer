@@ -9,13 +9,19 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.facebook.proguard.annotations.DoNotStrip;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.JavaScriptContextHolder;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeMap;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.gson.Gson;
@@ -30,8 +36,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @ReactModule(name = TxDownloadManager.NAME)
-public class TxDownloadManager extends ReactContextBaseJavaModule implements ITXVodDownloadListener {
-  public static final String NAME = "TxDownloadManager";
+public class TxDownloadManager extends NativeTxDownloadManagerModuleSpec implements ITXVodDownloadListener {
   public static final String TxDownloadEvent = "TxDownloadEvent";
 
   public TxDownloadManager(ReactApplicationContext reactContext) {
@@ -42,13 +47,6 @@ public class TxDownloadManager extends ReactContextBaseJavaModule implements ITX
 
   public static final int quality = QUALITY_720P;
   public static final String UserName = "default";
-
-
-  @Override
-  @NonNull
-  public String getName() {
-    return NAME;
-  }
 
   private native void nativeInstall(long jsi);
 
@@ -76,54 +74,60 @@ public class TxDownloadManager extends ReactContextBaseJavaModule implements ITX
     return mDownloadManager;
   }
 
-  public void startDownload(String videoInfo) {
-    JsonObject convertedObject = new Gson().fromJson(videoInfo, JsonObject.class);
 
+  @ReactMethod
+  @DoNotStrip
+  public void startDownload(ReadableMap videoInfo) {
     TXVodDownloadDataSource downloadDataSource = new TXVodDownloadDataSource(
-      convertedObject.get("appId").getAsInt(),
-      convertedObject.get("fileId").getAsString(),
+      videoInfo.getInt("appId"),
+      videoInfo.getString("fileId"),
       quality,
-      convertedObject.get("sign").getAsString(),
+      videoInfo.getString("sign"),
       UserName);
     getDownloadMgr().startDownload(downloadDataSource);
     Log.d(NAME, "startDownload ");
   }
 
-  public void stopDownload(String videoFileId, String appId) {
-    TXVodDownloadMediaInfo info = getDownloadMgr().getDownloadMediaInfo(Integer.valueOf(appId), videoFileId, quality, UserName);
+  @ReactMethod
+  @DoNotStrip
+  public void stopDownload(String fileId, String appId) {
+    TXVodDownloadMediaInfo info = getDownloadMgr().getDownloadMediaInfo(Integer.valueOf(appId), fileId, quality, UserName);
     getDownloadMgr().stopDownload(info);
-    Log.d(NAME, "stopDownload " + videoFileId);
+    Log.d(NAME, "stopDownload " + fileId);
   }
 
-  public void deleteDownload(String videoFileId, String appId) {
-    TXVodDownloadMediaInfo info = getDownloadMgr().getDownloadMediaInfo(Integer.valueOf(appId), videoFileId, quality, UserName);
+  @ReactMethod
+  @DoNotStrip
+  public void deleteDownload(String fileId, String appId) {
+    TXVodDownloadMediaInfo info = getDownloadMgr().getDownloadMediaInfo(Integer.valueOf(appId), fileId, quality, UserName);
     getDownloadMgr().stopDownload(info);
     boolean ret = getDownloadMgr().deleteDownloadMediaInfo(info);
-    Log.d(NAME, "deleteDownload: " + " vid=" + videoFileId + " ret=" + ret );
+    Log.d(NAME, "deleteDownload: " + " vid=" + fileId + " ret=" + ret );
   }
 
-  public String getDownloadList() {
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  @DoNotStrip
+  public WritableArray getDownloadList() {
     List<TXVodDownloadMediaInfo>  list = getDownloadMgr().getDownloadMediaInfoList();
-    LinkedList newList = new LinkedList();
+    WritableArray newList;
+    newList = new WritableNativeArray();
     for (int i = 0; i < list.size(); i++) {
-      HashMap<String, Object> map = new HashMap<>();
-      map.put("duration", list.get(i).getDuration());
-      map.put("size", list.get(i).getSize());
-      map.put("downloadSize", list.get(i).getDownloadSize());
-      map.put("progress", list.get(i).getProgress());
-      map.put("playPath", list.get(i).getPlayPath());
-      map.put("speed", list.get(i).getSpeed());
-      map.put("downloadState", list.get(i).getDownloadState());
-//      map.put("isResourceBroken", list.get(i).is());
-      map.put("appId", list.get(i).getDataSource().getAppId());
-      map.put("fileId", list.get(i).getDataSource().getFileId());
-      map.put("sign", list.get(i).getDataSource().getPSign());
+      WritableMap map = new WritableNativeMap();
+      map.putInt("duration", list.get(i).getDuration());
+      map.putDouble("size", list.get(i).getSize());
+      map.putDouble("downloadSize", list.get(i).getDownloadSize());
+      map.putDouble("progress", list.get(i).getProgress());
+      map.putString("playPath", list.get(i).getPlayPath());
+      map.putInt("speed", list.get(i).getSpeed());
+      map.putInt("downloadState", list.get(i).getDownloadState());
+      map.putInt("appId", list.get(i).getDataSource().getAppId());
+      map.putString("fileId", list.get(i).getDataSource().getFileId());
+      map.putString("sign", list.get(i).getDataSource().getPSign());
 
-      newList.push(map);
+      newList.pushMap(map);
     }
-    Gson gson = new Gson();
 
-    return gson.toJson(newList);
+    return newList;
   }
 
   private void sendEvent(String eventName, @Nullable WritableMap params) {
@@ -137,9 +141,10 @@ public class TxDownloadManager extends ReactContextBaseJavaModule implements ITX
       listeners ++;
     }
   }
-  @ReactMethod
-  public void removeListeners(Integer count) {
-    listeners = listeners - count;
+
+  @Override
+  public void removeListeners(double count) {
+    listeners = listeners - (int)count;
   }
 
   @Override

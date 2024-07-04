@@ -3,37 +3,36 @@ package com.txplayer;
 import android.os.Handler;
 import android.os.Looper;
 
-import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContext;
-import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.common.MapBuilder;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
+import com.facebook.react.uimanager.ViewManagerDelegate;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
+import com.facebook.react.viewmanagers.TxplayerViewManagerDelegate;
+import com.facebook.react.viewmanagers.TxplayerViewManagerInterface;
 
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TxplayerViewManager extends SimpleViewManager<TxplayerView> implements TxplayerView.TxPlayerViewCallBack {
+@ReactModule(name = TxplayerViewManager.REACT_CLASS)
+public class TxplayerViewManager extends SimpleViewManager<TxplayerView> implements TxplayerView.TxPlayerViewCallBack, TxplayerViewManagerInterface<TxplayerView> {
   public static final String REACT_CLASS = "TxplayerView";
   private final ReactApplicationContext context;
+
 
   public final int COMMAND_STARTPLAY = 1;
   public final int COMMAND_STOPPLAY = 2;
@@ -45,22 +44,29 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   private WeakReference<TxplayerView> currentPlayer;
 
 
+  private final ViewManagerDelegate<TxplayerView> mDelegate;
   public TxplayerViewManager(ReactApplicationContext reactContext) {
-    this.context = reactContext;
+    context = reactContext;
+    mDelegate = new TxplayerViewManagerDelegate<>(this);
+  }
+
+  @Nullable
+  @Override
+  protected ViewManagerDelegate<TxplayerView> getDelegate() {
+    return mDelegate;
   }
 
   @Override
   @NonNull
   public String getName() {
-    return REACT_CLASS;
+    return TxplayerViewManager.REACT_CLASS;
   }
 
   @Override
   @NonNull
-  public TxplayerView createViewInstance(ThemedReactContext reactContext) {
-    TxplayerView txplayerView = new TxplayerView(reactContext.getCurrentActivity());
+  protected TxplayerView createViewInstance(@NonNull ThemedReactContext context) {
+    TxplayerView txplayerView = new TxplayerView(this.context.getCurrentActivity());
     txplayerView.setFeedPlayerCallBack(this);
-    // reactContext.addLifecycleEventListener(txplayerView);
     return txplayerView;
   }
 
@@ -172,6 +178,53 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
     return builder.build();
   }
 
+
+  @Override
+  public void seekTo(TxplayerView view, int second) {
+    view.seekTo(second);
+  }
+
+  @Override
+  public void switchToOrientation(TxplayerView view, String oriention, String force) {
+    view.switchToOrientation(oriention, force.equals("1"));
+  }
+
+  @Override
+  public void addDanmaku(TxplayerView view, ReadableArray contents) {
+    if (contents == null) {
+      return;
+    }
+    try {
+      HashMap danmu = (HashMap) contents.toArrayList().get(0);
+      ArrayList<HashMap<String, String>> list = (ArrayList<HashMap<String, String>>) danmu.get("records");
+      List<String> danmuContentList = new ArrayList<>();
+      for (HashMap<String, String> strObj : list) {
+        danmuContentList.add(strObj.get("content"));
+      }
+      view.addDanmukInfo(danmuContentList);
+    } catch (Exception e) {
+    }
+  }
+
+  @Override
+  public void togglePlay(TxplayerView view) {
+    view.togglePlay();
+  }
+
+  @Override
+  public void stopPlay(TxplayerView view) {
+    view.stopPlay();
+  }
+
+  @Override
+  public void startPlay(TxplayerView view) {
+    view.startPlay();
+  }
+
+  @Override
+  public void setLanguage(TxplayerView view, @Nullable String value) {
+  }
+
   @ReactProp(name = "videoURL")
   public void setVideoURL(TxplayerView view, String videoURL) {
     view.setVideoURL(videoURL);
@@ -197,71 +250,53 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
     view.setPsign(psign);
   }
   @ReactProp(name = "enableSlider")
-  public void setEnableSlider(TxplayerView view, Boolean enableSlider) {
-    if (enableSlider != null) {
-      view.setEnableSlider(enableSlider.booleanValue());
-    }
+  public void setEnableSlider(TxplayerView view, boolean enableSlider) {
+    view.setEnableSlider(enableSlider);
   }
   @ReactProp(name = "enableMorePanel")
-  public void setEnableMorePanel(TxplayerView view, Boolean enableMorePanel) {
-    if (enableMorePanel != null)  {
-      view.setEnableMorePanel(enableMorePanel.booleanValue());
-    }
+  public void setEnableMorePanel(TxplayerView view, boolean enableMorePanel) {
+    view.setEnableMorePanel(enableMorePanel);
   }
   @ReactProp(name = "enableDownload")
-  public void setEnableDownload(TxplayerView view, Boolean enableDownload) {
-    if (enableDownload != null) {
-      view.setEnableDownload(enableDownload.booleanValue());
-    }
+  public void setEnableDownload(TxplayerView view, boolean enableDownload) {
+      view.setEnableDownload(enableDownload);
   }
   @ReactProp(name = "enableDanmaku")
-  public void setEnableDanmaku(TxplayerView view, Boolean enableDanmaku) {
-    if (enableDanmaku != null) {
-      view.setEnableDanmaku(enableDanmaku.booleanValue());
-    }
+  public void setEnableDanmaku(TxplayerView view, boolean enableDanmaku) {
+      view.setEnableDanmaku(enableDanmaku);
   }
   @ReactProp(name = "enableFullScreen")
-  public void setEnableFullScreen(TxplayerView view, Boolean enableFullScreen) {
-    if (enableFullScreen != null) {
-      view.setEnableFullScreen(enableFullScreen.booleanValue());
-    }
+  public void setEnableFullScreen(TxplayerView view, boolean enableFullScreen) {
+      view.setEnableFullScreen(enableFullScreen);
   }
   @ReactProp(name = "playType")
-  public void setPlayType(TxplayerView view, Integer playType) {
+  public void setPlayType(TxplayerView view, int playType) {
     view.setPlayType(playType);
   }
   @ReactProp(name = "playStartTime")
-  public void setPlayStartTime(TxplayerView view, double playStartTime) {
+  public void setPlayStartTime(TxplayerView view, int playStartTime) {
     view.setPlayStartTime(playStartTime);
   }
 
   @ReactProp(name = "hidePlayerControl")
-  public void setHidePlayerControl(TxplayerView view, Boolean hidePlayerControl) {
-    if (hidePlayerControl != null) {
-      view.setHidePlayerControl(hidePlayerControl.booleanValue());
-    }
+  public void setHidePlayerControl(TxplayerView view, boolean hidePlayerControl) {
+    view.setHidePlayerControl(hidePlayerControl);
   }
   @ReactProp(name = "enableLoop")
-  public void setEnableLoop(TxplayerView view, Boolean enableLoop) {
-    if (enableLoop != null) {
-      view.setEnableLoop(enableLoop.booleanValue());
-    }
+  public void setEnableLoop(TxplayerView view, boolean enableLoop) {
+      view.setEnableLoop(enableLoop);
   }
   @ReactProp(name = "enableRotate")
-  public void setEnableRotate(TxplayerView view, Boolean enableRotate) {
-    if (enableRotate != null) {
-      view.setEnableRotate(enableRotate.booleanValue());
-    }
+  public void setEnableRotate(TxplayerView view, boolean enableRotate) {
+      view.setEnableRotate(enableRotate);
   }
   @ReactProp(name = "enablePIP")
-  public void setEnablePIP(TxplayerView view, Boolean enablePIP) {
-    if (enablePIP != null) {
-      view.setEnablePIP(enablePIP.booleanValue());
-    }
+  public void setEnablePIP(TxplayerView view, boolean enablePIP) {
+      view.setEnablePIP(enablePIP);
   }
 
   @ReactProp(name = "timeEventDuration")
-  public void setTimeEventDuration(TxplayerView view, Integer timeEventDuration) {
+  public void setTimeEventDuration(TxplayerView view, int timeEventDuration) {
     view.setTimeEventDuration(timeEventDuration);
   }
 
