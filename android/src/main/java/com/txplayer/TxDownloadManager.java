@@ -79,7 +79,7 @@ public class TxDownloadManager extends NativeTxDownloadManagerModuleSpec impleme
   @DoNotStrip
   public void startDownload(ReadableMap videoInfo) {
     TXVodDownloadDataSource downloadDataSource = new TXVodDownloadDataSource(
-      videoInfo.getInt("appId"),
+      Integer.valueOf(videoInfo.getString("appId")),
       videoInfo.getString("fileId"),
       quality,
       videoInfo.getString("sign"),
