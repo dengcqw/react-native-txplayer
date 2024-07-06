@@ -26,7 +26,7 @@ type StateEvent = Readonly<{state: Int32}>
 type FullscreenEvent = Readonly<{fullscreen: Int32}>
 type OnDownloadEvent = Readonly<{}>
 
-interface NativeProps extends ViewProps {
+export interface NativeProps extends ViewProps {
   videoURL: string;
 
   appId: string;

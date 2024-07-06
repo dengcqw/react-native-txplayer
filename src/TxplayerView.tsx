@@ -1,8 +1,26 @@
 import * as React from 'react';
-import { type NativeSyntheticEvent, Platform, NativeModules, findNodeHandle, UIManager } from 'react-native';
-import TxplayerViewNative, { Commands } from './TxplayerViewNativeComponent';
+import { Platform, NativeModules, findNodeHandle, UIManager } from 'react-native';
+import TxplayerViewNative, { Commands, type NativeProps } from './TxplayerViewNativeComponent';
 
 const TxplayerViewMgr = Platform.OS === 'ios' ? NativeModules.TxplayerView : NativeModules.TxplayerNativeModule;
+
+const ComponentName = 'TxplayerView';
+const OldCommands = Platform.OS === 'ios' ? {
+  startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay!,
+  stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay!,
+  addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku!,
+  switchToOrientation: UIManager.getViewManagerConfig(ComponentName).Commands.switchToOrientation!,
+  seekTo: UIManager.getViewManagerConfig(ComponentName).Commands.seekTo!,
+  togglePlay: UIManager.getViewManagerConfig(ComponentName).Commands.togglePlay!
+}: {
+  startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay!.toString(),
+  stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay!.toString(),
+  addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku!.toString(),
+  switchToOrientation: UIManager.getViewManagerConfig(ComponentName).Commands.switchToOrientation!.toString(),
+  seekTo: UIManager.getViewManagerConfig(ComponentName).Commands.seekTo!.toString(),
+  togglePlay: UIManager.getViewManagerConfig(ComponentName).Commands.togglePlay!.toString()
+}
+
 
 export enum SuperPlayerState {
   StateFailed = 0, // 播放失败
@@ -35,42 +53,42 @@ export type PlayTimeType = {
   isFinish: boolean;
 };
 
-export type TxplayerViewProps = {
-  videoURL: string;
+//export type TxplayerViewProps = {
+  //videoURL: string;
 
-  appId: string;
-  fileId: string;
-  psign: string;
+  //appId: string;
+  //fileId: string;
+  //psign: string;
 
-  videoName: string;
-  videoCoverURL: string;
-  enableSlider: boolean;
-  hidePlayerControl: boolean;
-  enableMorePanel: boolean;
-  enableDownload: boolean;
-  enableDanmaku: boolean;
-  enableFullScreen: boolean;
-  enableRotate: boolean;
-  enablePIP: boolean;
-  playStartTime: number;
-  language: string;
-  enableLoop: boolean;
-  timeEventDuration: number; // 时间时间发送间隔
+  //videoName: string;
+  //videoCoverURL: string;
+  //enableSlider: boolean;
+  //hidePlayerControl: boolean;
+  //enableMorePanel: boolean;
+  //enableDownload: boolean;
+  //enableDanmaku: boolean;
+  //enableFullScreen: boolean;
+  //enableRotate: boolean;
+  //enablePIP: boolean;
+  //playStartTime: number;
+  //language: string;
+  //enableLoop: boolean;
+  //timeEventDuration: number; // 时间时间发送间隔
 
-  playType: SuperPlayType;
+  //playType: SuperPlayType;
 
-  onPlayStateChange: (stateEvent: NativeSyntheticEvent<number>) => void;
-  onPlayTimeChange: (stateEvent: NativeSyntheticEvent<PlayTimeType>) => void;
-  onDownload: () => void;
-  onFullscreen: (fullscreen: number) => void; // 1 yes 0 no
-};
+  //onPlayStateChange: (stateEvent: NativeSyntheticEvent<number>) => void;
+  //onPlayTimeChange: (stateEvent: NativeSyntheticEvent<PlayTimeType>) => void;
+  //onDownload: () => void;
+  //onFullscreen: (fullscreen: number) => void; // 1 yes 0 no
+//};
 
 type ForwardedType = React.ElementRef<typeof TxplayerViewNative>;
 
 // @ts-ignore non-typed property
 const FABRIC_ENABLED = !!global?.nativeFabricUIManager;
 
-const TxplayerView = React.forwardRef<TxplayerViewProps, ForwardedType>((props, forwardedRef): React.ReactNode => {
+const TxplayerView = React.forwardRef<NativeProps, ForwardedType>((props, forwardedRef) => {
   const nativeRef = React.useRef<React.ElementRef<typeof TxplayerViewNative> | null>(null);
 
   React.useImperativeHandle<any, TxplayerViewApi>(
@@ -85,7 +103,7 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, ForwardedType>((props, 
             }, 10);
           }
         } else {
-          //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.startPlay, []);
+          UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), OldCommands.startPlay, []);
         }
       },
       stopPlay: () => {
@@ -97,7 +115,7 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, ForwardedType>((props, 
             }, 10);
           }
         } else {
-          //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.stopPlay, []);
+          UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), OldCommands.stopPlay, []);
         }
       },
       addDanmaku: (contents: string[]) => {
@@ -109,7 +127,7 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, ForwardedType>((props, 
             }, 10);
           }
         } else {
-          //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.addDanmaku, [contents]);
+          UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), OldCommands.addDanmaku, [contents]);
         }
       },
       switchToOrientation: (oriention: string, force: string) => {
@@ -121,7 +139,7 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, ForwardedType>((props, 
             }, 10);
           }
         } else {
-          //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.switchToOrientation, [oriention, force || '0']);
+          UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), OldCommands.switchToOrientation, [oriention, force || '0']);
         }
       },
       togglePlay: () => {
@@ -133,7 +151,7 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, ForwardedType>((props, 
             }, 10);
           }
         } else {
-          //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.togglePlay, []);
+          UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), OldCommands.togglePlay, []);
         }
       },
       seekTo: (second: number) => {
@@ -145,7 +163,7 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, ForwardedType>((props, 
             }, 10);
           }
         } else {
-          //UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), Commands.seekTo, [second]);
+          UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), OldCommands.seekTo, [second]);
         }
       },
     }),
@@ -158,15 +176,15 @@ const TxplayerView = React.forwardRef<TxplayerViewProps, ForwardedType>((props, 
 
 // @ts-ignore
 export const stopAllPlay = () => {
-  //TxplayerViewMgr && TxplayerViewMgr.stopAllPlay && TxplayerViewMgr.stopAllPlay();
+  TxplayerViewMgr && TxplayerViewMgr.stopAllPlay && TxplayerViewMgr.stopAllPlay();
 };
 
 export const startPip = () => {
-  //TxplayerViewMgr && TxplayerViewMgr.startPip && TxplayerViewMgr.startPip();
+  TxplayerViewMgr && TxplayerViewMgr.startPip && TxplayerViewMgr.startPip();
 };
 
 export const stopPip = () => {
-  //TxplayerViewMgr && TxplayerViewMgr.stopPip && TxplayerViewMgr.stopPip();
+  TxplayerViewMgr && TxplayerViewMgr.stopPip && TxplayerViewMgr.stopPip();
 };
 
 export default TxplayerView;

@@ -3,7 +3,6 @@ import TxplayerView, {
   SuperPlayerState,
   SuperPlayType,
   type TxplayerViewApi,
-  type TxplayerViewProps,
   stopAllPlay,
   startPip,
   stopPip
@@ -27,6 +26,6 @@ export const TxDownloadManager = {
   subscribeEvent,
 };
 
-export type { PlayTimeType, TxplayerViewApi, TxplayerViewProps, VideoInfo, DownloadInfo, DownloadEventType };
+export type { PlayTimeType, TxplayerViewApi, VideoInfo, DownloadInfo, DownloadEventType };
 export { SuperPlayerState, SuperPlayType, stopAllPlay, startPip, stopPip };
 export default TxplayerView;
