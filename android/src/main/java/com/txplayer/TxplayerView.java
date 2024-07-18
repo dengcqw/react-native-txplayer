@@ -136,6 +136,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
   public TxplayerView(@NonNull Context context) {
     super(context);
     this.initViews();
+
   }
   public TxplayerView(@NonNull Context context, @Nullable AttributeSet attrs) {
     super(context, attrs);
@@ -157,12 +158,14 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
     addView(superPlayerView);
     superPlayerView.showOrHideBackBtn(false);
 
+    Activity act = (Activity)this.getContext();
     superPlayerView.setPlayerViewCallback(new SuperPlayerView.OnSuperPlayerViewCallback() {
       @Override
       public void onStartFullScreenPlay() {
         removeFeedPlayFromItem();
         rootView().addView(superPlayerView , new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT , ViewGroup.LayoutParams.MATCH_PARENT));
         playerViewCallback.onFullscreen(getId(), true);
+        act.getWindow().getDecorView().setBackgroundColor(Color.BLACK);
         FullScreenPlayer fullscreenPlayer = superPlayerView.getFullscreenPlayer();
         superPlayerView.toggleDanmu(fullscreenPlayer.mBarrageOn);
       }
@@ -171,6 +174,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
       public void onStopFullScreenPlay() {
         addFeedPlayToItem();
         playerViewCallback.onFullscreen(getId(), false);
+        act.getWindow().getDecorView().setBackgroundColor(Color.WHITE);
         superPlayerView.toggleDanmu(false);
       }
 
@@ -562,3 +566,4 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
     Log.d("djl", "Txplay keepScreen: " + TxplayerView.playingCount);
   }
 }
+
