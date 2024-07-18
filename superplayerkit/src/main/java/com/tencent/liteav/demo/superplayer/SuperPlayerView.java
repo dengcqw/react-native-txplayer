@@ -525,7 +525,7 @@ public class SuperPlayerView extends RelativeLayout
                 if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
                     decorView.setSystemUiVisibility(View.VISIBLE);
                 } else if (Build.VERSION.SDK_INT >= 19) {
-                    decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                    decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                 }
             }
         }
