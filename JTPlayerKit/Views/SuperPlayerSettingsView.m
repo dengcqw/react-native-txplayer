@@ -18,6 +18,8 @@
 #import "UIView+MMLayout.h"
 #import "SuperPlayerLocalized.h"
 
+#define TAG_5_SPEED 1005
+#define TAG_75_SPEED 1075
 #define TAG_1_SPEED 1001
 #define TAG_2_SPEED 1002
 #define TAG_3_SPEED 1003
@@ -206,6 +208,27 @@
         [_speedCell addSubview:speed];
         speed.m_centerY();
 
+        // 添加0.5倍速按钮
+        UIButton *speed05 = [UIButton buttonWithType:UIButtonTypeCustom];
+        [speed05 setTitle:@"0.5x" forState:UIControlStateNormal];
+        [speed05 setTitleColor:TintColor forState:UIControlStateSelected];
+        speed05.tag = TAG_5_SPEED;
+        [speed05 sizeToFit];
+        [_speedCell addSubview:speed05];
+        [speed05 addTarget:self action:@selector(changeSpeed:) forControlEvents:UIControlEventTouchUpInside];
+        speed05.m_left(speed.mm_maxX + 10).m_centerY();
+
+        // 添加0.75倍速按钮
+        UIButton *speed075 = [UIButton buttonWithType:UIButtonTypeCustom];
+        [speed075 setTitle:@"0.75x" forState:UIControlStateNormal];
+        [speed075 setTitleColor:TintColor forState:UIControlStateSelected];
+        speed075.tag = TAG_75_SPEED;
+        [speed075 sizeToFit];
+        [_speedCell addSubview:speed075];
+        [speed075 addTarget:self action:@selector(changeSpeed:) forControlEvents:UIControlEventTouchUpInside];
+        speed075.m_left(speed05.mm_maxX + 12).m_centerY();
+
+        // 原有的1.0倍速按钮
         UIButton *speed1 = [UIButton buttonWithType:UIButtonTypeCustom];
         [speed1 setTitle:superPlayerLocalized(@"SuperPlayer.speed1p0") forState:UIControlStateNormal];
         [speed1 setTitleColor:TintColor forState:UIControlStateSelected];
@@ -374,12 +397,16 @@
 
     CGFloat rate = self.playerConfig.playRate;
 
-    for (int i = TAG_1_SPEED; i <= TAG_4_SPEED; i++) {
+    for (int i = TAG_5_SPEED; i <= TAG_4_SPEED; i++) {  // 修改循环范围
         UIButton *b = [_speedCell viewWithTag:i];
-        b.selected  = NO;
+        if (b) b.selected = NO;  // 添加空值检查
     }
 
-    if (rate == 1.0) {
+    if (rate == 0.5) {
+        [[_speedCell viewWithTag:TAG_5_SPEED] setSelected:YES];
+    } else if (rate == 0.75) {
+        [[_speedCell viewWithTag:TAG_75_SPEED] setSelected:YES];
+    } else if (rate == 1.0) {
         [[_speedCell viewWithTag:TAG_1_SPEED] setSelected:YES];
     }
     if (rate == 1.25) {
