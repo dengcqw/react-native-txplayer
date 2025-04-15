@@ -97,9 +97,8 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/superplayer_ll_speed"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="30dp"
             android:layout_weight="1"
             android:orientation="horizontal">
 
@@ -112,12 +111,44 @@
                 android:textColor="@color/superplayer_white"
                 android:textSize="14dp" />
 
+        </LinearLayout>
+
+         <LinearLayout
+            android:id="@+id/superplayer_ll_speed"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            >
+
             <RadioGroup
                 android:id="@+id/superplayer_rg"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="30dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/superplayer_rb_speed05"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:text="0.5X"
+                    android:textColor="@color/superplayer_vod_player_text_color" />
+
+                <RadioButton
+                    android:id="@+id/superplayer_rb_speed075"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:text="0.75X"
+                    android:textColor="@color/superplayer_vod_player_text_color" />
 
                 <RadioButton
                     android:id="@+id/superplayer_rb_speed1"
