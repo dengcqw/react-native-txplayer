@@ -18,12 +18,12 @@
 #import "UIView+MMLayout.h"
 #import "SuperPlayerLocalized.h"
 
-#define TAG_5_SPEED 1005
-#define TAG_75_SPEED 1075
 #define TAG_1_SPEED 1001
 #define TAG_2_SPEED 1002
 #define TAG_3_SPEED 1003
 #define TAG_4_SPEED 1004
+#define TAG_5_SPEED 1005
+#define TAG_75_SPEED 1006
 
 @interface                   SuperPlayerSettingsView ()
 @property(nonatomic) UIView *soundCell;
@@ -210,7 +210,7 @@
 
         // 添加0.5倍速按钮
         UIButton *speed05 = [UIButton buttonWithType:UIButtonTypeCustom];
-        [speed05 setTitle:@"0.5x" forState:UIControlStateNormal];
+        [speed05 setTitle:@"0.5X" forState:UIControlStateNormal];
         [speed05 setTitleColor:TintColor forState:UIControlStateSelected];
         speed05.tag = TAG_5_SPEED;
         [speed05 sizeToFit];
@@ -220,7 +220,7 @@
 
         // 添加0.75倍速按钮
         UIButton *speed075 = [UIButton buttonWithType:UIButtonTypeCustom];
-        [speed075 setTitle:@"0.75x" forState:UIControlStateNormal];
+        [speed075 setTitle:@"0.75X" forState:UIControlStateNormal];
         [speed075 setTitleColor:TintColor forState:UIControlStateSelected];
         speed075.tag = TAG_75_SPEED;
         [speed075 sizeToFit];
@@ -361,7 +361,7 @@
 }
 
 - (void)changeSpeed:(UIButton *)sender {
-    for (int i = TAG_1_SPEED; i <= TAG_4_SPEED; i++) {
+    for (int i = TAG_1_SPEED; i <= TAG_75_SPEED; i++) {
         UIButton *b = [_speedCell viewWithTag:i];
         if (b.isSelected && b != sender) b.selected = NO;
     }
@@ -396,7 +396,7 @@
 
     CGFloat rate = self.playerConfig.playRate;
 
-    for (int i = TAG_5_SPEED; i <= TAG_4_SPEED; i++) {  // 修改循环范围
+    for (int i = TAG_1_SPEED; i <= TAG_75_SPEED; i++) {  // 修改循环范围
         UIButton *b = [_speedCell viewWithTag:i];
         if (b) b.selected = NO;  // 添加空值检查
     }
