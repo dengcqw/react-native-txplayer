@@ -37,7 +37,8 @@ import com.tencent.liteav.demo.superplayer.SuperPlayerGlobalConfig;
  * <p>
  * 3、Speed selection callback {@link #onCheckedChanged(RadioGroup, int)}.
  * <p>
- * 4、Mirror, hardware acceleration switch callback {@link #onCheckedChanged(CompoundButton, boolean)}.
+ * 4、Mirror, hardware acceleration switch callback
+ * {@link #onCheckedChanged(CompoundButton, boolean)}.
  *
  * <p>
  * 更多选项弹框
@@ -50,25 +51,28 @@ import com.tencent.liteav.demo.superplayer.SuperPlayerGlobalConfig;
  * <p>
  * 4、镜像、硬件加速开关回调{@link #onCheckedChanged(CompoundButton, boolean)}
  */
-public class VodMoreView extends RelativeLayout implements RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener {
+public class VodMoreView extends RelativeLayout
+    implements RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener {
 
-    private static final String VOLUME_CHANGED_ACTION    = "android.media.VOLUME_CHANGED_ACTION";
+    private static final String VOLUME_CHANGED_ACTION = "android.media.VOLUME_CHANGED_ACTION";
     private static final String EXTRA_VOLUME_STREAM_TYPE = "android.media.EXTRA_VOLUME_STREAM_TYPE";
 
-    private Context                 mContext;
-    private SeekBar                 mSeekBarVolume;
-    private SeekBar                 mSeekBarLight;
-    private Switch                  mSwitchMirror;
-    private Switch                  mSwitchAccelerate;
-    private Callback                mCallback;
-    private AudioManager            mAudioManager;
-    private RadioGroup              mRadioGroup;
-    private RadioButton             mRbSpeed1;
-    private RadioButton             mRbSpeed125;
-    private RadioButton             mRbSpeed15;
-    private RadioButton             mRbSpeed2;
-    private LinearLayout            mLayoutSpeed;
-    private LinearLayout            mLayoutMirror;
+    private Context mContext;
+    private SeekBar mSeekBarVolume;
+    private SeekBar mSeekBarLight;
+    private Switch mSwitchMirror;
+    private Switch mSwitchAccelerate;
+    private Callback mCallback;
+    private AudioManager mAudioManager;
+    private RadioGroup mRadioGroup;
+    private RadioButton mRbSpeed05;
+    private RadioButton mRbSpeed075;
+    private RadioButton mRbSpeed1;
+    private RadioButton mRbSpeed125;
+    private RadioButton mRbSpeed15;
+    private RadioButton mRbSpeed2;
+    private LinearLayout mLayoutSpeed;
+    private LinearLayout mLayoutMirror;
     private VolumeBroadcastReceiver mVolumeBroadcastReceiver;
 
     public VodMoreView(Context context) {
@@ -92,6 +96,9 @@ public class VodMoreView extends RelativeLayout implements RadioGroup.OnCheckedC
 
         mLayoutSpeed = (LinearLayout) findViewById(R.id.superplayer_ll_speed);
         mRadioGroup = (RadioGroup) findViewById(R.id.superplayer_rg);
+
+        mRbSpeed05 = (RadioButton) findViewById(R.id.superplayer_rb_speed05);
+        mRbSpeed075 = (RadioButton) findViewById(R.id.superplayer_rb_speed075);
         mRbSpeed1 = (RadioButton) findViewById(R.id.superplayer_rb_speed1);
         mRbSpeed125 = (RadioButton) findViewById(R.id.superplayer_rb_speed125);
         mRbSpeed15 = (RadioButton) findViewById(R.id.superplayer_rb_speed15);
@@ -250,7 +257,19 @@ public class VodMoreView extends RelativeLayout implements RadioGroup.OnCheckedC
      */
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-        if (checkedId == R.id.superplayer_rb_speed1) {
+        if (checkedId == R.id.superplayer_rb_speed05) {
+            mRbSpeed05.setChecked(true);
+            if (mCallback != null) {
+                mCallback.onSpeedChange(0.5f);
+            }
+
+        } else if (checkedId == R.id.superplayer_rb_speed075) {
+            mRbSpeed075.setChecked(true);
+            if (mCallback != null) {
+                mCallback.onSpeedChange(0.75f);
+            }
+
+        } else if (checkedId == R.id.superplayer_rb_speed1) {
             mRbSpeed1.setChecked(true);
             if (mCallback != null) {
                 mCallback.onSpeedChange(1.0f);
@@ -301,7 +320,6 @@ public class VodMoreView extends RelativeLayout implements RadioGroup.OnCheckedC
         updateBrightProgress(progress);
     }
 
-
     /**
      * Update the playback video type.
      *
@@ -326,6 +344,7 @@ public class VodMoreView extends RelativeLayout implements RadioGroup.OnCheckedC
      */
     public void revertUI() {
         mRadioGroup.setOnCheckedChangeListener(null);
+        mRbSpeed075.setChecked(false);
         mRbSpeed1.setChecked(true);
         mRbSpeed125.setChecked(false);
         mRbSpeed15.setChecked(false);
@@ -338,7 +357,6 @@ public class VodMoreView extends RelativeLayout implements RadioGroup.OnCheckedC
         }
     }
 
-
     private class VolumeBroadcastReceiver extends BroadcastReceiver {
 
         public void onReceive(Context context, Intent intent) {
@@ -346,7 +364,7 @@ public class VodMoreView extends RelativeLayout implements RadioGroup.OnCheckedC
             if (VOLUME_CHANGED_ACTION.equals(intent.getAction())
                     && (intent.getIntExtra(EXTRA_VOLUME_STREAM_TYPE, -1) == AudioManager.STREAM_MUSIC)) {
                 updateCurrentVolume();
-            }
+                    }
         }
     }
 
@@ -364,7 +382,8 @@ public class VodMoreView extends RelativeLayout implements RadioGroup.OnCheckedC
     }
 
     /**
-     * Unregister volume broadcast receiver, should be used in pairs with registerReceiver
+     * Unregister volume broadcast receiver, should be used in pairs with
+     * registerReceiver
      *
      * 反注册音量广播监听器，需要与 registerReceiver 成对使用
      */
