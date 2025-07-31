@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name = 'JTPlayerKit'
-    spec.version = '1.0.9'
+    spec.version = '1.1.0'
     spec.license = { :type => 'MIT' }
     spec.homepage = 'http://code.jms.com/mobile/ios-tencent-video'
     spec.authors = { 'zhoupushan' => 'zhoupushan@jtexpress.com' }
@@ -13,7 +13,20 @@ Pod::Spec.new do |spec|
     spec.dependency 'Masonry'
     spec.static_framework = true
     spec.default_subspec = 'Player'
-    spec.frameworks = ["SystemConfiguration", "CoreTelephony", "VideoToolbox", "CoreGraphics", "AVFoundation", "Accelerate", 'MetalKit']
+    spec.frameworks = [
+      "CoreTelephony",
+      "CoreGraphics",
+      "Accelerate",
+      'MetalKit',
+      "AVFoundation",
+      "AVKit",
+      "AssetsLibrary",
+      "SystemConfiguration",
+      "GLKit",
+      "CoreServices",
+      "ReplayKit",
+      "AudioToolbox",
+      "VideoToolbox"]
     spec.libraries = [
       "z",
       "resolv",
