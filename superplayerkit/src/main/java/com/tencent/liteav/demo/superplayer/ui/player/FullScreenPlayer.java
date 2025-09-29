@@ -367,6 +367,7 @@ public class FullScreenPlayer extends AbsPlayer implements View.OnClickListener,
         mIvPlayBackward = findViewById(R.id.superplayer_play_backward);
 
         mIvSoundTrack.setVisibility(View.GONE);
+        mIvDownload.setVisibility(View.GONE);
         //mIvSubtitle.setVisibility(View.GONE);
 
         mSeekBarProgress = (PointSeekBar) findViewById(R.id.superplayer_seekbar_progress);
