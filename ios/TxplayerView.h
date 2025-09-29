@@ -7,11 +7,11 @@
 
 #import <UIKit/UIKit.h>
 #import <React/RCTComponent.h>
+#import "SuperPlayerSubtitles.h"
 
 #ifdef RCT_NEW_ARCH_ENABLED
 #import <react/renderer/components/rntxplayer/EventEmitters.h>
 #endif
-
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -36,6 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(copy, nonatomic) NSString *appId;
 @property(copy, nonatomic) NSString *fileId;
 @property(copy, nonatomic) NSString *psign;
+@property(copy, nonatomic) NSArray<SuperPlayerSubtitles*> *subtitles;
 
 // 播放器UI配置
 @property(copy, nonatomic) NSString *videoName;

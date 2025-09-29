@@ -249,6 +249,10 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   public void setPsign(TxplayerView view, String psign) {
     view.setPsign(psign);
   }
+  @ReactProp(name = "subtitles")
+  public void setSubtitles(TxplayerView view, @Nullable ReadableArray value) {
+    view.setSubtitles(value);
+  }
   @ReactProp(name = "enableSlider")
   public void setEnableSlider(TxplayerView view, boolean enableSlider) {
     view.setEnableSlider(enableSlider);

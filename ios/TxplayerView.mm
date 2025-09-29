@@ -115,6 +115,7 @@ static int s_playerCount = 0;
         model.videoId           = [[SuperPlayerVideoId alloc] init];
         model.videoId.fileId    = self.fileId;
         model.videoId.psign     = self.psign;
+        model.subtitlesArray = self.subtitles;
         [self.playerView.controlView setResolutionViewState: YES];
     }
     
@@ -132,7 +133,7 @@ static int s_playerCount = 0;
     
     self.playerView.startTime = self.playStartTime.floatValue;
     
-    [self.playerView.controlView setSubtitlesBtnState: NO];
+    [self.playerView.controlView setSubtitlesBtnState: YES];
     [self.playerView.controlView setTrackBtnState: NO];
     [self.playerView.controlView showOrHideBackBtn: self.playerView.isFullScreen ? YES : NO];
     

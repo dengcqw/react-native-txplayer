@@ -16,6 +16,7 @@
 #import <react/renderer/components/rntxplayer/Props.h>
 #import <react/renderer/components/rntxplayer/EventEmitters.h>
 #import <react/renderer/components/rntxplayer/RCTComponentViewHelpers.h>
+#import "SuperPlayerSubtitles.h"
 
 using namespace facebook::react;
 
@@ -56,6 +57,16 @@ using namespace facebook::react;
     }
     if (_oldProps.appId != newProps.appId) {
         txplayerView.appId = RCTNSStringFromString(newProps.appId);
+        NSMutableArray * arr = @[].mutableCopy;
+        // appId 变化了，字幕也会变
+        for (auto subtitle:newProps.subtitles) {
+            SuperPlayerSubtitles* model = [SuperPlayerSubtitles new];
+            model.subtitlesUrl = RCTNSStringFromString(subtitle.src);
+            model.subtitlesName = RCTNSStringFromString(subtitle.label);
+            model.subtitlesType = SUPER_PLAYER_MIMETYPE_TEXT_VTT;
+            [arr addObject:model];
+        }
+        txplayerView.subtitles = arr;
     }
     if (_oldProps.fileId != newProps.fileId) {
         txplayerView.fileId = RCTNSStringFromString(newProps.fileId);

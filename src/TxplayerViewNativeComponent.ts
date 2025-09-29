@@ -22,6 +22,11 @@ type PlayTimeType = Readonly<{
   isFinish: boolean;
 }>;
 
+type SubTitles = Readonly<{
+  src: string;
+  label: string;
+}[]>;
+
 type StateEvent = Readonly<{state: Int32}>
 type FullscreenEvent = Readonly<{fullscreen: Int32}>
 type OnDownloadEvent = Readonly<{}>
@@ -32,6 +37,8 @@ export interface NativeProps extends ViewProps {
   appId: string;
   fileId: string;
   psign: string;
+
+  subtitles: SubTitles;
 
   videoName: string;
   videoCoverURL: string;

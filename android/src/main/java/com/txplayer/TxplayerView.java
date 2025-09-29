@@ -14,15 +14,20 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.LifecycleEventListener;
+import com.tencent.liteav.demo.superplayer.SubtitleSourceModel;
 import com.tencent.liteav.demo.superplayer.SuperPlayerDef;
 import com.tencent.liteav.demo.superplayer.SuperPlayerModel;
 import com.tencent.liteav.demo.superplayer.SuperPlayerVideoId;
 import com.tencent.liteav.demo.superplayer.SuperPlayerView;
 import com.tencent.liteav.demo.superplayer.ui.player.FullScreenPlayer;
 import com.tencent.liteav.demo.superplayer.ui.player.WindowPlayer;
+import com.tencent.rtmp.TXVodConstants;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -47,6 +52,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
   private String appId;
   private String fileId;
   private String psign;
+  private List<SubtitleSourceModel> subtitles = new ArrayList<>();
   private boolean enableSlider = true;
   private boolean enableMorePanel = true;
   private boolean enableDownload = false;
@@ -92,6 +98,18 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
     if (this.fileId != null && this.fileId.equals(fileId)) return;
     this.fileId = fileId;
     this.isDirty = true;
+  }
+  public void setSubtitles(@Nullable ReadableArray value) {
+    this.subtitles = new ArrayList<>();
+    if (value == null || value.size() == 0) return;
+    for (int i = 0; i < value.size(); i++) {
+      ReadableMap map = value.getMap(i);
+      SubtitleSourceModel model = new SubtitleSourceModel();
+      model.name = map.getString("label");
+      model.url = map.getString("src");
+      model.mimeType = TXVodConstants.VOD_PLAY_MIMETYPE_TEXT_VTT;
+      this.subtitles.add(model);
+    }
   }
   public void setPsign(String psign) {
     this.psign = psign;
@@ -295,6 +313,8 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
       model.videoId = new SuperPlayerVideoId();
       model.videoId.fileId = fileId;
       model.videoId.pSign = psign;
+      model.subtitleSourceModelList = this.subtitles;
+
       superPlayerView.setQualityVisible(true);
     }
 
@@ -566,4 +586,5 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
     Log.d("djl", "Txplay keepScreen: " + TxplayerView.playingCount);
   }
 }
+
 
