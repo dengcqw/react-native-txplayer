@@ -623,7 +623,7 @@ TXLiveBaseDelegate,TXLivePlayListener,TXVodPlayListener>
     NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
     [dic setObject:@(0xFFFFFFFF) forKey:@"fontColor"];
     [dic setObject:@(0) forKey:@"bondFont"];
-    [dic setObject:@(1) forKey:@"outlineWidth"];
+    [dic setObject:@(6) forKey:@"outlineWidth"];
     [dic setObject:@(0xFF000000) forKey:@"outlineColor"];
     [self setSubtitleStyle:dic];
         
@@ -2100,6 +2100,9 @@ TXLiveBaseDelegate,TXLivePlayListener,TXVodPlayListener>
     model.fontColor = [(NSNumber *)dic[@"fontColor"] unsignedIntValue]; // 设置字幕字体颜色，默认白色
     model.outlineWidth = [(NSNumber *)dic[@"outlineWidth"] floatValue]; //描边宽度
     model.outlineColor = [(NSNumber *)dic[@"outlineColor"] unsignedIntValue]; //描边颜色
+    model.fontSize = 75;
+    model.verticalMargin = 0.05;
+    model.lineSpace = 1;
     [self.vodPlayer setSubtitleStyle:model];
 }
 

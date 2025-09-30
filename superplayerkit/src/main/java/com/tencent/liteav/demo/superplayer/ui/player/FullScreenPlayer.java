@@ -1279,6 +1279,8 @@ public class FullScreenPlayer extends AbsPlayer implements View.OnClickListener,
         } else {
             mIvDownload.setVisibility(GONE);
         }
+        // sandstalk
+        mIvDownload.setVisibility(GONE);
         mDownloadMenuView.dismiss();
     }
 

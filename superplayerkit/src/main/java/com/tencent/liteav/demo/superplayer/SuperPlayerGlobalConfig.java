@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * Super player component global configuration class
- * 
+ *
  * 超级播放器组件全局配置类
  */
 public class SuperPlayerGlobalConfig {
@@ -125,6 +125,10 @@ public class SuperPlayerGlobalConfig {
         model.canvasHeight = 1080;  // The height of the subtitle rendering canvas
         model.fontColor = 0xFFFFFFFF; // Set the subtitle font color, default is white
         model.isBondFontStyle = false;  // Set whether the subtitle font is bold
+        model.outlineWidth = 6;
+        model.outlineColor = 0xFF000000;
+        model.verticalMargin = 0.05f;
+        model.lineSpace = 1;
         return model;
     }
 
