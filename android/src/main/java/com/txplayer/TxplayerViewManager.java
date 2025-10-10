@@ -12,6 +12,7 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.uimanager.SimpleViewManager;
@@ -123,6 +124,7 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
     }
   }
 
+  @Deprecated
   private void handleAddDanmuList(TxplayerView root, ReadableArray args) {
     if (args == null) {
       return;
@@ -190,16 +192,20 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   }
 
   @Override
-  public void addDanmaku(TxplayerView view, ReadableArray contents) {
-    if (contents == null) {
+  public void togglePlay(TxplayerView view) {
+    view.togglePlay();
+  }
+
+  @Override
+  public void addDanmaku(TxplayerView view, ReadableArray records, int size, int total, int current) {
+    if (records == null) {
       return;
     }
     try {
-      HashMap danmu = (HashMap) contents.toArrayList().get(0);
-      ArrayList<HashMap<String, String>> list = (ArrayList<HashMap<String, String>>) danmu.get("records");
+      ArrayList<Object> list = records.toArrayList();
       List<String> danmuContentList = new ArrayList<>();
-      for (HashMap<String, String> strObj : list) {
-        danmuContentList.add(strObj.get("content"));
+      for (Object content : list) {
+        danmuContentList.add((String) content);
       }
       view.addDanmukInfo(danmuContentList);
     } catch (Exception e) {

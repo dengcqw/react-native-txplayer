@@ -38,11 +38,18 @@ export enum SuperPlayType {
   manualPlay,
 }
 
+type DanmuList = {
+  records: {content: string}[]
+  current: number
+  size: number
+  total: number
+}
+
 export type TxplayerViewApi = {
   startPlay: () => void;
   stopPlay: () => void;
   togglePlay: () => void;
-  addDanmaku: (contents: string[]) => void;
+  addDanmaku: (contents: DanmuList) => void;
   switchToOrientation: (oriention: string, force: string) => void;
 };
 
@@ -118,12 +125,12 @@ const TxplayerView = React.forwardRef<NativeProps, ForwardedType>((props, forwar
           UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), OldCommands.stopPlay, []);
         }
       },
-      addDanmaku: (contents: string[]) => {
+      addDanmaku: (contents: DanmuList) => {
         if (FABRIC_ENABLED) {
-          if (nativeRef.current) {
+          if (nativeRef.current && contents) {
             const ref = nativeRef.current;
             setTimeout(() => {
-              Commands.addDanmaku(ref, contents);
+              Commands.addDanmaku(ref, contents.records.map(e => e.content), contents.size, contents.total, contents.current);
             }, 10);
           }
         } else {

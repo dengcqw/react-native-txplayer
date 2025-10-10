@@ -142,9 +142,9 @@ using namespace facebook::react;
         return;
     }
     if ([commandName isEqualToString:@"addDanmaku"]) {
-        NSObject *arg0 = args[0];
-        NSArray* value = (NSArray *)arg0;
-        [self addDanmaku:value];
+        if (args && args.count == 4) {
+            [self addDanmaku:[args copy]];
+        }
         return;
     }
     if ([commandName isEqualToString:@"switchToOrientation"]) {
@@ -192,8 +192,8 @@ using namespace facebook::react;
     [txplayerView togglePlay];
 }
 
-- (void)addDanmaku:(const NSArray *)contents {
-    //    [txplayerView prepareDanmaku:contents];
+- (void)addDanmaku:(NSArray *)danmakuInfo {
+  [txplayerView prepareDanmaku:danmakuInfo];
 }
 
 - (void)switchToOrientation:(NSString *)oriention force:(NSString *)force {

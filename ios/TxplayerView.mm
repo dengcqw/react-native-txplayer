@@ -159,6 +159,7 @@ static int s_playerCount = 0;
                 make.left.equalTo(self.playerView);
                 make.right.equalTo(self.playerView);
             }];
+            [self.danmakuView start];
         }
     }
     
@@ -490,16 +491,16 @@ static int s_playerCount = 0;
 
 #define kRandomColor [UIColor colorWithRed:arc4random_uniform(256) / 255.0 green:arc4random_uniform(256) / 255.0 blue:arc4random_uniform(256) / 255.0 alpha:1]
 
-- (void)prepareDanmaku:(NSDictionary *)danmakuInfo{
+- (void)prepareDanmaku:(NSArray *)danmakuInfo{
     
-    if (![danmakuInfo isKindOfClass: [NSDictionary class]]) {
+    if (![danmakuInfo isKindOfClass: [NSArray class]]) {
         return;
     }
     
-    NSArray *danmakus = danmakuInfo[@"records"];
-    NSNumber *total = danmakuInfo[@"total"];
-    NSNumber *current = danmakuInfo[@"current"];
-    NSNumber *size = danmakuInfo[@"size"];
+    NSArray *danmakus = danmakuInfo[0];
+    NSNumber *size = danmakuInfo[1];
+    NSNumber *total = danmakuInfo[2];
+    NSNumber *current = danmakuInfo[3];
     
     
     if (danmakus == nil) return;
@@ -522,10 +523,10 @@ static int s_playerCount = 0;
     CGFloat timeSpace = 2; //playDuration / total.floatValue;
     
     int index = (current.intValue - 1) * size.intValue;
-    for (NSDictionary *dict in danmakus) {
+    for (NSString *content in danmakus) {
         JTDanmaku * danmaku    = [[JTDanmaku alloc] init];
         [_danmakus addObject:danmaku];
-        NSMutableAttributedString *contentStr = [[NSMutableAttributedString alloc] initWithString:dict[@"content"] attributes:@{NSFontAttributeName : font, NSForegroundColorAttributeName : [UIColor whiteColor]}];
+        NSMutableAttributedString *contentStr = [[NSMutableAttributedString alloc] initWithString:content attributes:@{NSFontAttributeName : font, NSForegroundColorAttributeName : [UIColor whiteColor]}];
         danmaku.contentStr = contentStr;
         danmaku.timePoint  = timeSpace * index;
         index++;

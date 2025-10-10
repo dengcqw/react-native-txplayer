@@ -65,11 +65,12 @@ export interface NativeProps extends ViewProps {
 
 type ComponentType = HostComponent<NativeProps>;
 
+
 interface NativeCommands {
   startPlay: (viewRef: React.ElementRef<ComponentType>) => void;
   stopPlay: (viewRef: React.ElementRef<ComponentType>) => void;
   togglePlay: (viewRef: React.ElementRef<ComponentType>) => void;
-  addDanmaku: (viewRef: React.ElementRef<ComponentType>, contents: string[]) => void;
+  addDanmaku: (viewRef: React.ElementRef<ComponentType>, records: string[], size: Int32, total: Int32, current: Int32) => void;
   switchToOrientation: (viewRef: React.ElementRef<ComponentType>, oriention: string, force: WithDefault<string, '0'>) => void;
   seekTo: (viewRef: React.ElementRef<ComponentType>, second: Int32) => void;
 }
