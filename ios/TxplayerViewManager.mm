@@ -92,7 +92,7 @@ RCT_EXPORT_METHOD(stopPlay:(nonnull NSNumber *) reactTag) {
 RCT_EXPORT_METHOD(addDanmaku:(nonnull NSNumber *) reactTag danmakuInfo:(NSDictionary *)danmakuInfo ){
     [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *,UIView *> *viewRegistry) {
         TxplayerView * player  = (TxplayerView *) viewRegistry[reactTag];
-        [player prepareDanmaku:danmakuInfo];
+        //[player prepareDanmaku:danmakuInfo];
     }];
 }
 

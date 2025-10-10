@@ -213,11 +213,6 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   }
 
   @Override
-  public void togglePlay(TxplayerView view) {
-    view.togglePlay();
-  }
-
-  @Override
   public void stopPlay(TxplayerView view) {
     view.stopPlay();
   }
