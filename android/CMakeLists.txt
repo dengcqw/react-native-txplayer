@@ -6,6 +6,12 @@ set (BUILD_DIR ${CMAKE_SOURCE_DIR}/build)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_CXX_STANDARD 17)
 
+set(CMAKE_LINKER lld)
+
+set(CMAKE_SHARED_LINKER_FLAGS
+        "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-z,max-page-size=16384"
+)
+
 include_directories(
         "."
 )
@@ -36,3 +42,4 @@ target_link_libraries(
         ReactAndroid::jsi
         android
 )
+

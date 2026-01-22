@@ -5,7 +5,7 @@ buildscript {
   }
 
   dependencies {
-    classpath "com.android.tools.build:gradle:7.2.1"
+    classpath("com.android.tools.build:gradle:8.13.2")
     classpath 'com.facebook.react:react-native-gradle-plugin'
   }
 }
@@ -55,6 +55,8 @@ def resolveBuildType() {
 }
 
 android {
+  ndkVersion "27.1.12297006"
+
   if (supportsNamespace()) {
     namespace "com.txplayer"
 
@@ -126,8 +128,8 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation project(path: ':superplayerkit')
-  implementation 'com.tencent.liteav:LiteAVSDK_Professional_Player_Premium:12.0.0.14689'
-  api "com.google.code.gson:gson:2.8.9"
+  implementation 'com.tencent.liteav:LiteAVSDK_Professional_Player_Premium:13.0.0.19676'
+  api "com.google.code.gson:gson:2.13.2"
 }
 
 if (isNewArchitectureEnabled()) {
@@ -152,3 +154,4 @@ tasks.whenTaskAdded { task ->
     }
   }
 }
+

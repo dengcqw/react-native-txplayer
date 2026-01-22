@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.license      = package["license"]
   s.authors      = package["author"]
 
-  s.platforms    = { :ios => "12.4" }
+  s.platforms    = { :ios => "13.4" }
   s.source       = { :git => "https://github.com/dengcqw/react-native-txplayer/react-native-txplayer.git", :tag => "#{s.version}" }
 
   s.source_files    = 'ios/**/*.{h,m,mm,cpp}'

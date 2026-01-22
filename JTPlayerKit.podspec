@@ -7,7 +7,7 @@ Pod::Spec.new do |spec|
     spec.summary = 'JT播放器'
     spec.source = { :git => 'http://code.jms.com/mobile/ios-tencent-video.git', :tag => spec.version }
 
-    spec.ios.deployment_target = '12.4'
+    spec.ios.deployment_target = '13.4'
     spec.requires_arc = true
     spec.dependency 'SDWebImage'
     spec.dependency 'Masonry'
