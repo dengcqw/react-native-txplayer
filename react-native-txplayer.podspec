@@ -1,7 +1,5 @@
 require "json"
 
-fabric_enabled = ENV['RCT_NEW_ARCH_ENABLED'] == '1'
-
 package = JSON.parse(File.read(File.join(__dir__, "package.json")))
 folly_compiler_flags = '-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32'
 
@@ -25,14 +23,7 @@ Pod::Spec.new do |s|
   # Use install_modules_dependencies helper to install the dependencies if React Native version >=0.71.0.
   # See https://github.com/facebook/react-native/blob/febf6b7f33fdb4904669f99d795eba4c0f95d7bf/scripts/cocoapods/new_architecture.rb#L79.
   
-  if fabric_enabled
-    s.pod_target_xcconfig = {
-      'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/boost" "$(PODS_ROOT)/boost-for-react-native"  "$(PODS_ROOT)/RCT-Folly"',
-      "CLANG_CXX_LANGUAGE_STANDARD" => "c++17",
-    }
-    s.platforms       = { ios: '12.0' }
-    s.compiler_flags  = folly_compiler_flags + ' -DRCT_NEW_ARCH_ENABLED'
-
+  if respond_to?(:install_modules_dependencies, true)
     install_modules_dependencies(s)
   else
     s.dependency "React-Core"
