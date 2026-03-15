@@ -179,7 +179,6 @@ using namespace facebook::react;
     self.contentView = txplayerView;
 }
 
-
 - (void)startPlay {
     [txplayerView startPlay];
 }
@@ -193,7 +192,7 @@ using namespace facebook::react;
 }
 
 - (void)addDanmaku:(NSArray *)danmakuInfo {
-  [txplayerView prepareDanmaku:danmakuInfo];
+    [txplayerView prepareDanmaku:danmakuInfo];
 }
 
 - (void)switchToOrientation:(NSString *)oriention force:(NSString *)force {
@@ -202,6 +201,12 @@ using namespace facebook::react;
 
 - (void)seekTo:(NSInteger)second {
     [txplayerView seekTo:@(second)];
+}
+
+- (void)addDanmaku:(nonnull const NSArray *)records size:(NSInteger)size total:(NSInteger)total current:(NSInteger)current { 
+}
+
+- (void)showHighlightArea:(nonnull const NSArray *)areaLayouts {
 }
 
 @end

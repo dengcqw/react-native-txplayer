@@ -28,6 +28,7 @@ import com.tencent.liteav.demo.superplayer.ui.player.WindowPlayer;
 import com.tencent.rtmp.TXVodConstants;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -60,6 +61,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
   private boolean enableFullScreen = true;
   private Integer playType = 0;
   private double playStartTime = .0;
+  private List<Integer> videoEventPositions = new ArrayList<>();
 
   private Integer timeEventDuration = 5;
 
@@ -132,6 +134,9 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
   public void setPlayType(Integer playType) {
     this.playType = playType;
   }
+  public void setVideoEventPositions(List<Integer> positions) {
+    this.videoEventPositions = positions;
+  }
   public void setPlayStartTime(double playStartTime) {
     this.playStartTime = playStartTime;
   }
@@ -149,6 +154,10 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
   }
   public void setHidePlayerControl(boolean hidePlayerControl) {
     this.hidePlayerControl = hidePlayerControl;
+  }
+
+  public void showHighlightArea(List<HashMap<String, Float>> areaLayout) {
+
   }
 
   public TxplayerView(@NonNull Context context) {
@@ -245,6 +254,16 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
 
       @Override
       public void onPlayProgress(long current, long duration, long playable) {
+
+        int index = videoEventPositions.indexOf((int)current);
+        if (index >= 0) {
+          if (playerViewCallback != null) {
+            WritableMap event = Arguments.createMap();
+            event.putInt("index", index);
+            playerViewCallback.onPlayTimeTrigger(getId(), event);
+          }
+        }
+
         // 5秒更新一次
         if (current == lastTime) {
           return;
@@ -501,7 +520,8 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
 
   public interface TxPlayerViewCallBack {
     void onPlayStateChange(int viewId, Integer state);
-    void onPlayTimeChange(int videwId, WritableMap map);
+    void onPlayTimeChange(int viewId, WritableMap map);
+    void onPlayTimeTrigger(int viewId, WritableMap map);
     void onDownload(int viewId);
     void onFullscreen(int viewId, boolean fullscreen);
     void onStartPlay(TxplayerView view);

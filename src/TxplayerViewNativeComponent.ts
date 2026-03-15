@@ -9,7 +9,7 @@
  */
 
 import type { ViewProps, HostComponent } from 'react-native';
-import type { BubblingEventHandler, Int32, WithDefault } from 'react-native/Libraries/Types/CodegenTypes';
+import type { BubblingEventHandler, Int32, WithDefault, Double } from 'react-native/Libraries/Types/CodegenTypes';
 
 import codegenNativeCommands from 'react-native/Libraries/Utilities/codegenNativeCommands';
 import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
@@ -20,6 +20,17 @@ type PlayTimeType = Readonly<{
   progressTime: Int32;
   remainTime: Int32;
   isFinish: boolean;
+}>;
+
+type TriggerIndexType = Readonly<{
+  index: Int32;
+}>;
+
+export type AreaType = Readonly<{
+  x: Double;
+  y: Double;
+  w: Double;
+  h: Double;
 }>;
 
 type SubTitles = Readonly<{
@@ -56,9 +67,11 @@ export interface NativeProps extends ViewProps {
   timeEventDuration: Int32; // 时间时间发送间隔
 
   playType: Int32;
+  videoEventPostions: Int32[]
 
   onPlayStateChange: BubblingEventHandler<StateEvent>;
   onPlayTimeChange: BubblingEventHandler<PlayTimeType>;
+  onPlayTimeTrigger: BubblingEventHandler<TriggerIndexType>;
   onDownload: BubblingEventHandler<OnDownloadEvent>;
   onFullscreen: BubblingEventHandler<FullscreenEvent>;
 }
@@ -73,10 +86,11 @@ interface NativeCommands {
   addDanmaku: (viewRef: React.ElementRef<ComponentType>, records: string[], size: Int32, total: Int32, current: Int32) => void;
   switchToOrientation: (viewRef: React.ElementRef<ComponentType>, oriention: string, force: WithDefault<string, '0'>) => void;
   seekTo: (viewRef: React.ElementRef<ComponentType>, second: Int32) => void;
+  showHighlightArea: (viewRef: React.ElementRef<ComponentType>, areaLayouts: AreaType[]) => void;
 }
 
 export const Commands: NativeCommands = codegenNativeCommands<NativeCommands>({
-  supportedCommands: ['startPlay', 'stopPlay', 'togglePlay', 'addDanmaku', 'switchToOrientation', 'seekTo'],
+  supportedCommands: ['startPlay', 'stopPlay', 'togglePlay', 'addDanmaku', 'switchToOrientation', 'seekTo', 'showHighlightArea'],
 });
 
 export default codegenNativeComponent<NativeProps>('TxplayerView');

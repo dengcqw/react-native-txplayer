@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Platform, NativeModules, findNodeHandle, UIManager } from 'react-native';
-import TxplayerViewNative, { Commands, type NativeProps } from './TxplayerViewNativeComponent';
+import TxplayerViewNative, { Commands, type NativeProps, type AreaType } from './TxplayerViewNativeComponent';
 
 const TxplayerViewMgr = Platform.OS === 'ios' ? NativeModules.TxplayerView : NativeModules.TxplayerNativeModule;
 
@@ -11,14 +11,17 @@ const OldCommands = Platform.OS === 'ios' ? {
   addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku!,
   switchToOrientation: UIManager.getViewManagerConfig(ComponentName).Commands.switchToOrientation!,
   seekTo: UIManager.getViewManagerConfig(ComponentName).Commands.seekTo!,
-  togglePlay: UIManager.getViewManagerConfig(ComponentName).Commands.togglePlay!
-}: {
+  show: UIManager.getViewManagerConfig(ComponentName).Commands.seekTo!,
+  togglePlay: UIManager.getViewManagerConfig(ComponentName).Commands.togglePlay!,
+  showHighlightArea: UIManager.getViewManagerConfig(ComponentName).Commands.showHighlightArea!
+} : {
   startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay!.toString(),
   stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay!.toString(),
   addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku!.toString(),
   switchToOrientation: UIManager.getViewManagerConfig(ComponentName).Commands.switchToOrientation!.toString(),
   seekTo: UIManager.getViewManagerConfig(ComponentName).Commands.seekTo!.toString(),
-  togglePlay: UIManager.getViewManagerConfig(ComponentName).Commands.togglePlay!.toString()
+  togglePlay: UIManager.getViewManagerConfig(ComponentName).Commands.togglePlay!.toString(),
+  showHighlightArea: UIManager.getViewManagerConfig(ComponentName).Commands.showHighlightArea!.toString()
 }
 
 
@@ -39,7 +42,7 @@ export enum SuperPlayType {
 }
 
 type DanmuList = {
-  records: {content: string}[]
+  records: { content: string }[]
   current: number
   size: number
   total: number
@@ -51,6 +54,7 @@ export type TxplayerViewApi = {
   togglePlay: () => void;
   addDanmaku: (contents: DanmuList) => void;
   switchToOrientation: (oriention: string, force: string) => void;
+  showHighlightArea: (areaLayouts: AreaType[]) => void;
 };
 
 export type PlayTimeType = {
@@ -61,33 +65,33 @@ export type PlayTimeType = {
 };
 
 //export type TxplayerViewProps = {
-  //videoURL: string;
+//videoURL: string;
 
-  //appId: string;
-  //fileId: string;
-  //psign: string;
+//appId: string;
+//fileId: string;
+//psign: string;
 
-  //videoName: string;
-  //videoCoverURL: string;
-  //enableSlider: boolean;
-  //hidePlayerControl: boolean;
-  //enableMorePanel: boolean;
-  //enableDownload: boolean;
-  //enableDanmaku: boolean;
-  //enableFullScreen: boolean;
-  //enableRotate: boolean;
-  //enablePIP: boolean;
-  //playStartTime: number;
-  //language: string;
-  //enableLoop: boolean;
-  //timeEventDuration: number; // 时间时间发送间隔
+//videoName: string;
+//videoCoverURL: string;
+//enableSlider: boolean;
+//hidePlayerControl: boolean;
+//enableMorePanel: boolean;
+//enableDownload: boolean;
+//enableDanmaku: boolean;
+//enableFullScreen: boolean;
+//enableRotate: boolean;
+//enablePIP: boolean;
+//playStartTime: number;
+//language: string;
+//enableLoop: boolean;
+//timeEventDuration: number; // 时间时间发送间隔
 
-  //playType: SuperPlayType;
+//playType: SuperPlayType;
 
-  //onPlayStateChange: (stateEvent: NativeSyntheticEvent<number>) => void;
-  //onPlayTimeChange: (stateEvent: NativeSyntheticEvent<PlayTimeType>) => void;
-  //onDownload: () => void;
-  //onFullscreen: (fullscreen: number) => void; // 1 yes 0 no
+//onPlayStateChange: (stateEvent: NativeSyntheticEvent<number>) => void;
+//onPlayTimeChange: (stateEvent: NativeSyntheticEvent<PlayTimeType>) => void;
+//onDownload: () => void;
+//onFullscreen: (fullscreen: number) => void; // 1 yes 0 no
 //};
 
 type ForwardedType = React.ElementRef<typeof TxplayerViewNative>;
@@ -171,6 +175,18 @@ const TxplayerView = React.forwardRef<NativeProps, ForwardedType>((props, forwar
           }
         } else {
           UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), OldCommands.seekTo, [second]);
+        }
+      },
+      showHighlightArea: (areaLayouts: AreaType[]) => {
+        if (FABRIC_ENABLED) {
+          if (nativeRef.current) {
+            const ref = nativeRef.current;
+            setTimeout(() => {
+              Commands.showHighlightArea(ref, areaLayouts);
+            }, 10);
+          }
+        } else {
+          UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), OldCommands.showHighlightArea, [areaLayouts]);
         }
       },
     }),

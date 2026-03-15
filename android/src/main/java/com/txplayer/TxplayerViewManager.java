@@ -11,8 +11,8 @@ import androidx.annotation.Nullable;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReadableArray;
-import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.uimanager.SimpleViewManager;
@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @ReactModule(name = TxplayerViewManager.REACT_CLASS)
 public class TxplayerViewManager extends SimpleViewManager<TxplayerView> implements TxplayerView.TxPlayerViewCallBack, TxplayerViewManagerInterface<TxplayerView> {
@@ -41,6 +42,7 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   public final int COMMAND_SWITCH_TO_LANDSCAPE = 4;
   public final int COMMAND_TOGGLE_PLAY = 5;
   public final int COMMAND_SEEKTO = 6;
+  public final int COMMAND_SHOW_HIGHLIGHT_AREA = 7;
 
   private WeakReference<TxplayerView> currentPlayer;
 
@@ -87,7 +89,8 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
       "addDanmaku", COMMAND_ADDDanmuk,
       "switchToOrientation", COMMAND_SWITCH_TO_LANDSCAPE,
       "togglePlay", COMMAND_TOGGLE_PLAY,
-      "seekTo", COMMAND_SEEKTO
+      "seekTo", COMMAND_SEEKTO,
+      "showHighlightArea", COMMAND_SHOW_HIGHLIGHT_AREA
     );
   }
 
@@ -119,6 +122,9 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
       case COMMAND_SEEKTO:
         int seconds = args.getInt(0);
         root.seekTo(seconds);
+        break;
+      case COMMAND_SHOW_HIGHLIGHT_AREA:
+        showHighlightArea(root, args);
         break;
       default: {}
     }
@@ -165,11 +171,17 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
         MapBuilder.of("bubbled", "onDownload")
       ));
     builder.put(
-      "onPlayTimeChange",
-      MapBuilder.of(
-        "phasedRegistrationNames",
-        MapBuilder.of("bubbled", "onPlayTimeChange")
-      ));
+            "onPlayTimeChange",
+            MapBuilder.of(
+                    "phasedRegistrationNames",
+                    MapBuilder.of("bubbled", "onPlayTimeChange")
+            ));
+    builder.put(
+            "onPlayTimeTrigger",
+            MapBuilder.of(
+                    "phasedRegistrationNames",
+                    MapBuilder.of("bubbled", "onPlayTimeTrigger")
+            ));
     builder.put(
       "onFullscreen",
       MapBuilder.of(
@@ -226,6 +238,21 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   public void setLanguage(TxplayerView view, @Nullable String value) {
   }
 
+  @Override
+  public void showHighlightArea(TxplayerView view, ReadableArray value) {
+    List<HashMap<String, Float>> list = new ArrayList<>();
+    for (int i = 0; i < value.size(); i++) {
+      ReadableMap map = value.getMap(i);
+      HashMap<String, Float> newMap = new HashMap<>();
+      newMap.put("x", (float) map.getDouble("x"));
+      newMap.put("y", (float) map.getDouble("y"));
+      newMap.put("w", (float) map.getDouble("w"));
+      newMap.put("h", (float) map.getDouble("h"));
+      list.add(newMap);
+    }
+    view.showHighlightArea(list);
+  }
+
   @ReactProp(name = "videoURL")
   public void setVideoURL(TxplayerView view, String videoURL) {
     view.setVideoURL(videoURL);
@@ -278,6 +305,15 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   public void setPlayType(TxplayerView view, int playType) {
     view.setPlayType(playType);
   }
+  @ReactProp(name = "setVideoEventPostions")
+  public void setVideoEventPostions(TxplayerView view, @Nullable ReadableArray value) {
+    List<Integer> list = new ArrayList<>();
+    for (int i = 0; i < value.size(); i++) {
+      list.add(value.getInt(i));
+    }
+    view.setVideoEventPositions(list);
+  }
+
   @ReactProp(name = "playStartTime")
   public void setPlayStartTime(TxplayerView view, int playStartTime) {
     view.setPlayStartTime(playStartTime);
@@ -323,6 +359,11 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   @Override
   public void onPlayTimeChange(int viewId, WritableMap map) {
     sendEvent(viewId,"onPlayTimeChange", map);
+  }
+
+  @Override
+  public void onPlayTimeTrigger(int viewId, WritableMap map) {
+    sendEvent(viewId,"onPlayTimeTrigger", map);
   }
 
   @Override
