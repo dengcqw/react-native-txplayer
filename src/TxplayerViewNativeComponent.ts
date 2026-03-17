@@ -26,6 +26,12 @@ type TriggerIndexType = Readonly<{
   index: Int32;
 }>;
 
+type InteractionEvent = Readonly<{
+  data: string;
+  type: string;
+}>;
+
+
 export type AreaType = Readonly<{
   x: Double;
   y: Double;
@@ -67,11 +73,12 @@ export interface NativeProps extends ViewProps {
   timeEventDuration: Int32; // 时间时间发送间隔
 
   playType: Int32;
-  videoEventPostions: Int32[]
+  videoEventPositions: Int32[]
 
   onPlayStateChange: BubblingEventHandler<StateEvent>;
   onPlayTimeChange: BubblingEventHandler<PlayTimeType>;
   onPlayTimeTrigger: BubblingEventHandler<TriggerIndexType>;
+  onInteractionEvent: BubblingEventHandler<InteractionEvent>;
   onDownload: BubblingEventHandler<OnDownloadEvent>;
   onFullscreen: BubblingEventHandler<FullscreenEvent>;
 }
@@ -86,11 +93,12 @@ interface NativeCommands {
   addDanmaku: (viewRef: React.ElementRef<ComponentType>, records: string[], size: Int32, total: Int32, current: Int32) => void;
   switchToOrientation: (viewRef: React.ElementRef<ComponentType>, oriention: string, force: WithDefault<string, '0'>) => void;
   seekTo: (viewRef: React.ElementRef<ComponentType>, second: Int32) => void;
-  showHighlightArea: (viewRef: React.ElementRef<ComponentType>, areaLayouts: AreaType[]) => void;
+  showInteraction: (viewRef: React.ElementRef<ComponentType>, interaction: string) => void;
+  updateAnswer: (viewRef: React.ElementRef<ComponentType>, answer: string) => void;
 }
 
 export const Commands: NativeCommands = codegenNativeCommands<NativeCommands>({
-  supportedCommands: ['startPlay', 'stopPlay', 'togglePlay', 'addDanmaku', 'switchToOrientation', 'seekTo', 'showHighlightArea'],
+  supportedCommands: ['startPlay', 'stopPlay', 'togglePlay', 'addDanmaku', 'switchToOrientation', 'seekTo', 'showInteraction', 'updateAnswer'],
 });
 
 export default codegenNativeComponent<NativeProps>('TxplayerView');

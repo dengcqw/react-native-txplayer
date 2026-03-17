@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,8 +18,11 @@ import com.facebook.react.common.MapBuilder;
 import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
+import com.facebook.react.uimanager.UIManagerHelper;
 import com.facebook.react.uimanager.ViewManagerDelegate;
 import com.facebook.react.uimanager.annotations.ReactProp;
+import com.facebook.react.uimanager.events.Event;
+import com.facebook.react.uimanager.events.EventDispatcher;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 import com.facebook.react.viewmanagers.TxplayerViewManagerDelegate;
 import com.facebook.react.viewmanagers.TxplayerViewManagerInterface;
@@ -28,7 +32,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @ReactModule(name = TxplayerViewManager.REACT_CLASS)
 public class TxplayerViewManager extends SimpleViewManager<TxplayerView> implements TxplayerView.TxPlayerViewCallBack, TxplayerViewManagerInterface<TxplayerView> {
@@ -43,6 +46,8 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   public final int COMMAND_TOGGLE_PLAY = 5;
   public final int COMMAND_SEEKTO = 6;
   public final int COMMAND_SHOW_HIGHLIGHT_AREA = 7;
+  public final int COMMAND_SHOW_INTERACTION = 8;
+  public final int COMMAND_UPDATE_ANSWER = 9;
 
   private WeakReference<TxplayerView> currentPlayer;
 
@@ -68,7 +73,7 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   @Override
   @NonNull
   protected TxplayerView createViewInstance(@NonNull ThemedReactContext context) {
-    TxplayerView txplayerView = new TxplayerView(this.context.getCurrentActivity());
+    TxplayerView txplayerView = new TxplayerView(context);
     txplayerView.setFeedPlayerCallBack(this);
     return txplayerView;
   }
@@ -83,15 +88,18 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   @Nullable
   @Override
   public Map<String, Integer> getCommandsMap() {
-    return MapBuilder.of(
-      "startPlay", COMMAND_STARTPLAY,
-      "stopPlay", COMMAND_STOPPLAY,
-      "addDanmaku", COMMAND_ADDDanmuk,
-      "switchToOrientation", COMMAND_SWITCH_TO_LANDSCAPE,
-      "togglePlay", COMMAND_TOGGLE_PLAY,
-      "seekTo", COMMAND_SEEKTO,
-      "showHighlightArea", COMMAND_SHOW_HIGHLIGHT_AREA
-    );
+    HashMap<String, Integer> map = new HashMap();
+    map.put("startPlay", COMMAND_STARTPLAY);
+    map.put("stopPlay", COMMAND_STOPPLAY);
+    map.put("addDanmaku", COMMAND_ADDDanmuk);
+    map.put("switchToOrientation", COMMAND_SWITCH_TO_LANDSCAPE);
+    map.put("togglePlay", COMMAND_TOGGLE_PLAY);
+    map.put("seekTo", COMMAND_SEEKTO);
+    map.put("showHighlightArea", COMMAND_SHOW_HIGHLIGHT_AREA);
+    map.put("showInteraction", COMMAND_SHOW_INTERACTION);
+    map.put("updateAnswer", COMMAND_UPDATE_ANSWER);
+
+    return map;
   }
 
   @Override
@@ -101,6 +109,10 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
     @Nullable ReadableArray args
   ) {
     super.receiveCommand(root, commandId, args);
+
+    if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
+      return;
+    }
     int commandIdInt = Integer.parseInt(commandId);
 
     switch (commandIdInt) {
@@ -124,7 +136,11 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
         root.seekTo(seconds);
         break;
       case COMMAND_SHOW_HIGHLIGHT_AREA:
-        showHighlightArea(root, args);
+//        showHighlightArea(root, args);
+      case COMMAND_SHOW_INTERACTION:
+        showInteraction(root, args.getString(0));
+      case COMMAND_UPDATE_ANSWER:
+        updateAnswer(root, args.getString(0));
         break;
       default: {}
     }
@@ -183,6 +199,12 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
                     MapBuilder.of("bubbled", "onPlayTimeTrigger")
             ));
     builder.put(
+            "onInteractionEvent",
+            MapBuilder.of(
+                    "phasedRegistrationNames",
+                    MapBuilder.of("bubbled", "onInteractionEvent")
+            ));
+    builder.put(
       "onFullscreen",
       MapBuilder.of(
         "phasedRegistrationNames",
@@ -238,19 +260,39 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   public void setLanguage(TxplayerView view, @Nullable String value) {
   }
 
+//  @Override
+//  public void showHighlightArea(TxplayerView view, ReadableArray value) {
+//    List<HashMap<String, Float>> list = new ArrayList<>();
+//    for (int i = 0; i < value.size(); i++) {
+//      ReadableMap map = value.getMap(i);
+//      HashMap<String, Float> newMap = new HashMap<>();
+//      newMap.put("x", (float) map.getDouble("x"));
+//      newMap.put("y", (float) map.getDouble("y"));
+//      newMap.put("w", (float) map.getDouble("w"));
+//      newMap.put("h", (float) map.getDouble("h"));
+//      list.add(newMap);
+//    }
+//    view.showHighlightArea(list);
+//  }
+
   @Override
-  public void showHighlightArea(TxplayerView view, ReadableArray value) {
-    List<HashMap<String, Float>> list = new ArrayList<>();
-    for (int i = 0; i < value.size(); i++) {
-      ReadableMap map = value.getMap(i);
-      HashMap<String, Float> newMap = new HashMap<>();
-      newMap.put("x", (float) map.getDouble("x"));
-      newMap.put("y", (float) map.getDouble("y"));
-      newMap.put("w", (float) map.getDouble("w"));
-      newMap.put("h", (float) map.getDouble("h"));
-      list.add(newMap);
-    }
-    view.showHighlightArea(list);
+  public void showInteraction(TxplayerView view, String value) {
+    view.post(new Runnable() {
+      @Override
+      public void run() {
+        view.showInteraction(value);
+      }
+    });
+  }
+
+  @Override
+  public void updateAnswer(TxplayerView view, String value) {
+    view.post(new Runnable() {
+      @Override
+      public void run() {
+        view.updateAnswer(value);
+      }
+    });
   }
 
   @ReactProp(name = "videoURL")
@@ -305,8 +347,8 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   public void setPlayType(TxplayerView view, int playType) {
     view.setPlayType(playType);
   }
-  @ReactProp(name = "setVideoEventPostions")
-  public void setVideoEventPostions(TxplayerView view, @Nullable ReadableArray value) {
+  @ReactProp(name = "setVideoEventPositions")
+  public void setVideoEventPositions(TxplayerView view, @Nullable ReadableArray value) {
     List<Integer> list = new ArrayList<>();
     for (int i = 0; i < value.size(); i++) {
       list.add(value.getInt(i));
@@ -341,8 +383,9 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
     view.setTimeEventDuration(timeEventDuration);
   }
 
+  // View send event to JS
   @Override
-  public void onPlayStateChange(int viewId, Integer state) {
+  public void onPlayStateChange(View view, Integer state) {
     WritableMap event = Arguments.createMap();
     // 转换成js定义
     if (state == 1) {
@@ -353,24 +396,24 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
       state = 2;
     }
     event.putInt("state", state);
-    sendEvent(viewId,"onPlayStateChange", event);
+    sendEvent(view,"onPlayStateChange", event);
   }
 
   @Override
-  public void onPlayTimeChange(int viewId, WritableMap map) {
-    sendEvent(viewId,"onPlayTimeChange", map);
+  public void onPlayTimeChange(View view, WritableMap map) {
+    sendEvent(view,"onPlayTimeChange", map);
   }
 
   @Override
-  public void onPlayTimeTrigger(int viewId, WritableMap map) {
-    sendEvent(viewId,"onPlayTimeTrigger", map);
+  public void onPlayTimeTrigger(View view, WritableMap map) {
+    sendEvent(view,"onPlayTimeTrigger", map);
   }
 
   @Override
-  public void onFullscreen(int viewId, boolean fullscreen) {
+  public void onFullscreen(View view, boolean fullscreen) {
     WritableMap event = Arguments.createMap();
     event.putInt("fullscreen", fullscreen ? 1 : 0);
-    sendEvent(viewId,"onFullscreen", event);
+    sendEvent(view,"onFullscreen", event);
   }
 
   @Override
@@ -387,15 +430,45 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
   }
 
   @Override
-  public void onDownload(int viewId) {
-    sendEvent(viewId,"onDownload", Arguments.createMap());
+  public void onInteractionSubmit(TxplayerView view, String jsonStr) {
+    WritableMap params = Arguments.createMap();
+    params.putString("data", jsonStr);
+    params.putString("type", "submit");
+    sendEvent(view,"onInteractionEvent", params);
   }
 
-  private void sendEvent(int viewId, String eventName, @Nullable WritableMap params) {
-    context.getJSModule(RCTEventEmitter.class).receiveEvent(
-      viewId,
-      eventName,
-      params);
+  @Override
+  public void onDownload(View view) {
+    sendEvent(view,"onDownload", Arguments.createMap());
+  }
+
+  private void sendEvent(View view, String eventName, @Nullable WritableMap params) {
+    if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
+      EventDispatcher dispatcher =
+              UIManagerHelper.getEventDispatcherForReactTag(context, view.getId());
+      if (dispatcher == null) return;
+      int surfaceId = UIManagerHelper.getSurfaceId(view.getContext());
+      if (surfaceId == -1)  return;
+
+      dispatcher.dispatchEvent(
+              new Event(surfaceId, view.getId()) {
+                @Override
+                public String getEventName() {
+                  return eventName;
+                }
+
+                @Override
+                public WritableMap getEventData() {
+                  return params;
+                }
+              }
+      );
+    } else {
+      context.getJSModule(RCTEventEmitter.class).receiveEvent(
+              view.getId(),
+              eventName,
+              params);
+    }
   }
 
   @Override

@@ -13,7 +13,8 @@ const OldCommands = Platform.OS === 'ios' ? {
   seekTo: UIManager.getViewManagerConfig(ComponentName).Commands.seekTo!,
   show: UIManager.getViewManagerConfig(ComponentName).Commands.seekTo!,
   togglePlay: UIManager.getViewManagerConfig(ComponentName).Commands.togglePlay!,
-  showHighlightArea: UIManager.getViewManagerConfig(ComponentName).Commands.showHighlightArea!
+  showInteraction: UIManager.getViewManagerConfig(ComponentName).Commands.showInteraction!,
+  updateAnswer: UIManager.getViewManagerConfig(ComponentName).Commands.updateAnswer!
 } : {
   startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay!.toString(),
   stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay!.toString(),
@@ -21,7 +22,8 @@ const OldCommands = Platform.OS === 'ios' ? {
   switchToOrientation: UIManager.getViewManagerConfig(ComponentName).Commands.switchToOrientation!.toString(),
   seekTo: UIManager.getViewManagerConfig(ComponentName).Commands.seekTo!.toString(),
   togglePlay: UIManager.getViewManagerConfig(ComponentName).Commands.togglePlay!.toString(),
-  showHighlightArea: UIManager.getViewManagerConfig(ComponentName).Commands.showHighlightArea!.toString()
+  showInteraction: UIManager.getViewManagerConfig(ComponentName).Commands.showInteraction!.toString(),
+  updateAnswer: UIManager.getViewManagerConfig(ComponentName).Commands.updateAnswer!.toString(),
 }
 
 
@@ -54,7 +56,8 @@ export type TxplayerViewApi = {
   togglePlay: () => void;
   addDanmaku: (contents: DanmuList) => void;
   switchToOrientation: (oriention: string, force: string) => void;
-  showHighlightArea: (areaLayouts: AreaType[]) => void;
+  showInteraction: (interaction: string) => void;
+  updateAnswer: (answer: string) => void;
 };
 
 export type PlayTimeType = {
@@ -177,16 +180,28 @@ const TxplayerView = React.forwardRef<NativeProps, ForwardedType>((props, forwar
           UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), OldCommands.seekTo, [second]);
         }
       },
-      showHighlightArea: (areaLayouts: AreaType[]) => {
+      showInteraction: (value: string) => {
         if (FABRIC_ENABLED) {
           if (nativeRef.current) {
             const ref = nativeRef.current;
             setTimeout(() => {
-              Commands.showHighlightArea(ref, areaLayouts);
+              Commands.showInteraction(ref, value);
             }, 10);
           }
         } else {
-          UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), OldCommands.showHighlightArea, [areaLayouts]);
+          UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), OldCommands.showInteraction, [value]);
+        }
+      },
+      updateAnswer: (value: string) => {
+        if (FABRIC_ENABLED) {
+          if (nativeRef.current) {
+            const ref = nativeRef.current;
+            setTimeout(() => {
+              Commands.updateAnswer(ref, value);
+            }, 10);
+          }
+        } else {
+          UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), OldCommands.updateAnswer, [value]);
         }
       },
     }),

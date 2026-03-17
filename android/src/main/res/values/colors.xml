@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="interaction_correct">#1DAB45</color>
+    <color name="interaction_wrong">#FF3D4C</color>
+</resources>

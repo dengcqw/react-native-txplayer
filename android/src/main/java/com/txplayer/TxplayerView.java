@@ -12,12 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.LifecycleEventListener;
+import com.facebook.react.uimanager.ThemedReactContext;
 import com.tencent.liteav.demo.superplayer.SubtitleSourceModel;
 import com.tencent.liteav.demo.superplayer.SuperPlayerDef;
 import com.tencent.liteav.demo.superplayer.SuperPlayerModel;
@@ -27,22 +29,28 @@ import com.tencent.liteav.demo.superplayer.ui.player.FullScreenPlayer;
 import com.tencent.liteav.demo.superplayer.ui.player.WindowPlayer;
 import com.tencent.rtmp.TXVodConstants;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.jetbrains.annotations.NotNull;
 
-public class TxplayerView extends FrameLayout implements LifecycleEventListener {
 
+public class TxplayerView extends FrameLayout implements LifecycleEventListener, InteractiveViewInterface {
+
+  private ThemedReactContext reactContext;
   // 播放器计数
   static int playingCount = 0;
   private boolean isPlaying = false; // 播放中，不熄屏
 
   private SuperPlayerView superPlayerView        = null;
   private TxPlayerViewCallBack playerViewCallback     = null;
+  private InteractiveView interactiveView = null;
 
   private long lastTime = 0;
   private long playDuration = 0;
@@ -62,6 +70,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
   private Integer playType = 0;
   private double playStartTime = .0;
   private List<Integer> videoEventPositions = new ArrayList<>();
+//  private List<HashMap<String, Float>> highlightAreas = new ArrayList<>();
 
   private Integer timeEventDuration = 5;
 
@@ -156,28 +165,55 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
     this.hidePlayerControl = hidePlayerControl;
   }
 
-  public void showHighlightArea(List<HashMap<String, Float>> areaLayout) {
-
+  public void updateAnswer(String value) {
+    if (interactiveView == null) {
+      return;
+    }
+    interactiveView.updateAnswer(value);
   }
 
-  public TxplayerView(@NonNull Context context) {
+  public void showInteraction(String value) {
+    if (interactiveView == null) {
+      LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+      interactiveView = new InteractiveView(reactContext.getCurrentActivity());
+      interactiveView.setDelegate(new WeakReference<>(this));
+      interactiveView.setFullscreen(isFullScreenPlay());
+      superPlayerView.addView(interactiveView, params);
+    }
+
+    interactiveView.setInteraction(value);
+
+    // 隐藏播放控件
+    if (isFullScreenPlay()) {
+      superPlayerView.getFullscreenPlayer().setVisibility(value.isEmpty() ? View.VISIBLE : View.INVISIBLE);
+    } else {
+      superPlayerView.getWindowPlayer().setVisibility(value.isEmpty() ? View.VISIBLE : View.INVISIBLE);
+    }
+  }
+
+//  public void showHighlightArea(List<HashMap<String, Float>> areaLayout) {
+//    if (areaView == null) {
+//      areaView = new HighlightAreaView(reactContext.getCurrentActivity());
+//      LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+//      superPlayerView.addView(areaView, params);
+//    }
+//    areaView.setAreas(areaLayout);
+//    if (areaLayout.size() > 0) {
+//      areaView.setVisibility(View.VISIBLE);
+//    } else {
+//      areaView.setVisibility(View.GONE);
+//    }
+//  }
+
+  public TxplayerView(@NonNull ThemedReactContext context) {
     super(context);
-    this.initViews();
-
-  }
-  public TxplayerView(@NonNull Context context, @Nullable AttributeSet attrs) {
-    super(context, attrs);
-    this.initViews();
-  }
-
-  public TxplayerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-    super(context, attrs, defStyleAttr);
+    reactContext = context;
     this.initViews();
   }
 
   private void initViews() {
     setupLayoutHack();
-    superPlayerView = new SuperPlayerView(getContext());
+    superPlayerView = new SuperPlayerView(reactContext.getCurrentActivity());
     ColorDrawable colorDrawable = new ColorDrawable();
     colorDrawable.setColor(Color.BLACK);
     superPlayerView.setBackground(colorDrawable);
@@ -185,24 +221,23 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
     addView(superPlayerView);
     superPlayerView.showOrHideBackBtn(false);
 
-    Activity act = (Activity)this.getContext();
+    Activity act = this.reactContext.getCurrentActivity();
     superPlayerView.setPlayerViewCallback(new SuperPlayerView.OnSuperPlayerViewCallback() {
       @Override
       public void onStartFullScreenPlay() {
         removeFeedPlayFromItem();
+        if (interactiveView != null) interactiveView.setFullscreen(true);
         rootView().addView(superPlayerView , new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT , ViewGroup.LayoutParams.MATCH_PARENT));
-        playerViewCallback.onFullscreen(getId(), true);
+        playerViewCallback.onFullscreen(TxplayerView.this, true);
         act.getWindow().getDecorView().setBackgroundColor(Color.BLACK);
-        FullScreenPlayer fullscreenPlayer = superPlayerView.getFullscreenPlayer();
-        superPlayerView.toggleDanmu(fullscreenPlayer.mBarrageOn);
       }
 
       @Override
       public void onStopFullScreenPlay() {
         addFeedPlayToItem();
-        playerViewCallback.onFullscreen(getId(), false);
+        if (interactiveView != null) interactiveView.setFullscreen(false);
+        playerViewCallback.onFullscreen(TxplayerView.this, false);
         act.getWindow().getDecorView().setBackgroundColor(Color.WHITE);
-        superPlayerView.toggleDanmu(false);
       }
 
       @Override
@@ -238,7 +273,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
           keepScreen(false);
         }
         if (playerViewCallback != null) {
-          playerViewCallback.onPlayStateChange(getId(), SuperPlayerDef.PlayerState.END.ordinal());
+          playerViewCallback.onPlayStateChange(TxplayerView.this, SuperPlayerDef.PlayerState.END.ordinal());
           playTimeDidChange(true);
         }
       }
@@ -260,7 +295,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
           if (playerViewCallback != null) {
             WritableMap event = Arguments.createMap();
             event.putInt("index", index);
-            playerViewCallback.onPlayTimeTrigger(getId(), event);
+            playerViewCallback.onPlayTimeTrigger(TxplayerView.this, event);
           }
         }
 
@@ -278,7 +313,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
           event.putInt("progressTime", (int) current);
           event.putInt("remainTime", (int) (duration - current));
           event.putBoolean("isFinish",  isEnd());
-          playerViewCallback.onPlayTimeChange(getId(), event);
+          playerViewCallback.onPlayTimeChange(TxplayerView.this, event);
         }
 
         playDuration = duration;
@@ -292,14 +327,14 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
         }
         if (state == 4) return;
         if (playerViewCallback != null) {
-          playerViewCallback.onPlayStateChange(getId(), state);
+          playerViewCallback.onPlayStateChange(TxplayerView.this, state);
         }
       }
 
       @Override
       public void onClickDownload() {
         if (playerViewCallback != null) {
-          playerViewCallback.onDownload(getId());
+          playerViewCallback.onDownload(TxplayerView.this);
         }
       }
     });
@@ -312,7 +347,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
       event.putInt("progressTime", (int) playDuration);
       event.putInt("remainTime", 0);
       event.putBoolean("isFinish",  isFinish);
-      playerViewCallback.onPlayTimeChange(getId(), event);
+      playerViewCallback.onPlayTimeChange(TxplayerView.this, event);
     }
   }
 
@@ -430,7 +465,8 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
       return;
     }
 
-    Activity act = (Activity)getContext();
+    Activity act = this.reactContext.getCurrentActivity();
+    if (act == null) return;
     if (act.isInPictureInPictureMode()) {
       return;
     }
@@ -518,13 +554,19 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
     Log.d("Txplayer", "onHostDestroy: " + getId());
   }
 
+  @Override
+  public void submitInteraction(String data) {
+    playerViewCallback.onInteractionSubmit(TxplayerView.this, data);
+  }
+
   public interface TxPlayerViewCallBack {
-    void onPlayStateChange(int viewId, Integer state);
-    void onPlayTimeChange(int viewId, WritableMap map);
-    void onPlayTimeTrigger(int viewId, WritableMap map);
-    void onDownload(int viewId);
-    void onFullscreen(int viewId, boolean fullscreen);
+    void onPlayStateChange(View view, Integer state);
+    void onPlayTimeChange(View view, WritableMap map);
+    void onPlayTimeTrigger(View view, WritableMap map);
+    void onDownload(View view);
+    void onFullscreen(View view, boolean fullscreen);
     void onStartPlay(TxplayerView view);
+    void onInteractionSubmit(TxplayerView view, String jsonStr);
   }
 
   @Override
@@ -578,7 +620,8 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
   }
 
   private ViewGroup rootView() {
-    Activity act = (Activity)getContext();
+    Activity act = this.reactContext.getCurrentActivity();
+    if (act == null) return null;
     return (ViewGroup)act.findViewById(android.R.id.content);
   }
 
@@ -591,15 +634,15 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener 
   }
 
   void keepScreen(boolean keep) {
+    Activity act = reactContext.getCurrentActivity();
+    if (act == null) return;
     if (keep) {
       TxplayerView.playingCount ++;
-      Activity act = (Activity) getContext();
       act.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     } else {
       TxplayerView.playingCount --;
       if (TxplayerView.playingCount <= 0) {
         TxplayerView.playingCount  = 0;
-        Activity act = (Activity) getContext();
         act.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
       }
     }

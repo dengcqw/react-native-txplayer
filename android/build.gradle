@@ -14,8 +14,10 @@ def isNewArchitectureEnabled() {
   return rootProject.hasProperty("newArchEnabled") && rootProject.getProperty("newArchEnabled") == "true"
 }
 
-apply plugin: "com.android.library"
-
+plugins {
+  id 'com.android.library'
+  id 'org.jetbrains.kotlin.android'
+}
 
 def appProject = rootProject.allprojects.find { it.plugins.hasPlugin('com.android.application') }
 
@@ -91,6 +93,10 @@ android {
     disable "GradleCompatible"
   }
 
+  buildFeatures {
+    viewBinding = true
+  }
+
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
@@ -114,6 +120,9 @@ android {
   buildFeatures {
     prefab true
   }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
 }
 
 repositories {
@@ -130,6 +139,9 @@ dependencies {
   implementation project(path: ':superplayerkit')
   implementation 'com.tencent.liteav:LiteAVSDK_Professional_Player_Premium:13.0.0.19676'
   api "com.google.code.gson:gson:2.13.2"
+  implementation 'androidx.core:core-ktx:1.18.0'
+  implementation("com.squareup.moshi:moshi:1.15.2")
+  implementation("com.squareup.moshi:moshi-kotlin:1.15.2")
 }
 
 if (isNewArchitectureEnabled()) {
@@ -139,19 +151,3 @@ if (isNewArchitectureEnabled()) {
     codegenJavaPackageName = "com.txplayer"
   }
 }
-
-// Resolves "LOCAL_SRC_FILES points to a missing file, Check that libfb.so exists or that its path is correct".
-tasks.whenTaskAdded { task ->
-  if (task.name.contains("configureCMakeDebug")) {
-    rootProject.getTasksByName("packageReactNdkDebugLibs", true).forEach {
-      task.dependsOn(it)
-    }
-  }
-  // We want to add a dependency for both configureCMakeRelease and configureCMakeRelWithDebInfo
-  if (task.name.contains("configureCMakeRel")) {
-    rootProject.getTasksByName("packageReactNdkReleaseLibs", true).forEach {
-      task.dependsOn(it)
-    }
-  }
-}
-
