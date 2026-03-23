@@ -16,7 +16,7 @@
 #import "TXLiveSDKTypeDef.h"
 #import "TXLiveSDKEventDef.h"
 #import <React/UIView+React.h>
-
+#import <JTPlayerView/JTPlayerView-Swift.h>
 
 @interface UIViewController(TxplayerView)
 - (BOOL)movRotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
@@ -91,6 +91,7 @@ static int s_playerCount = 0;
 @property(strong, nonatomic) SuperPlayerView *playerView;
 
 @property(nonatomic, strong) JTDanmakuView *danmakuView;
+@property(nonatomic, strong) JTInteractionView *interactionView;
 @property (nonatomic,strong) NSMutableArray *danmakus;
 @property (nonatomic,assign) UIInterfaceOrientation orientation;
 @property (nonatomic,assign) NSInteger lastTime;
@@ -105,7 +106,7 @@ static int s_playerCount = 0;
 
 - (void)startPlay {
     NSLog(@"TxplayerView did startPlay %@",  self.videoName);
-
+    
     SuperPlayerModel *model = [[SuperPlayerModel alloc] init];
     if(self.videoURL != nil && self.videoURL.length > 0) {
         model.videoURL          = self.videoURL;
@@ -147,20 +148,20 @@ static int s_playerCount = 0;
         controlView.enableFullscreen = self.enableFullScreen.boolValue;
         controlView.disablePipBtn = !self.enablePIP.boolValue;
         
-        if(self.enableDanmaku.boolValue) {
-            controlView.disableDanmakuBtn = NO;
-            controlView.danmakuBtn.selected = YES;
-            [controlView.danmakuBtn addTarget:self action:@selector(danmakuShowAction:) forControlEvents:UIControlEventTouchUpInside];
-            [self.playerView addSubview:self.danmakuView];
-            
-            [_danmakuView mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.top.equalTo(self.playerView);
-                make.bottom.equalTo(self.playerView);
-                make.left.equalTo(self.playerView);
-                make.right.equalTo(self.playerView);
-            }];
-            [self.danmakuView start];
-        }
+//        if(self.enableDanmaku.boolValue) {
+//            controlView.disableDanmakuBtn = NO;
+//            controlView.danmakuBtn.selected = YES;
+//            [controlView.danmakuBtn addTarget:self action:@selector(danmakuShowAction:) forControlEvents:UIControlEventTouchUpInside];
+//            [self.playerView addSubview:self.danmakuView];
+//            
+//            [_danmakuView mas_makeConstraints:^(MASConstraintMaker *make) {
+//                make.top.equalTo(self.playerView);
+//                make.bottom.equalTo(self.playerView);
+//                make.left.equalTo(self.playerView);
+//                make.right.equalTo(self.playerView);
+//            }];
+//            [self.danmakuView start];
+//        }
     }
     
     // 滑动手势调节音量
@@ -197,6 +198,14 @@ static int s_playerCount = 0;
   }
   
   return _danmakuView;
+}
+
+- (JTInteractionView *)interactionView {
+  if (_interactionView == nil) {
+      _interactionView = [[JTInteractionView alloc] init];
+  }
+  
+  return _interactionView;
 }
 
 - (void)stopPlay {
@@ -277,6 +286,61 @@ static int s_playerCount = 0;
 - (void)setLanguage:(NSString *)language {
 }
 
+#pragma mark - 交互视频
+
+- (void)addInteractionView {
+    if (self.interactionView.superview) {
+        return;
+    }
+    [self.playerView addSubview:self.interactionView];
+    SPDefaultControlView *controlView = (SPDefaultControlView *)_playerView.controlView;
+    self.interactionView.fullscreen = controlView.isFullScreen;
+    
+    [self.interactionView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.playerView);
+        make.bottom.equalTo(self.playerView);
+        make.left.equalTo(self.playerView);
+        make.right.equalTo(self.playerView);
+    }];
+    self.interactionView.hidden = YES;
+}
+
+- (void)showInteraction:(nonnull NSString *)interaction {
+    [self.interactionView showInteractionWithJsonStr:interaction];
+    if ([interaction isEqualToString:@""]) {
+        for (UIGestureRecognizer *gesture in self.playerView.gestureRecognizers) {
+            gesture.enabled = YES;
+        }
+        self.playerView.controlView.alpha = 1;
+        self.playerView.centerPlayBtn.alpha = 1;
+    } else {
+        for (UIGestureRecognizer *gesture in self.playerView.gestureRecognizers) {
+            gesture.enabled = NO;
+        }
+        self.playerView.controlView.alpha = 0;
+        self.playerView.centerPlayBtn.alpha = 0;
+        
+        // 视频信息
+        CGSize size = [self.playerView getVideoSize];
+        [self.interactionView updateVideoSizeWithWidth:size.width height:size.height];
+//        [self.playerView getVideoSnapShot:^(UIImage * image) {
+//            [self.interactionView updateVideoSnapShotWithImage:image];
+//        }];
+    }
+}
+
+
+- (void)updateAnswer:(nonnull NSString *)answer {
+    [self.interactionView updateAnswerWithJsonStr:answer];
+}
+
+- (void)sendAnswer: (NSString *)answer {
+    if (self.eventEmitter != nullptr) {
+        std::dynamic_pointer_cast<const facebook::react::TxplayerViewEventEmitter>(self.eventEmitter)
+        ->onInteractionEvent(facebook::react::TxplayerViewEventEmitter::OnInteractionEvent{.type = "submit", .data = [answer UTF8String]});
+    }
+}
+
 #pragma mark - SuperPlayerDelegate
 
 
@@ -317,16 +381,20 @@ static int s_playerCount = 0;
 }
 
 - (void)changeToFullscreen:(BOOL)fullScreen {
-     SPDefaultControlView *controlView = (SPDefaultControlView *)_playerView.controlView;
-    if (controlView.danmakuBtn.selected) {
-        if (fullScreen) {
-            [self danmakuShow];
-        } else {
-            [self danmakuHidden];
-        }
+//     SPDefaultControlView *controlView = (SPDefaultControlView *)_playerView.controlView;
+//    if (controlView.danmakuBtn.selected) {
+//        if (fullScreen) {
+//            [self danmakuShow];
+//        } else {
+//            [self danmakuHidden];
+//        }
+//    }
+    if (self.videoEventPositions.count > 0) {
+        self.interactionView.fullscreen = fullScreen;
     }
+    
    
-    [[UIApplication sharedApplication] setStatusBarHidden:fullScreen];
+//    [[UIApplication sharedApplication] setStatusBarHidden:fullScreen];
 }
 
 - (void)superPlayerDidSelectDownload:(SuperPlayerView *)player{
@@ -449,6 +517,20 @@ static int s_playerCount = 0;
 
 - (void)progressEvent{
     NSInteger current = (NSInteger)self.playerView.playCurrentTime;
+    
+    if (self.videoEventPositions != nil) {
+        NSUInteger index = [self.videoEventPositions indexOfObject:@(current)];
+        if (index < 100) { // 最大不会超过这个吧
+            if (self.eventEmitter != nullptr) {
+                std::dynamic_pointer_cast<const facebook::react::TxplayerViewEventEmitter>(self.eventEmitter)
+                ->onPlayTimeTrigger(facebook::react::TxplayerViewEventEmitter::OnPlayTimeTrigger{
+                    .index = static_cast<int>(index)
+                });
+            }
+        }
+    }
+    
+    
     if (current == self.lastTime) {
         return;
     }
@@ -463,7 +545,7 @@ static int s_playerCount = 0;
     unsigned long totalTime = self.playerView.playDuration ;
     unsigned long progressTime = self.playerView.playCurrentTime;
     unsigned long remainTime = totalTime - progressTime;
-    BOOL finish = isFinish || remainTime == 0;
+//    BOOL finish = isFinish || remainTime == 0;
 
 #ifdef RCT_NEW_ARCH_ENABLED
     if (self.eventEmitter != nullptr) {
@@ -590,6 +672,7 @@ static int s_playerCount = 0;
     }
 }
 
+
 - (void)startPip {
 }
 
@@ -674,6 +757,10 @@ static int s_playerCount = 0;
 - (void)setPlayerView:(SuperPlayerView *)playerView {
     _playerView = playerView;
     _playerView.fatherView = self.faterView;
+}
+
+- (BOOL)prefersStatusBarHidden {
+    return YES;
 }
 
 @end

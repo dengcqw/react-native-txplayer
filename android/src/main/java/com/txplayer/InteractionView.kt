@@ -1,6 +1,7 @@
 package com.txplayer
 
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
@@ -53,6 +54,12 @@ class InteractiveView @JvmOverloads constructor(
         binding.audioPanel.root.visibility = View.GONE
     }
 
+    fun updateVideoSize(width: Int, height: Int, viewW: Int, viewH: Int) {
+        Log.d("InteractionView", "updateVideoSize: w=$width h=$height")
+        Log.d("InteractionView", "updateVideoSize: selfw=${viewW} selfh=${viewH}")
+        binding.areaLayout.updateVideoSize(width, height, viewW, viewH)
+    }
+
     fun setInteraction(jsonString: String) {
         if (jsonString == "") {
             binding.areaLayout.areas = null
@@ -64,13 +71,15 @@ class InteractiveView @JvmOverloads constructor(
         val jsonAdapter = moshi.adapter(InteractionEntity::class.java)
         try {
             entity = jsonAdapter.fromJson(jsonString)
+            visibility = View.VISIBLE
             binding.areaLayout.areas = entity?.areaLayouts
+            binding.areaLayout.themeColor = Color.parseColor(entity!!.themeColor)
 
             binding.selectPanel.visibility = View.INVISIBLE
             binding.inputPanel.visibility = View.INVISIBLE
             binding.audioPanel.root.visibility = View.INVISIBLE
 
-            if (entity?.interactionType == 3) {
+            if (entity?.interactionType == 4) {
                 binding.audioPanel.root.visibility = View.VISIBLE
                 binding.audioPanel.tvInteractionTitle.text = entity?.audioTxt
             } else if (entity?.interactionType == 1) {
@@ -101,7 +110,7 @@ class InteractiveView @JvmOverloads constructor(
 
         val jsonAdapter = moshi.adapter(InteractionAnswerEntity::class.java)
         try {
-            if (entity?.interactionType == 3) {
+            if (entity?.interactionType == 4) {
                 val obj = jsonAdapter.fromJson(jsonString)
                 binding.audioPanel.tvAudioTime.text = obj?.hint
             } else if (entity?.interactionType == 1) {

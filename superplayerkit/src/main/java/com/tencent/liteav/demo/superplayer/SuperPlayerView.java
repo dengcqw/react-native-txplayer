@@ -1599,4 +1599,19 @@ public class SuperPlayerView extends RelativeLayout
     public void setEnableRotate(Boolean b) {
         enableRotate = b;
     }
+
+    public int getVideoWidth()  {
+        if (mTXCloudVideoView.getVideoView() != null) {
+            return mTXCloudVideoView.getVideoView().getWidth();
+        } else {
+            return 0;
+        }
+    }
+    public int getVideoHeight()  {
+        if (mTXCloudVideoView.getVideoView() != null) {
+            return mTXCloudVideoView.getVideoView().getHeight();
+        } else {
+            return 0;
+        }
+    }
 }

@@ -182,6 +182,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener,
     }
 
     interactiveView.setInteraction(value);
+    interactiveView.updateVideoSize(superPlayerView.getVideoWidth(), superPlayerView.getVideoHeight(), getWidth(), getHeight());
 
     // 隐藏播放控件
     if (isFullScreenPlay()) {

@@ -5,7 +5,7 @@
     android:layout_height="50dp"
     android:layout_marginBottom="12dp"
     android:layout_gravity="center_horizontal|bottom"
-    android:paddingHorizontal="16dp"
+    android:paddingHorizontal="26dp"
     android:gravity="center"
     android:background="@drawable/interactive_audio_bg"
     android:orientation="horizontal">
@@ -13,23 +13,18 @@
         android:id="@+id/tv_interaction_title"
         android:textColor="#2B2D42"
         android:textAlignment="textStart"
-        android:layout_weight="1"
         android:textSize="14sp"
         tools:text="位置点选"
-        android:textStyle="bold"
-        android:layout_marginLeft="10dp"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <View android:layout_marginHorizontal="16dp" android:layout_height="30dp" android:layout_width="1dp" android:background="#DEE3E8" />
     <TextView
         android:id="@+id/tv_audio_time"
         android:textColor="#2B2D42"
-        android:layout_weight="1"
         android:textSize="14sp"
         tools:text="位置点选"
-        android:textStyle="bold"
         android:layout_marginRight="10dp"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <ImageView
         android:id="@+id/ic_title"

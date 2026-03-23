@@ -40,9 +40,16 @@ using namespace facebook::react;
     if (self = [super initWithFrame:frame]) {
         _props = TxplayerViewShadowNode::defaultSharedProps();
         txplayerView = [[TxplayerView alloc] initWithFrame:self.bounds];
+        txplayerView.timeEventDuration = @(5);
         self.contentView = txplayerView;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(answerNotif:) name:@"com.jt.sand.interaction.submit" object:nil];
     }
     return self;
+}
+
+- (void)answerNotif: (NSNotification *)notif {
+    [txplayerView sendAnswer:notif.object];
 }
 
 - (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps
@@ -120,6 +127,19 @@ using namespace facebook::react;
     if (_oldProps.enablePIP != newProps.enablePIP) {
         txplayerView.enablePIP = @(newProps.enablePIP);
     }
+    if (_oldProps.videoEventPositions != newProps.videoEventPositions) {
+        if (newProps.videoEventPositions.size() > 0) {
+            NSMutableArray *array = [NSMutableArray arrayWithCapacity:newProps.videoEventPositions.size()];
+            for (int v : newProps.videoEventPositions) {
+                [array addObject:@(v)];
+            }
+
+            txplayerView.videoEventPositions = [array copy];
+            [txplayerView addInteractionView];
+        } else {
+            txplayerView.videoEventPositions = @[];
+        }
+    }
     [txplayerView didSetProps:changedProps];
     
     [super updateProps:props oldProps:oldProps];
@@ -157,6 +177,17 @@ using namespace facebook::react;
         NSObject *arg0 = args[0];
         NSInteger value = [(NSNumber *)arg0 integerValue];
         [self seekTo:value];
+        return;
+    }
+    
+    if ([commandName isEqualToString:@"showInteraction"]) {
+        NSObject *arg0 = args[0];
+        [self showInteraction:(NSString *)arg0];
+        return;
+    }
+    if ([commandName isEqualToString:@"updateAnswer"]) {
+        NSObject *arg0 = args[0];
+        [self updateAnswer:(NSString *)arg0];
         return;
     }
 }
@@ -206,7 +237,13 @@ using namespace facebook::react;
 - (void)addDanmaku:(nonnull const NSArray *)records size:(NSInteger)size total:(NSInteger)total current:(NSInteger)current { 
 }
 
-- (void)showHighlightArea:(nonnull const NSArray *)areaLayouts {
+- (void)showInteraction:(nonnull NSString *)interaction {
+    [txplayerView showInteraction: interaction];
+}
+
+
+- (void)updateAnswer:(nonnull NSString *)answer { 
+    [txplayerView updateAnswer: answer];
 }
 
 @end

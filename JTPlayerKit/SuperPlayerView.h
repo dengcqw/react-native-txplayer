@@ -234,4 +234,8 @@ typedef NS_ENUM(NSInteger, SuperPlayerLayoutStyle) {
 
 // sandstalk
 - (void)controlViewPip:(UIView *)controlView;
+
+- (CGSize)getVideoSize;
+- (void)getVideoSnapShot: (void (^)(UIImage *))snapshotCompletionBlock;
+
 @end

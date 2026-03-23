@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Platform, NativeModules, findNodeHandle, UIManager } from 'react-native';
-import TxplayerViewNative, { Commands, type NativeProps, type AreaType } from './TxplayerViewNativeComponent';
+import TxplayerViewNative, { Commands, type NativeProps } from './TxplayerViewNativeComponent';
 
 const TxplayerViewMgr = Platform.OS === 'ios' ? NativeModules.TxplayerView : NativeModules.TxplayerNativeModule;
 

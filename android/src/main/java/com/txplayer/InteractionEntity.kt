@@ -1,6 +1,7 @@
 package com.txplayer
 
 data class InteractionEntity(
+    val themeColor: String,
     val actionTxt: String?,
     val submitTxt: String?,
     val correctTxt: String?,

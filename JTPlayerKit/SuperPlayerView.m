@@ -2840,4 +2840,13 @@ TXLiveBaseDelegate,TXLivePlayListener,TXVodPlayListener>
     }
     return  _volumeView;
 }
+
+- (CGSize)getVideoSize {
+    return CGSizeMake(_vodPlayer.width, _vodPlayer.height);
+}
+- (void)getVideoSnapShot: (void (^)(UIImage *))snapshotCompletionBlock {
+    [_vodPlayer snapshot:snapshotCompletionBlock];
+}
+
+
 @end

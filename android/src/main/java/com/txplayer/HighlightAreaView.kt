@@ -18,6 +18,21 @@ class HighlightAreaView @JvmOverloads constructor(
     }
 
     val charList = listOf("A", "B", "C", "D", "E", "F", "G", "H", "I", "J")
+
+    var hBlank: Int = 0
+    var vBlank: Int = 0
+
+    fun updateVideoSize(width: Int, height: Int, viewW: Int, viewH: Int) {
+        hBlank = viewW - width
+        vBlank = viewH - height
+        invalidate()
+    }
+
+    var themeColor: Int = Color.YELLOW
+        set(value) {
+            field = value
+            borderPaint.color = value
+        }
     // 数据源：每个元素包含 x, y, w, h（double 类型）
     var areas:  List<AreaObj>? = null
         set(value) {
@@ -35,9 +50,9 @@ class HighlightAreaView @JvmOverloads constructor(
 
     // 文字画笔
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.WHITE // 文字颜色可自定义
+        color = Color.BLACK // 文字颜色可自定义
         val scale = resources.displayMetrics.density
-        textSize = 20 * scale
+        textSize = 18 * scale
         textAlign = Paint.Align.CENTER // 水平居中
     }
 
@@ -58,10 +73,10 @@ class HighlightAreaView @JvmOverloads constructor(
                 return@forEachIndexed
             }
 
-            val left = x * width
-            val top = y * height
-            val right = left + w * width
-            val bottom = top + h * height
+            val left = x * (width - hBlank/2) + hBlank/2
+            val top = y * (height - vBlank/2) + vBlank/2
+            val right = left + w * (width - hBlank)
+            val bottom = top + h * (height - vBlank)
 
             // 绘制矩形边框
             canvas.drawRect(left, top, right, bottom, borderPaint)
