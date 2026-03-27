@@ -1,11 +1,13 @@
 package com.txplayer
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -20,7 +22,7 @@ class InteractiveSelectView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
     var entity: InteractionEntity? = null
-
+    var themeColor: Int? = null
     var submit: ((value: InteractionSubmitEntity) -> Unit)? = null
 
     private val binding: ViewInteractiveSelectBinding =
@@ -51,6 +53,9 @@ class InteractiveSelectView @JvmOverloads constructor(
     }
 
     fun updateSubmit(type: Int?) {
+        themeColor?.let { color ->
+            binding.llSubmit.setBackgroundColor(color)
+        }
         if (type == 0 || type == 2) {
             binding.llSubmit.isEnabled = false
             binding.llSubmit.visibility = View.VISIBLE
@@ -69,6 +74,7 @@ class InteractiveSelectView @JvmOverloads constructor(
             return
         }
 
+        binding.llResult.visibility = GONE
         selected.clear()
         optionBindings.clear()
         binding.llOptionCon.removeAllViews()
@@ -76,34 +82,56 @@ class InteractiveSelectView @JvmOverloads constructor(
         entity?.apply {
             updateSubmit(interactionType)
             binding.icTitle.setImageResource(getTitleIcon(interactionType))
-            binding.tvInteractionTitle.text = actionTxt
-            binding.tvPrompt.text = prompt
-            binding.tvSubmit.text = if (interactionType == 3) knownTxt else submitTxt
-            dropdown?.options?.forEachIndexed { index, option ->
-                val optionBinding = ViewInteractiveOptionBinding.inflate(LayoutInflater.from(context), binding.llOptionCon, true)
-                if (option.value.isNullOrEmpty()) {
-                    optionBinding.tvTitle.text = charList[index]
-                } else {
-                    optionBinding.tvTitle.text = charList[index] + "、" + option.value
-                }
-                optionBinding.root.setOnClickListener {
-                    binding.llSubmit.isEnabled = true
-                    if (interactionAttributes == 0) { // 单选
-                        optionBindings.forEach { binding ->
-                            binding.icSelect.setImageResource(R.drawable.ic_unselect)
-                        }
-                        selected.clear()
-                    }
-                    if (selected.contains(index)) {
-                        optionBinding.icSelect.setImageResource(R.drawable.ic_unselect)
-                        selected.remove(index)
-                    } else {
-                        optionBinding.icSelect.setImageResource(R.drawable.ic_select)
-                        selected.add(index)
-                    }
-                }
-                optionBindings.add(optionBinding)
+            this@InteractiveSelectView.themeColor?.let { color ->
+                binding.icTitle.setColorFilter(color, PorterDuff.Mode.SRC_IN);
             }
+            binding.tvInteractionTitle.text = actionTxt
+            if (interactionType == 3) {
+                binding.tvPrompt.text = textGuidance?.content
+                binding.tvSubmit.text = knownTxt
+            } else {
+                binding.tvPrompt.text = prompt
+                binding.tvSubmit.text = submitTxt
+                dropdown?.options?.forEachIndexed { index, option ->
+                    val optionBinding = ViewInteractiveOptionBinding.inflate(LayoutInflater.from(context), binding.llOptionCon, true)
+                    if (option.value.isNullOrEmpty()) {
+                        optionBinding.tvTitle.text = charList[index]
+                    } else {
+                        optionBinding.tvTitle.text = charList[index] + "、" + option.value
+                    }
+                    optionBinding.root.setOnClickListener {
+                        binding.llSubmit.isEnabled = true
+                        if (interactionAttributes == 0 || interactionType == 0) { // 单选
+                            if (selected.isNotEmpty()) {
+                                if (index == selected[0]) {
+                                    return@setOnClickListener
+                                }
+                                optionBindings[selected[0]].let{ binding ->
+                                    binding.icSelect.clearColorFilter()
+                                    binding.icSelect.setImageResource(R.drawable.ic_unselect)
+                                }
+                            }
+                            selected.clear()
+
+                            optionBinding.icSelect.setColorFilter(this@InteractiveSelectView.themeColor!!, PorterDuff.Mode.SRC_IN);
+                            optionBinding.icSelect.setImageResource(R.drawable.ic_select)
+                            selected.add(index)
+                        } else {
+                            if (selected.contains(index)) {
+                                optionBinding.icSelect.clearColorFilter()
+                                optionBinding.icSelect.setImageResource(R.drawable.ic_unselect)
+                                selected.remove(index)
+                            } else {
+                                optionBinding.icSelect.setColorFilter(this@InteractiveSelectView.themeColor!!, PorterDuff.Mode.SRC_IN);
+                                optionBinding.icSelect.setImageResource(R.drawable.ic_select)
+                                selected.add(index)
+                            }
+                        }
+                    }
+                    optionBindings.add(optionBinding)
+                }
+            }
+
         }
     }
 
@@ -122,5 +150,8 @@ class InteractiveSelectView @JvmOverloads constructor(
                 context.getColor(R.color.interaction_wrong)
         )
         binding.tvResultText.text = answer.hint
+        if (answer.isCorrect == 1 || answer.remainAttempts == 0) {
+            binding.llSubmit.isEnabled = false
+        }
     }
 }

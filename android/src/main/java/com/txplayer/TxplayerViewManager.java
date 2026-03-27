@@ -295,6 +295,16 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
     });
   }
 
+  @Override
+  public void updateTriggerPos(TxplayerView view, int position) {
+    view.post(new Runnable() {
+      @Override
+      public void run() {
+        view.updateTriggerPos(position);
+      }
+    });
+  }
+
   @ReactProp(name = "videoURL")
   public void setVideoURL(TxplayerView view, String videoURL) {
     view.setVideoURL(videoURL);

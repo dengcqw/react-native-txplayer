@@ -57,7 +57,8 @@ class InteractiveView @JvmOverloads constructor(
     fun updateVideoSize(width: Int, height: Int, viewW: Int, viewH: Int) {
         Log.d("InteractionView", "updateVideoSize: w=$width h=$height")
         Log.d("InteractionView", "updateVideoSize: selfw=${viewW} selfh=${viewH}")
-        binding.areaLayout.updateVideoSize(width, height, viewW, viewH)
+        Log.d("InteractionView", "updateVideoSize: ${entity?.vW} selfh=${entity?.vH}")
+        binding.areaLayout.updateVideoSize(entity?.vW ?: width, entity?.vH ?: height, viewW, viewH)
     }
 
     fun setInteraction(jsonString: String) {
@@ -73,7 +74,8 @@ class InteractiveView @JvmOverloads constructor(
             entity = jsonAdapter.fromJson(jsonString)
             visibility = View.VISIBLE
             binding.areaLayout.areas = entity?.areaLayouts
-            binding.areaLayout.themeColor = Color.parseColor(entity!!.themeColor)
+            val themeColor = Color.parseColor(entity!!.themeColor)
+            binding.areaLayout.themeColor = themeColor
 
             binding.selectPanel.visibility = View.INVISIBLE
             binding.inputPanel.visibility = View.INVISIBLE
@@ -84,11 +86,13 @@ class InteractiveView @JvmOverloads constructor(
                 binding.audioPanel.tvInteractionTitle.text = entity?.audioTxt
             } else if (entity?.interactionType == 1) {
                 binding.inputPanel.entity = entity
+                binding.inputPanel.themeColor = themeColor
                 binding.inputPanel.update()
                 binding.inputPanel.visibility = View.VISIBLE
             } else {
                 binding.selectPanel.visibility = View.VISIBLE
                 binding.selectPanel.entity = entity
+                binding.selectPanel.themeColor = themeColor
                 binding.selectPanel.update()
             }
 

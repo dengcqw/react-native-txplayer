@@ -8,6 +8,8 @@ data class InteractionEntity(
     val knownTxt: String?,
     val wrongTxt: String?,
     val audioTxt: String?,
+    val vH: Int?,
+    val vW: Int?,
 
     val areaLayouts: List<AreaObj>?,
     /**

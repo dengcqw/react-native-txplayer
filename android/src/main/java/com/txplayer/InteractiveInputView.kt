@@ -1,6 +1,7 @@
 package com.txplayer
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
@@ -21,7 +22,7 @@ class InteractiveInputView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
     var entity: InteractionEntity? = null
-
+    var themeColor: Int? = null
     var submit: ((value: InteractionSubmitEntity) -> Unit)? = null
 
     private val binding: ViewInteractiveInputBinding =
@@ -48,10 +49,16 @@ class InteractiveInputView @JvmOverloads constructor(
         binding.llResult.visibility = GONE
         binding.etInput.setText("")
 
+        themeColor?.let { color ->
+            binding.llSubmit.setBackgroundColor(color)
+            binding.icTitle.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+        }
+
         entity?.apply {
             binding.tvInteractionTitle.text = actionTxt
-            binding.etInput.hint = prompt
+            binding.etInput.hint = ""
             binding.tvSubmit.text = submitTxt
+            binding.tvPrompt.text = prompt
         }
     }
 
@@ -70,5 +77,8 @@ class InteractiveInputView @JvmOverloads constructor(
                 context.getColor(R.color.interaction_wrong)
         )
         binding.tvResultText.text = answer.hint
+        if (answer.isCorrect == 1 || answer.remainAttempts == 0) {
+            binding.llSubmit.isEnabled = false
+        }
     }
 }

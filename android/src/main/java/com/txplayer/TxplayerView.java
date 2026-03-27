@@ -69,6 +69,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener,
   private boolean enableFullScreen = true;
   private Integer playType = 0;
   private double playStartTime = .0;
+  private Integer triggerPos = 0;
   private List<Integer> videoEventPositions = new ArrayList<>();
 //  private List<HashMap<String, Float>> highlightAreas = new ArrayList<>();
 
@@ -172,6 +173,11 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener,
     interactiveView.updateAnswer(value);
   }
 
+  public void updateTriggerPos(int position) {
+    this.triggerPos = position;
+  }
+
+
   public void showInteraction(String value) {
     if (interactiveView == null) {
       LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
@@ -182,8 +188,8 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener,
     }
 
     interactiveView.setInteraction(value);
-    interactiveView.updateVideoSize(superPlayerView.getVideoWidth(), superPlayerView.getVideoHeight(), getWidth(), getHeight());
 
+    interactiveView.updateVideoSize(superPlayerView.getVideoWidth(), superPlayerView.getVideoHeight(), superPlayerView.getWidth(), superPlayerView.getHeight());
     // 隐藏播放控件
     if (isFullScreenPlay()) {
       superPlayerView.getFullscreenPlayer().setVisibility(value.isEmpty() ? View.VISIBLE : View.INVISIBLE);
@@ -297,6 +303,9 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener,
             WritableMap event = Arguments.createMap();
             event.putInt("index", index);
             playerViewCallback.onPlayTimeTrigger(TxplayerView.this, event);
+            if (triggerPos == index) {
+              superPlayerView.pause();
+            }
           }
         }
 
@@ -454,8 +463,8 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener,
 
   public void addDanmukInfo(List<String> danmuContentList) {
     if (danmuContentList == null ||
-      danmuContentList.size() == 0 ||
-      superPlayerView == null) {
+            danmuContentList.size() == 0 ||
+            superPlayerView == null) {
       return;
     }
     superPlayerView.setDanmuData(danmuContentList);
@@ -603,7 +612,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener,
     for (int i = 0; i < getChildCount(); i++) {
       View child = getChildAt(i);
       child.measure(MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.EXACTLY),
-        MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.EXACTLY));
+              MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.EXACTLY));
       child.layout(0, 0, child.getMeasuredWidth(), child.getMeasuredHeight());
     }
   }
