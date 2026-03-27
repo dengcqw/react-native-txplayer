@@ -17,6 +17,7 @@ public class InteractionInputView: UIView {
     // MARK: - UI
     private let resultView = ResultView()
     private let titleView = TitleView()
+    private let promteLabel = UILabel()
     private let submitBtn = UIButton()
     private let textField = UITextField()
     private let stackView = UIStackView()
@@ -46,11 +47,11 @@ public class InteractionInputView: UIView {
         submitBtn.isEnabled = false
         
         titleView.titleLabel.text = data.actionTxt
-        if (data.prompt != nil) {
-            textField.attributedPlaceholder = NSAttributedString(string: data.prompt!, attributes: attributes)
-        } else {
-            textField.attributedPlaceholder = nil
-        }
+//        if (data.prompt != nil) {
+//            textField.attributedPlaceholder = NSAttributedString(string: data.prompt!, attributes: attributes)
+//        } else {
+//            textField.attributedPlaceholder = nil
+//        }
         submitBtn.isEnabled = false
         submitBtn.setAttributedTitle(getAttrStr(data.submitTxt, UIColor.white), for: UIControl.State.normal)
         submitBtn.setAttributedTitle(getAttrStr(data.submitTxt, UIColor.gray), for: UIControl.State.disabled)
@@ -95,6 +96,7 @@ public class InteractionInputView: UIView {
         addSubview(stackView)
         stackView.addArrangedSubview(titleView)
         stackView.addArrangedSubview(resultView)
+        addSubview(promteLabel)
         addSubview(submitBtn)
         addSubview(textField)
         // textField
@@ -107,6 +109,11 @@ public class InteractionInputView: UIView {
         textField.leftView = paddingView
         textField.leftViewMode = .always
         textField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+        
+        promteLabel.textColor = UIColor.white
+        promteLabel.font = UIFont.boldSystemFont(ofSize: 14)
+        promteLabel.text = ""
+
         // submit
         submitBtn.layer.cornerRadius = 15
         submitBtn.clipsToBounds = true
@@ -120,11 +127,6 @@ public class InteractionInputView: UIView {
         } else {
             // Fallback on earlier versions
         }
-        
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.distribution = .fillEqually
-
     }
     
     @objc private func textFieldDidChange(_ textField: UITextField) {
@@ -138,8 +140,12 @@ public class InteractionInputView: UIView {
             $0.left.right.equalToSuperview().inset(16)
             $0.height.equalTo(30)
         }
+        promteLabel.snp.makeConstraints {
+            $0.top.equalTo(stackView.snp.bottom).offset(3)
+            $0.left.right.equalToSuperview().inset(16)
+        }
         textField.snp.makeConstraints {
-            $0.top.equalTo(stackView.snp.bottom).offset(10)
+            $0.top.equalTo(promteLabel.snp.bottom).offset(10)
             $0.bottom.equalToSuperview().inset(20)
             $0.height.equalTo(30)
             $0.left.equalToSuperview().inset(16)
@@ -155,5 +161,7 @@ public class InteractionInputView: UIView {
         textField.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         submitBtn.setContentHuggingPriority(.required, for: .horizontal)
         submitBtn.setContentCompressionResistancePriority(.required, for: .horizontal)
+//        promteLabel.setContentHuggingPriority(.required, for: .horizontal)
+//        promteLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
     }
 }

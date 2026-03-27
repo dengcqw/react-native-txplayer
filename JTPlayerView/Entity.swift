@@ -24,6 +24,8 @@ struct InteractionEntity: Codable {
     let knownTxt: String
     let wrongTxt: String
     let audioTxt: String
+    let vW: String?
+    let vH: String?
 
     let areaLayouts: [AreaObj]?
     /// 下拉选择类型

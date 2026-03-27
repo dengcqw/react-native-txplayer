@@ -41,6 +41,7 @@ using namespace facebook::react;
         _props = TxplayerViewShadowNode::defaultSharedProps();
         txplayerView = [[TxplayerView alloc] initWithFrame:self.bounds];
         txplayerView.timeEventDuration = @(5);
+        txplayerView.triggerPostion = 0;
         self.contentView = txplayerView;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(answerNotif:) name:@"com.jt.sand.interaction.submit" object:nil];
@@ -190,6 +191,12 @@ using namespace facebook::react;
         [self updateAnswer:(NSString *)arg0];
         return;
     }
+    if ([commandName isEqualToString:@"updateTriggerPos"]) {
+        NSObject *arg0 = args[0];
+        NSInteger value = [(NSNumber *)arg0 integerValue];
+        [self updateTriggerPos:value];
+        return;
+    }
 }
 
 - (void)updateEventEmitter:(const facebook::react::EventEmitter::Shared &)eventEmitter
@@ -244,6 +251,10 @@ using namespace facebook::react;
 
 - (void)updateAnswer:(nonnull NSString *)answer { 
     [txplayerView updateAnswer: answer];
+}
+
+- (void)updateTriggerPos:(NSInteger)value {
+    [txplayerView updateTriggerPos: value];
 }
 
 @end

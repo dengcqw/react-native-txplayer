@@ -329,10 +329,14 @@ static int s_playerCount = 0;
     }
 }
 
-
 - (void)updateAnswer:(nonnull NSString *)answer {
     [self.interactionView updateAnswerWithJsonStr:answer];
 }
+
+- (void)updateTriggerPos:(NSInteger)value {
+    self.triggerPostion = value;
+}
+
 
 - (void)sendAnswer: (NSString *)answer {
     if (self.eventEmitter != nullptr) {
@@ -526,6 +530,9 @@ static int s_playerCount = 0;
                 ->onPlayTimeTrigger(facebook::react::TxplayerViewEventEmitter::OnPlayTimeTrigger{
                     .index = static_cast<int>(index)
                 });
+                if (index == self.triggerPostion) {
+                    [self.playerView pause];
+                }
             }
         }
     }

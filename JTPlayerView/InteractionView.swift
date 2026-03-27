@@ -35,7 +35,9 @@ public class InteractionView: UIView {
     }
     
     @objc public func updateVideoSize(width: Int, height: Int) {
-        areaView.updateVideoSize(width: width, height: height)
+        if entity?.vW == nil {
+            areaView.updateVideoSize(width: width, height: height)
+        }
     }
     @objc public func updateVideoSnapShot(image: UIImage) {
         areaView.updateVideoSnapShot(image: image)
@@ -56,6 +58,9 @@ public class InteractionView: UIView {
             if let areaLayouts = entity.areaLayouts, areaLayouts.count > 0 {
                 areaView.themeColor = UIColor(hex: entity.themeColor)
                 areaView.areaLayout = areaLayouts
+                if let vW = entity.vW, let vH = entity.vH {
+                    areaView.updateVideoSize(width: Int(vW)!, height: Int(vH)!)
+                }
             } else {
                 areaView.areaLayout = []
             }

@@ -9,7 +9,12 @@
  */
 
 import type { ViewProps, HostComponent } from 'react-native';
-import type { BubblingEventHandler, Int32, WithDefault, Double } from 'react-native/Libraries/Types/CodegenTypes';
+import type {
+  BubblingEventHandler,
+  Int32,
+  WithDefault,
+  Double,
+} from 'react-native/Libraries/Types/CodegenTypes';
 
 import codegenNativeCommands from 'react-native/Libraries/Utilities/codegenNativeCommands';
 import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
@@ -31,7 +36,6 @@ type InteractionEvent = Readonly<{
   type: string;
 }>;
 
-
 export type AreaType = Readonly<{
   x: Double;
   y: Double;
@@ -39,14 +43,16 @@ export type AreaType = Readonly<{
   h: Double;
 }>;
 
-type SubTitles = Readonly<{
-  src: string;
-  label: string;
-}[]>;
+type SubTitles = Readonly<
+  {
+    src: string;
+    label: string;
+  }[]
+>;
 
-type StateEvent = Readonly<{state: Int32}>
-type FullscreenEvent = Readonly<{fullscreen: Int32}>
-type OnDownloadEvent = Readonly<{}>
+type StateEvent = Readonly<{ state: Int32 }>;
+type FullscreenEvent = Readonly<{ fullscreen: Int32 }>;
+type OnDownloadEvent = Readonly<{}>;
 
 export interface NativeProps extends ViewProps {
   videoURL: string;
@@ -73,7 +79,7 @@ export interface NativeProps extends ViewProps {
   timeEventDuration: Int32; // 时间时间发送间隔
 
   playType: Int32;
-  videoEventPositions: Int32[]
+  videoEventPositions: Int32[];
 
   onPlayStateChange: BubblingEventHandler<StateEvent>;
   onPlayTimeChange: BubblingEventHandler<PlayTimeType>;
@@ -85,20 +91,49 @@ export interface NativeProps extends ViewProps {
 
 type ComponentType = HostComponent<NativeProps>;
 
-
 interface NativeCommands {
   startPlay: (viewRef: React.ElementRef<ComponentType>) => void;
   stopPlay: (viewRef: React.ElementRef<ComponentType>) => void;
   togglePlay: (viewRef: React.ElementRef<ComponentType>) => void;
-  addDanmaku: (viewRef: React.ElementRef<ComponentType>, records: string[], size: Int32, total: Int32, current: Int32) => void;
-  switchToOrientation: (viewRef: React.ElementRef<ComponentType>, oriention: string, force: WithDefault<string, '0'>) => void;
+  addDanmaku: (
+    viewRef: React.ElementRef<ComponentType>,
+    records: string[],
+    size: Int32,
+    total: Int32,
+    current: Int32
+  ) => void;
+  switchToOrientation: (
+    viewRef: React.ElementRef<ComponentType>,
+    oriention: string,
+    force: WithDefault<string, '0'>
+  ) => void;
   seekTo: (viewRef: React.ElementRef<ComponentType>, second: Int32) => void;
-  showInteraction: (viewRef: React.ElementRef<ComponentType>, interaction: string) => void;
-  updateAnswer: (viewRef: React.ElementRef<ComponentType>, answer: string) => void;
+  showInteraction: (
+    viewRef: React.ElementRef<ComponentType>,
+    interaction: string
+  ) => void;
+  updateAnswer: (
+    viewRef: React.ElementRef<ComponentType>,
+    answer: string
+  ) => void;
+  updateTriggerPos: (
+    viewRef: React.ElementRef<ComponentType>,
+    position: Int32
+  ) => void;
 }
 
 export const Commands: NativeCommands = codegenNativeCommands<NativeCommands>({
-  supportedCommands: ['startPlay', 'stopPlay', 'togglePlay', 'addDanmaku', 'switchToOrientation', 'seekTo', 'showInteraction', 'updateAnswer'],
+  supportedCommands: [
+    'startPlay',
+    'stopPlay',
+    'togglePlay',
+    'addDanmaku',
+    'switchToOrientation',
+    'seekTo',
+    'showInteraction',
+    'updateAnswer',
+    'updateTriggerPos',
+  ],
 });
 
 export default codegenNativeComponent<NativeProps>('TxplayerView');

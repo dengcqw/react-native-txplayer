@@ -1,31 +1,77 @@
 import * as React from 'react';
-import { Platform, NativeModules, findNodeHandle, UIManager } from 'react-native';
-import TxplayerViewNative, { Commands, type NativeProps } from './TxplayerViewNativeComponent';
+import {
+  Platform,
+  NativeModules,
+  findNodeHandle,
+  UIManager,
+} from 'react-native';
+import TxplayerViewNative, {
+  Commands,
+  type NativeProps,
+} from './TxplayerViewNativeComponent';
 
-const TxplayerViewMgr = Platform.OS === 'ios' ? NativeModules.TxplayerView : NativeModules.TxplayerNativeModule;
+const TxplayerViewMgr =
+  Platform.OS === 'ios'
+    ? NativeModules.TxplayerView
+    : NativeModules.TxplayerNativeModule;
 
 const ComponentName = 'TxplayerView';
-const OldCommands = Platform.OS === 'ios' ? {
-  startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay!,
-  stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay!,
-  addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku!,
-  switchToOrientation: UIManager.getViewManagerConfig(ComponentName).Commands.switchToOrientation!,
-  seekTo: UIManager.getViewManagerConfig(ComponentName).Commands.seekTo!,
-  show: UIManager.getViewManagerConfig(ComponentName).Commands.seekTo!,
-  togglePlay: UIManager.getViewManagerConfig(ComponentName).Commands.togglePlay!,
-  showInteraction: UIManager.getViewManagerConfig(ComponentName).Commands.showInteraction!,
-  updateAnswer: UIManager.getViewManagerConfig(ComponentName).Commands.updateAnswer!
-} : {
-  startPlay: UIManager.getViewManagerConfig(ComponentName).Commands.startPlay!.toString(),
-  stopPlay: UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay!.toString(),
-  addDanmaku: UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku!.toString(),
-  switchToOrientation: UIManager.getViewManagerConfig(ComponentName).Commands.switchToOrientation!.toString(),
-  seekTo: UIManager.getViewManagerConfig(ComponentName).Commands.seekTo!.toString(),
-  togglePlay: UIManager.getViewManagerConfig(ComponentName).Commands.togglePlay!.toString(),
-  showInteraction: UIManager.getViewManagerConfig(ComponentName).Commands.showInteraction!.toString(),
-  updateAnswer: UIManager.getViewManagerConfig(ComponentName).Commands.updateAnswer!.toString(),
-}
-
+const OldCommands =
+  Platform.OS === 'ios'
+    ? {
+        startPlay:
+          UIManager.getViewManagerConfig(ComponentName).Commands.startPlay!,
+        stopPlay:
+          UIManager.getViewManagerConfig(ComponentName).Commands.stopPlay!,
+        addDanmaku:
+          UIManager.getViewManagerConfig(ComponentName).Commands.addDanmaku!,
+        switchToOrientation:
+          UIManager.getViewManagerConfig(ComponentName).Commands
+            .switchToOrientation!,
+        seekTo: UIManager.getViewManagerConfig(ComponentName).Commands.seekTo!,
+        show: UIManager.getViewManagerConfig(ComponentName).Commands.seekTo!,
+        togglePlay:
+          UIManager.getViewManagerConfig(ComponentName).Commands.togglePlay!,
+        showInteraction:
+          UIManager.getViewManagerConfig(ComponentName).Commands
+            .showInteraction!,
+        updateAnswer:
+          UIManager.getViewManagerConfig(ComponentName).Commands.updateAnswer!,
+      }
+    : {
+        startPlay:
+          UIManager.getViewManagerConfig(
+            ComponentName
+          ).Commands.startPlay!.toString(),
+        stopPlay:
+          UIManager.getViewManagerConfig(
+            ComponentName
+          ).Commands.stopPlay!.toString(),
+        addDanmaku:
+          UIManager.getViewManagerConfig(
+            ComponentName
+          ).Commands.addDanmaku!.toString(),
+        switchToOrientation:
+          UIManager.getViewManagerConfig(
+            ComponentName
+          ).Commands.switchToOrientation!.toString(),
+        seekTo:
+          UIManager.getViewManagerConfig(
+            ComponentName
+          ).Commands.seekTo!.toString(),
+        togglePlay:
+          UIManager.getViewManagerConfig(
+            ComponentName
+          ).Commands.togglePlay!.toString(),
+        showInteraction:
+          UIManager.getViewManagerConfig(
+            ComponentName
+          ).Commands.showInteraction!.toString(),
+        updateAnswer:
+          UIManager.getViewManagerConfig(
+            ComponentName
+          ).Commands.updateAnswer!.toString(),
+      };
 
 export enum SuperPlayerState {
   StateFailed = 0, // 播放失败
@@ -44,16 +90,17 @@ export enum SuperPlayType {
 }
 
 type DanmuList = {
-  records: { content: string }[]
-  current: number
-  size: number
-  total: number
-}
+  records: { content: string }[];
+  current: number;
+  size: number;
+  total: number;
+};
 
 export type TxplayerViewApi = {
   startPlay: () => void;
   stopPlay: () => void;
   togglePlay: () => void;
+  seekTo: () => void;
   addDanmaku: (contents: DanmuList) => void;
   switchToOrientation: (oriention: string, force: string) => void;
   showInteraction: (interaction: string) => void;
@@ -102,119 +149,175 @@ type ForwardedType = React.ElementRef<typeof TxplayerViewNative>;
 // @ts-ignore non-typed property
 const FABRIC_ENABLED = !!global?.nativeFabricUIManager;
 
-const TxplayerView = React.forwardRef<NativeProps, ForwardedType>((props, forwardedRef) => {
-  const nativeRef = React.useRef<React.ElementRef<typeof TxplayerViewNative> | null>(null);
+const TxplayerView = React.forwardRef<NativeProps, ForwardedType>(
+  (props, forwardedRef) => {
+    const nativeRef = React.useRef<React.ElementRef<
+      typeof TxplayerViewNative
+    > | null>(null);
 
-  React.useImperativeHandle<any, TxplayerViewApi>(
-    forwardedRef,
-    () => ({
-      startPlay: () => {
-        if (FABRIC_ENABLED) {
-          if (nativeRef.current) {
-            const ref = nativeRef.current;
-            setTimeout(() => {
-              Commands.startPlay(ref);
-            }, 10);
+    React.useImperativeHandle<any, TxplayerViewApi>(
+      forwardedRef,
+      () => ({
+        startPlay: () => {
+          if (FABRIC_ENABLED) {
+            if (nativeRef.current) {
+              const ref = nativeRef.current;
+              setTimeout(() => {
+                Commands.startPlay(ref);
+              }, 10);
+            }
+          } else {
+            UIManager.dispatchViewManagerCommand(
+              findNodeHandle(nativeRef.current!),
+              OldCommands.startPlay,
+              []
+            );
           }
-        } else {
-          UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), OldCommands.startPlay, []);
-        }
-      },
-      stopPlay: () => {
-        if (FABRIC_ENABLED) {
-          if (nativeRef.current) {
-            const ref = nativeRef.current;
-            setTimeout(() => {
-              Commands.stopPlay(ref);
-            }, 10);
+        },
+        stopPlay: () => {
+          if (FABRIC_ENABLED) {
+            if (nativeRef.current) {
+              const ref = nativeRef.current;
+              setTimeout(() => {
+                Commands.stopPlay(ref);
+              }, 10);
+            }
+          } else {
+            UIManager.dispatchViewManagerCommand(
+              findNodeHandle(nativeRef.current!),
+              OldCommands.stopPlay,
+              []
+            );
           }
-        } else {
-          UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), OldCommands.stopPlay, []);
-        }
-      },
-      addDanmaku: (contents: DanmuList) => {
-        if (FABRIC_ENABLED) {
-          if (nativeRef.current && contents) {
-            const ref = nativeRef.current;
-            setTimeout(() => {
-              Commands.addDanmaku(ref, contents.records.map(e => e.content), contents.size, contents.total, contents.current);
-            }, 10);
+        },
+        addDanmaku: (contents: DanmuList) => {
+          if (FABRIC_ENABLED) {
+            if (nativeRef.current && contents) {
+              const ref = nativeRef.current;
+              setTimeout(() => {
+                Commands.addDanmaku(
+                  ref,
+                  contents.records.map((e) => e.content),
+                  contents.size,
+                  contents.total,
+                  contents.current
+                );
+              }, 10);
+            }
+          } else {
+            UIManager.dispatchViewManagerCommand(
+              findNodeHandle(nativeRef.current!),
+              OldCommands.addDanmaku,
+              [contents]
+            );
           }
-        } else {
-          UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), OldCommands.addDanmaku, [contents]);
-        }
-      },
-      switchToOrientation: (oriention: string, force: string) => {
-        if (FABRIC_ENABLED) {
-          if (nativeRef.current) {
-            const ref = nativeRef.current;
-            setTimeout(() => {
-              Commands.switchToOrientation(ref, oriention, force);
-            }, 10);
+        },
+        switchToOrientation: (oriention: string, force: string) => {
+          if (FABRIC_ENABLED) {
+            if (nativeRef.current) {
+              const ref = nativeRef.current;
+              setTimeout(() => {
+                Commands.switchToOrientation(ref, oriention, force);
+              }, 10);
+            }
+          } else {
+            UIManager.dispatchViewManagerCommand(
+              findNodeHandle(nativeRef.current!),
+              OldCommands.switchToOrientation,
+              [oriention, force || '0']
+            );
           }
-        } else {
-          UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), OldCommands.switchToOrientation, [oriention, force || '0']);
-        }
-      },
-      togglePlay: () => {
-        if (FABRIC_ENABLED) {
-          if (nativeRef.current) {
-            const ref = nativeRef.current;
-            setTimeout(() => {
-              Commands.togglePlay(ref);
-            }, 10);
+        },
+        togglePlay: () => {
+          if (FABRIC_ENABLED) {
+            if (nativeRef.current) {
+              const ref = nativeRef.current;
+              setTimeout(() => {
+                Commands.togglePlay(ref);
+              }, 10);
+            }
+          } else {
+            UIManager.dispatchViewManagerCommand(
+              findNodeHandle(nativeRef.current!),
+              OldCommands.togglePlay,
+              []
+            );
           }
-        } else {
-          UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), OldCommands.togglePlay, []);
-        }
-      },
-      seekTo: (second: number) => {
-        if (FABRIC_ENABLED) {
-          if (nativeRef.current) {
-            const ref = nativeRef.current;
-            setTimeout(() => {
-              Commands.seekTo(ref, second);
-            }, 10);
+        },
+        seekTo: (second: number) => {
+          if (FABRIC_ENABLED) {
+            if (nativeRef.current) {
+              const ref = nativeRef.current;
+              setTimeout(() => {
+                Commands.seekTo(ref, second);
+              }, 10);
+            }
+          } else {
+            UIManager.dispatchViewManagerCommand(
+              findNodeHandle(nativeRef.current!),
+              OldCommands.seekTo,
+              [second]
+            );
           }
-        } else {
-          UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), OldCommands.seekTo, [second]);
-        }
-      },
-      showInteraction: (value: string) => {
-        if (FABRIC_ENABLED) {
-          if (nativeRef.current) {
-            const ref = nativeRef.current;
-            setTimeout(() => {
-              Commands.showInteraction(ref, value);
-            }, 10);
+        },
+        showInteraction: (value: string) => {
+          if (FABRIC_ENABLED) {
+            if (nativeRef.current) {
+              const ref = nativeRef.current;
+              setTimeout(() => {
+                Commands.showInteraction(ref, value);
+              }, 10);
+            }
+          } else {
+            UIManager.dispatchViewManagerCommand(
+              findNodeHandle(nativeRef.current!),
+              OldCommands.showInteraction,
+              [value]
+            );
           }
-        } else {
-          UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), OldCommands.showInteraction, [value]);
-        }
-      },
-      updateAnswer: (value: string) => {
-        if (FABRIC_ENABLED) {
-          if (nativeRef.current) {
-            const ref = nativeRef.current;
-            setTimeout(() => {
-              Commands.updateAnswer(ref, value);
-            }, 10);
+        },
+        updateAnswer: (value: string) => {
+          if (FABRIC_ENABLED) {
+            if (nativeRef.current) {
+              const ref = nativeRef.current;
+              setTimeout(() => {
+                Commands.updateAnswer(ref, value);
+              }, 10);
+            }
+          } else {
+            UIManager.dispatchViewManagerCommand(
+              findNodeHandle(nativeRef.current!),
+              OldCommands.updateAnswer,
+              [value]
+            );
           }
-        } else {
-          UIManager.dispatchViewManagerCommand(findNodeHandle(nativeRef.current!), OldCommands.updateAnswer, [value]);
-        }
-      },
-    }),
-    []
-  );
+        },
 
-  // @ts-ignore
-  return <TxplayerViewNative {...props} ref={nativeRef} />;
-});
+        updateTriggerPos: (value: number) => {
+          if (FABRIC_ENABLED) {
+            if (nativeRef.current) {
+              const ref = nativeRef.current;
+              setTimeout(() => {
+                Commands.updateTriggerPos(ref, value);
+              }, 10);
+            }
+          } else {
+          }
+        },
+      }),
+      []
+    );
+
+    // @ts-ignore
+    return <TxplayerViewNative {...props} ref={nativeRef} />;
+  }
+);
 
 // @ts-ignore
 export const stopAllPlay = () => {
-  TxplayerViewMgr && TxplayerViewMgr.stopAllPlay && TxplayerViewMgr.stopAllPlay();
+  TxplayerViewMgr &&
+    TxplayerViewMgr.stopAllPlay &&
+    TxplayerViewMgr.stopAllPlay();
 };
 
 export const startPip = () => {
