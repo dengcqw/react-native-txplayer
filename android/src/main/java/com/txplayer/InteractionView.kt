@@ -2,6 +2,7 @@ package com.txplayer
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
@@ -52,6 +53,26 @@ class InteractiveView @JvmOverloads constructor(
             delegate?.get()?.submitInteraction(jsonAdapter.toJson(value))
         }
         binding.audioPanel.root.visibility = View.GONE
+        binding.audioPanel.tvNext.setOnClickListener {
+            var jsonAdapter = moshi.adapter(InteractionSubmitEntity::class.java)
+            val value = InteractionSubmitEntity(
+                entity?.interactionId,
+                entity?.interactionType,
+                null,
+                null
+            )
+            delegate?.get()?.submitInteraction(jsonAdapter.toJson(value))
+        }
+        binding.audioPanel.icPlay.setOnClickListener {
+            var jsonAdapter = moshi.adapter(InteractionSubmitEntity::class.java)
+            val value = InteractionSubmitEntity(
+                entity?.interactionId,
+                entity?.interactionType,
+                "togglePlay",
+                null
+            )
+            delegate?.get()?.submitInteraction(jsonAdapter.toJson(value))
+        }
     }
 
     fun updateVideoSize(width: Int, height: Int, viewW: Int, viewH: Int) {
@@ -83,7 +104,10 @@ class InteractiveView @JvmOverloads constructor(
 
             if (entity?.interactionType == 4) {
                 binding.audioPanel.root.visibility = View.VISIBLE
-                binding.audioPanel.tvInteractionTitle.text = entity?.audioTxt
+                binding.audioPanel.tvInteractionTitle.text = entity?.actionTxt
+                binding.audioPanel.tvNext.text = entity?.nextTxt
+                binding.audioPanel.tvNext.setTextColor(themeColor)
+                binding.audioPanel.icPlay.setColorFilter(themeColor, PorterDuff.Mode.SRC_IN);
             } else if (entity?.interactionType == 1) {
                 binding.inputPanel.entity = entity
                 binding.inputPanel.themeColor = themeColor
@@ -115,8 +139,11 @@ class InteractiveView @JvmOverloads constructor(
         val jsonAdapter = moshi.adapter(InteractionAnswerEntity::class.java)
         try {
             if (entity?.interactionType == 4) {
-                val obj = jsonAdapter.fromJson(jsonString)
-                binding.audioPanel.tvAudioTime.text = obj?.hint
+                jsonAdapter.fromJson(jsonString)?.let { obj ->
+                    binding.audioPanel.tvAudioTime.text = obj.hint
+                    binding.audioPanel.tvNext.visibility = if (obj.isCorrect == 1) View.VISIBLE else View.GONE
+                    binding.audioPanel.icPlay.setImageResource(if (obj.remainAttempts == 1) R.drawable.ic_pause else R.drawable.ic_play)
+                }
             } else if (entity?.interactionType == 1) {
                 binding.inputPanel.updateAnswer(jsonAdapter.fromJson(jsonString))
             } else {

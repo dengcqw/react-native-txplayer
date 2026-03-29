@@ -7,7 +7,7 @@ data class InteractionEntity(
     val correctTxt: String?,
     val knownTxt: String?,
     val wrongTxt: String?,
-    val audioTxt: String?,
+    val nextTxt: String?,
     val vH: Int?,
     val vW: Int?,
 

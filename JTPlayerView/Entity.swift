@@ -23,7 +23,7 @@ struct InteractionEntity: Codable {
     let correctTxt: String
     let knownTxt: String
     let wrongTxt: String
-    let audioTxt: String
+    let nextTxt: String
     let vW: String?
     let vH: String?
 

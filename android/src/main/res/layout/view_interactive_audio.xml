@@ -5,7 +5,7 @@
     android:layout_height="50dp"
     android:layout_marginBottom="12dp"
     android:layout_gravity="center_horizontal|bottom"
-    android:paddingHorizontal="26dp"
+    android:paddingHorizontal="20dp"
     android:gravity="center"
     android:background="@drawable/interactive_audio_bg"
     android:orientation="horizontal">
@@ -32,4 +32,14 @@
         android:layout_height="25dp"
         android:src="@drawable/ic_play"
         />
+    <TextView
+        android:id="@+id/tv_next"
+        android:textColor="#2B2D42"
+        android:textSize="14sp"
+        tools:text="继续"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="10dp"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:layout_height="match_parent"/>
 </LinearLayout>

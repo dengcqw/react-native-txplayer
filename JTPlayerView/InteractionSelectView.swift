@@ -113,7 +113,7 @@ public class InteractionSelectView: UIView {
             updateSubmit(data: data)
             promptLabel.text = data.prompt
             titleView.titleLabel.text = data.actionTxt
-            titleView.titleIcon.image = SourceHelper.image(with: titleIcon(type: data.interactionType))
+            titleView.titleIcon.image = SourceHelper.image(with: titleIcon(type: data.interactionType))?.withTintColor(UIColor(hex: data.themeColor))
             if (data.interactionType == .textGuidance) {
                 promptLabel.text = data.textGuidance?.content
             } else if let dropdown = data.dropdown {

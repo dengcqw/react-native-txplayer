@@ -48,6 +48,7 @@ class InteractiveInputView @JvmOverloads constructor(
         }
         binding.llResult.visibility = GONE
         binding.etInput.setText("")
+        binding.llSubmit.isEnabled = true
 
         themeColor?.let { color ->
             binding.llSubmit.setBackgroundColor(color)

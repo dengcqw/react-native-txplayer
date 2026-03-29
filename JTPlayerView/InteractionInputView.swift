@@ -45,13 +45,17 @@ public class InteractionInputView: UIView {
         entity = data
         isHidden = false
         submitBtn.isEnabled = false
+        resultView.isHidden = true
+        textField.text = ""
         
+        titleView.titleIcon.image = SourceHelper.image(with: "ic_edit")?.withTintColor( UIColor(hex: data.themeColor))
         titleView.titleLabel.text = data.actionTxt
-//        if (data.prompt != nil) {
-//            textField.attributedPlaceholder = NSAttributedString(string: data.prompt!, attributes: attributes)
-//        } else {
-//            textField.attributedPlaceholder = nil
-//        }
+        promteLabel.text = data.prompt
+        if #available(iOS 15.0, *) {
+            submitBtn.configuration?.background.backgroundColor = UIColor(hex: data.themeColor)
+        } else {
+            // Fallback on earlier versions
+        }
         submitBtn.isEnabled = false
         submitBtn.setAttributedTitle(getAttrStr(data.submitTxt, UIColor.white), for: UIControl.State.normal)
         submitBtn.setAttributedTitle(getAttrStr(data.submitTxt, UIColor.gray), for: UIControl.State.disabled)
