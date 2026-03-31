@@ -3,6 +3,7 @@ package com.txplayer
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 
@@ -22,12 +23,50 @@ class HighlightAreaView @JvmOverloads constructor(
     var hBlank: Int = 0
     var vBlank: Int = 0
 
+    data class Size(val width: Float, val height: Float)
+
+    data class BlankResult(
+        val horizontal: Float,
+        val vertical: Float
+    )
+
+    fun calculateBlank(
+        viewSize: Size,
+        videoSize: Size
+    ): BlankResult {
+
+        val viewRatio = viewSize.width / viewSize.height
+        val videoRatio = videoSize.width / videoSize.height
+
+        return if (videoRatio > viewRatio) {
+            // 👉 视频更“宽”（横向填满）
+            val scale = viewSize.width / videoSize.width
+            val scaledHeight = videoSize.height * scale
+
+            val blank = (viewSize.height - scaledHeight).coerceAtLeast(0f)
+            BlankResult(horizontal = 0f, vertical = blank)
+
+        } else {
+            // 👉 视频更“高”（竖向填满）
+            val scale = viewSize.height / videoSize.height
+            val scaledWidth = videoSize.width * scale
+
+            val blank = (viewSize.width - scaledWidth).coerceAtLeast(0f)
+            BlankResult(horizontal = blank, vertical = 0f)
+        }
+    }
+
     fun updateVideoSize(width: Int, height: Int, viewW: Int, viewH: Int) {
-        hBlank = viewW - width
-        vBlank = viewH - height
+        Log.d("AreaView", "updateVideoSize: ${this.width} selfh=${this.height}")
+        val view = Size(viewW.toFloat(), viewH.toFloat())
+        val video = Size(width.toFloat(), height.toFloat())
+        val result = calculateBlank(view, video)
+        hBlank = result.horizontal.toInt()
+        vBlank = result.vertical.toInt()
         invalidate()
     }
 
+    var showText = false
     var themeColor: Int = Color.YELLOW
         set(value) {
             field = value
@@ -37,6 +76,11 @@ class HighlightAreaView @JvmOverloads constructor(
     var areas:  List<AreaObj>? = null
         set(value) {
             field = value
+            showText = if (value != null && value.size > 1) {
+                true
+            } else {
+                false
+            }
             invalidate() // 数据变化时重绘
         }
 
@@ -73,28 +117,30 @@ class HighlightAreaView @JvmOverloads constructor(
                 return@forEachIndexed
             }
 
-            val left = x * (width - hBlank/2) + hBlank/2
-            val top = y * (height - vBlank/2) + vBlank/2
+            val left = x * (width - hBlank) + hBlank/2
+            val top = y * (height - vBlank) + vBlank/2
             val right = left + w * (width - hBlank)
             val bottom = top + h * (height - vBlank)
 
             // 绘制矩形边框
             canvas.drawRect(left, top, right, bottom, borderPaint)
 
-            // 准备文字：显示序号（从1开始）
-            val text = charList[index]
+            if (showText) {
+                // 准备文字：显示序号（从1开始）
+                val text = charList[index]
 
-            // 计算文字尺寸，用于垂直居中
-            textPaint.getTextBounds(text, 0, text.length, textBounds)
-            val textHeight = textBounds.height()
-            val centerX = left + w * width / 2
-            val centerY = top + h* height / 2
+                // 计算文字尺寸，用于垂直居中
+                textPaint.getTextBounds(text, 0, text.length, textBounds)
+                val textHeight = textBounds.height()
+                val centerX = left + w * (width - hBlank) / 2
+                val centerY = top + h * (height - vBlank) / 2
 
-            // 计算基线的 y 坐标（使文字垂直居中）
-            val baseline = centerY + (textPaint.descent() - textPaint.ascent()) / 2 - textPaint.descent()
+                // 计算基线的 y 坐标（使文字垂直居中）
+                val baseline = centerY + (textPaint.descent() - textPaint.ascent()) / 2 - textPaint.descent()
 
-            // 绘制文字
-            canvas.drawText(text, centerX, baseline, textPaint)
+                // 绘制文字
+                canvas.drawText(text, centerX, baseline, textPaint)
+            }
         }
     }
 }
