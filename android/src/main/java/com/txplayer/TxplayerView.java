@@ -69,7 +69,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener,
   private boolean enableFullScreen = true;
   private Integer playType = 0;
   private double playStartTime = .0;
-  private Integer triggerPos = 0;
+  private Integer triggerPos = -1;
   private List<Integer> videoEventPositions = new ArrayList<>();
 //  private List<HashMap<String, Float>> highlightAreas = new ArrayList<>();
 
@@ -292,6 +292,19 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener,
       @Override
       public void onShowCacheListClick() {
 
+      }
+
+      @Override
+      public void onSeek(long position) {
+        if (triggerPos < 0 || triggerPos - 1 >= videoEventPositions.size()) { return; }
+        Integer lastPosition = 0;
+        if (triggerPos > 0) {
+          lastPosition = videoEventPositions.get(triggerPos - 1);
+        }
+        // 只能拖动到前一个已经完成的位置
+        if (position > lastPosition + 1) {
+          seekTo(lastPosition);
+        }
       }
 
       @Override

@@ -1061,6 +1061,7 @@ public class SuperPlayerView extends RelativeLayout
 
         // sandstalk
         void onPlayProgress(long current, long duration, long playable);
+        void onSeek(long position);
         void superPlayerDidChangeState(Integer state);
 
         /**
@@ -1248,6 +1249,10 @@ public class SuperPlayerView extends RelativeLayout
                 mWindowPlayer.updateVipInfo(position);
                 mFullScreenPlayer.updateVipInfo(position);
                 mFloatPlayer.updateVipInfo(position);
+            }
+            // sandstalk
+            if (mPlayerViewCallback != null) {
+                mPlayerViewCallback.onSeek(position);
             }
         }
 
