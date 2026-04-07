@@ -40,6 +40,7 @@ public class InteractionAreaView: UIView {
             return themeColor ?? UIColor.white
         }
     }
+    private var bgColor: UIColor = UIColor(hex: "#ff9800", alpha: 0.18)
     private let borderWidth: CGFloat = 1
 
     // 文字属性
@@ -104,6 +105,8 @@ public class InteractionAreaView: UIView {
             ctx.setStrokeColor(borderColor.cgColor)
             ctx.setLineWidth(borderWidth)
             ctx.stroke(rect)
+            ctx.setFillColor(bgColor.cgColor)
+            ctx.fill(rect)
 
             // 文本
             guard index < charList.count else { continue }

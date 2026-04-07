@@ -182,7 +182,11 @@ static int s_playerCount = 0;
 }
 
 - (void)seekTo:(NSNumber *)second {
-    [self.playerView seekToTime:second.integerValue];
+    if (second.integerValue < 1) {
+        [self.playerView.repeatBtn sendActionsForControlEvents:(UIControlEventTouchUpInside)];
+    } else {
+        [self.playerView seekToTime:second.integerValue];
+    }
 }
 
 - (JTDanmakuView *)danmakuView{

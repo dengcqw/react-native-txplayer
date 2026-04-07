@@ -66,6 +66,7 @@ class HighlightAreaView @JvmOverloads constructor(
         invalidate()
     }
 
+    var bgColor =  Color.parseColor("#0dff9800")
     var showText = false
     var themeColor: Int = Color.YELLOW
         set(value) {
@@ -83,6 +84,11 @@ class HighlightAreaView @JvmOverloads constructor(
             }
             invalidate() // 数据变化时重绘
         }
+
+    // 背景画笔
+    private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.FILL
+    }
 
     // 边框画笔
     private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -121,6 +127,10 @@ class HighlightAreaView @JvmOverloads constructor(
             val top = y * (height - vBlank) + vBlank/2
             val right = left + w * (width - hBlank)
             val bottom = top + h * (height - vBlank)
+
+            // 绘制矩形背景
+            bgPaint.color = bgColor
+            canvas.drawRect(left, top, right, bottom, bgPaint)
 
             // 绘制矩形边框
             canvas.drawRect(left, top, right, bottom, borderPaint)
