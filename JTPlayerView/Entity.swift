@@ -97,6 +97,7 @@ struct InteractionSubmitEntity: Codable {
 
 // MARK: - Answer result Entity
 struct InteractionAnswerEntity: Codable {
+    let isPractice: Int
     let interactionType: Int
     let hint: String
     let correctAnswer: String?

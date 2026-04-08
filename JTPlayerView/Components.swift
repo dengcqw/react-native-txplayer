@@ -7,6 +7,8 @@
 
 import UIKit
 
+let colorGreen = UIColor(red: 0.114, green: 0.671, blue: 0.271, alpha: 1.0)   // #1DAB45
+let colorRed = UIColor(red: 1.0, green: 0.239, blue: 0.298, alpha: 1.0)
 
 class OptionView: UIView {
     private let icon = UIImageView(image: SourceHelper.image(with: "ic_unselect"))
@@ -26,8 +28,19 @@ class OptionView: UIView {
         }
     }
     
+    func showBorder(_ show: Bool) {
+        if (show) {
+            layer.borderColor = colorGreen.cgColor
+            layer.borderWidth = 1
+        } else {
+            layer.borderColor = nil
+            layer.borderWidth = 0
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
         
         text.textColor = UIColor.white
         text.font = .boldSystemFont(ofSize: 14)
@@ -55,6 +68,7 @@ class OptionView: UIView {
         text.setContentCompressionResistancePriority(.required, for: .horizontal)
         text.setContentHuggingPriority(.required, for: .vertical)
         text.setContentCompressionResistancePriority(.required, for: .vertical)
+
         
         isUserInteractionEnabled = true
     }
@@ -74,20 +88,22 @@ class ResultView: UIView {
     var statusCorrect = "正确"
     var statusError = "错误"
 
-    let colorRed = UIColor(red: 0.114, green: 0.671, blue: 0.271, alpha: 1.0)   // #1DAB45
-    let colorGreen = UIColor(red: 1.0, green: 0.239, blue: 0.298, alpha: 1.0)
-
     func update(_ ans: InteractionAnswerEntity) {
         if (ans.isCorrect == 1) {
             resultIcon.image = SourceHelper.image(with: "ic_correct")
-            resultStatus.textColor = colorRed
+            resultStatus.textColor = colorGreen
             resultStatus.text = statusCorrect
         } else {
             resultIcon.image = SourceHelper.image(with: "ic_wrong")
-            resultStatus.textColor = colorGreen
+            resultStatus.textColor = colorRed
             resultStatus.text = statusError
         }
         resultText.text = ans.hint
+        sizeToFit()
+    }
+    
+    func updateHint(_ ans: String) {
+        resultText.text = resultText.text?.replacingOccurrences(of: "$1", with: ans)
         sizeToFit()
     }
     

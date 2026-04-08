@@ -21,7 +21,7 @@ public class InteractionSelectView: UIView {
     private let scrollView = UIScrollView()
     private let stackView = UIStackView()
     
-    let charList = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
+    let charList = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O"]
     var selected: [Int] = []
     var entity: InteractionEntity?
     var options: [OptionView] = []
@@ -152,8 +152,27 @@ public class InteractionSelectView: UIView {
         }
         resultView.isHidden = false
         resultView.update(answer)
-        if (answer.isCorrect == 0 && answer.remainAttempts > 0) {
+        highlightAnswer(false)
+        if (answer.isCorrect == 0 && answer.isPractice == 1 && answer.remainAttempts == 0) {
             submitBtn.isEnabled = true
+            highlightAnswer(true)
+        } else if (answer.isCorrect == 0 && answer.remainAttempts > 0) {
+            submitBtn.isEnabled = true
+        }
+    }
+    
+    func highlightAnswer(_ show: Bool) {
+        var answer: [String] = []
+        if let dropdown = entity?.dropdown {
+            for (index, element) in dropdown.options.enumerated() {
+                if (element.isAnswer == 1) {
+                    options[index].showBorder(show)
+                    answer.append(charList[index])
+                }
+            }
+        }
+        if (entity?.interactionType == .area) {
+            resultView.updateHint(answer.joined(separator: ","))
         }
     }
 
@@ -207,7 +226,7 @@ public class InteractionSelectView: UIView {
         promptLabel.text = "请选择正确位置"
         
         stackView.axis = .vertical          // 垂直布局，类似 LinearLayout.VERTICAL
-        stackView.alignment = .fill         // 子视图宽度填充父视图
+        stackView.alignment = .leading         // 子视图宽度填充父视图
         stackView.distribution = .fill  // 子视图等高
         stackView.spacing = 8
     }
@@ -233,7 +252,7 @@ public class InteractionSelectView: UIView {
 
         scrollView.snp.makeConstraints {
             $0.top.equalTo(titleView.snp.bottom).offset(10)
-            $0.bottom.equalTo(resultView.snp.top).offset(-10)
+            $0.bottom.equalTo(resultView.snp.top).offset(10)
             $0.left.right.equalToSuperview().inset(16)
         }
         

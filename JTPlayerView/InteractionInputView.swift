@@ -71,7 +71,10 @@ public class InteractionInputView: UIView {
         }
         resultView.isHidden = false
         resultView.update(answer)
-        if (answer.isCorrect == 0 && answer.remainAttempts > 0) {
+        if (answer.isCorrect == 0 && answer.isPractice == 1 && answer.remainAttempts == 0) {
+            submitBtn.isEnabled = true
+            textField.text = answer.correctAnswer
+        } else if (answer.isCorrect == 0 && answer.remainAttempts > 0) {
             submitBtn.isEnabled = true
         } else {
             endEditing(true)
@@ -171,7 +174,7 @@ public class InteractionInputView: UIView {
             $0.height.lessThanOrEqualTo(80)
             $0.height.greaterThanOrEqualTo(30)
             $0.top.equalTo(stackView.snp.bottom).offset(3)
-            $0.bottom.equalTo(textField.snp.top)
+            $0.bottom.equalTo(textField.snp.top).offset(-5)
             $0.left.right.equalToSuperview().inset(16)
         }
         promteLabel.snp.makeConstraints {
