@@ -18,6 +18,7 @@ public class InteractionInputView: UIView {
     private let resultView = ResultView()
     private let titleView = TitleView()
     private let promteLabel = UILabel()
+    private let scrollView = UIScrollView()
     private let submitBtn = UIButton()
     private let textField = UITextField()
     private let stackView = UIStackView()
@@ -47,7 +48,9 @@ public class InteractionInputView: UIView {
         submitBtn.isEnabled = false
         resultView.isHidden = true
         textField.text = ""
-        
+        resultView.statusError = data.wrongTxt
+        resultView.statusCorrect = data.correctTxt
+
         titleView.titleIcon.image = SourceHelper.image(with: "ic_edit")?.withTintColor( UIColor(hex: data.themeColor))
         titleView.titleLabel.text = data.actionTxt
         promteLabel.text = data.prompt
@@ -100,7 +103,8 @@ public class InteractionInputView: UIView {
         addSubview(stackView)
         stackView.addArrangedSubview(titleView)
         stackView.addArrangedSubview(resultView)
-        addSubview(promteLabel)
+        addSubview(scrollView)
+        scrollView.addSubview(promteLabel)
         addSubview(submitBtn)
         addSubview(textField)
         // textField
@@ -116,6 +120,7 @@ public class InteractionInputView: UIView {
         
         promteLabel.textColor = UIColor.white
         promteLabel.font = UIFont.boldSystemFont(ofSize: 14)
+        promteLabel.numberOfLines = 0
         promteLabel.text = ""
 
         // submit
@@ -144,12 +149,8 @@ public class InteractionInputView: UIView {
             $0.left.right.equalToSuperview().inset(16)
             $0.height.equalTo(30)
         }
-        promteLabel.snp.makeConstraints {
-            $0.top.equalTo(stackView.snp.bottom).offset(3)
-            $0.left.right.equalToSuperview().inset(16)
-        }
         textField.snp.makeConstraints {
-            $0.top.equalTo(promteLabel.snp.bottom).offset(10)
+            $0.top.equalTo(scrollView.snp.bottom).offset(10)
             $0.bottom.equalToSuperview().inset(20)
             $0.height.equalTo(30)
             $0.left.equalToSuperview().inset(16)
@@ -165,7 +166,19 @@ public class InteractionInputView: UIView {
         textField.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         submitBtn.setContentHuggingPriority(.required, for: .horizontal)
         submitBtn.setContentCompressionResistancePriority(.required, for: .horizontal)
-//        promteLabel.setContentHuggingPriority(.required, for: .horizontal)
-//        promteLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        
+        scrollView.snp.makeConstraints {
+            $0.height.lessThanOrEqualTo(80)
+            $0.height.greaterThanOrEqualTo(30)
+            $0.top.equalTo(stackView.snp.bottom).offset(3)
+            $0.bottom.equalTo(textField.snp.top)
+            $0.left.right.equalToSuperview().inset(16)
+        }
+        promteLabel.snp.makeConstraints {
+            $0.left.top.bottom.equalToSuperview()
+            $0.width.equalTo(stackView.snp.width)
+        }
+        promteLabel.setContentHuggingPriority(.required, for: .horizontal)
+        promteLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
     }
 }

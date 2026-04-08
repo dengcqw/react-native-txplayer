@@ -32,20 +32,29 @@ class OptionView: UIView {
         text.textColor = UIColor.white
         text.font = .boldSystemFont(ofSize: 14)
         text.text = ""
+        text.numberOfLines = 0
         
         addSubview(icon)
         addSubview(text)
         
         icon.snp.makeConstraints {
             $0.left.equalToSuperview()
+            $0.top.greaterThanOrEqualToSuperview()
+            $0.bottom.lessThanOrEqualToSuperview()
             $0.centerY.equalToSuperview()
             $0.height.equalTo(16)
             $0.width.equalTo(16)
         }
         text.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
+            $0.top.equalToSuperview().offset(8)
+            $0.bottom.equalToSuperview().offset(-8)
             $0.left.equalTo(icon.snp.right).offset(10)
+            $0.right.equalToSuperview()
         }
+        text.setContentHuggingPriority(.required, for: .horizontal)
+        text.setContentCompressionResistancePriority(.required, for: .horizontal)
+        text.setContentHuggingPriority(.required, for: .vertical)
+        text.setContentCompressionResistancePriority(.required, for: .vertical)
         
         isUserInteractionEnabled = true
     }
@@ -62,6 +71,9 @@ class ResultView: UIView {
     private let resultStatus = UILabel()
     private let resultText = UILabel()
     
+    var statusCorrect = "正确"
+    var statusError = "错误"
+
     let colorRed = UIColor(red: 0.114, green: 0.671, blue: 0.271, alpha: 1.0)   // #1DAB45
     let colorGreen = UIColor(red: 1.0, green: 0.239, blue: 0.298, alpha: 1.0)
 
@@ -69,9 +81,11 @@ class ResultView: UIView {
         if (ans.isCorrect == 1) {
             resultIcon.image = SourceHelper.image(with: "ic_correct")
             resultStatus.textColor = colorRed
+            resultStatus.text = statusCorrect
         } else {
             resultIcon.image = SourceHelper.image(with: "ic_wrong")
             resultStatus.textColor = colorGreen
+            resultStatus.text = statusError
         }
         resultText.text = ans.hint
         sizeToFit()

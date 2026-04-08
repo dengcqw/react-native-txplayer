@@ -109,6 +109,8 @@ public class InteractionSelectView: UIView {
                 view.removeFromSuperview()
             }
             options.removeAll()
+            resultView.statusError = data.wrongTxt
+            resultView.statusCorrect = data.correctTxt
             
             updateSubmit(data: data)
             promptLabel.text = data.prompt
@@ -130,7 +132,7 @@ public class InteractionSelectView: UIView {
                     let tap = UITapGestureRecognizer(target: self, action: #selector(boxTapped(_:)))
                     isUserInteractionEnabled = true
                     aView.addGestureRecognizer(tap)
-                    aView.heightAnchor.constraint(equalToConstant: 30).isActive = true
+//                    aView.heightAnchor.constraint(equalToConstant: 30).isActive = true
                     options.append(aView)
                     stackView.addArrangedSubview(aView)
                 }
@@ -178,8 +180,8 @@ public class InteractionSelectView: UIView {
         
         // container
         addSubview(titleView)
-        addSubview(promptLabel)
         addSubview(scrollView)
+        scrollView.addSubview(promptLabel)
         scrollView.addSubview(stackView)
         addSubview(resultView)
         addSubview(submitBtn)
@@ -201,11 +203,12 @@ public class InteractionSelectView: UIView {
         // prompt
         promptLabel.textColor = UIColor(white: 0.88, alpha: 1)
         promptLabel.font = .boldSystemFont(ofSize: 14)
+        promptLabel.numberOfLines = 0
         promptLabel.text = "请选择正确位置"
         
         stackView.axis = .vertical          // 垂直布局，类似 LinearLayout.VERTICAL
         stackView.alignment = .fill         // 子视图宽度填充父视图
-        stackView.distribution = .fillEqually  // 子视图等高
+        stackView.distribution = .fill  // 子视图等高
         stackView.spacing = 8
     }
     
@@ -227,20 +230,19 @@ public class InteractionSelectView: UIView {
             $0.height.equalTo(20)
             $0.left.right.equalToSuperview().inset(16)
         }
-    
-        promptLabel.snp.makeConstraints {
-            $0.left.equalTo(self.snp.left).offset(16)
-            $0.height.equalTo(30)
-            $0.top.equalTo(titleView.snp.bottom).offset(12)
-        }
 
         scrollView.snp.makeConstraints {
-            $0.top.equalTo(promptLabel.snp.bottom).offset(10)
-            $0.bottom.equalTo(resultView.snp.top).offset(10)
+            $0.top.equalTo(titleView.snp.bottom).offset(10)
+            $0.bottom.equalTo(resultView.snp.top).offset(-10)
             $0.left.right.equalToSuperview().inset(16)
         }
+        
+        promptLabel.snp.makeConstraints {
+            $0.top.left.right.equalToSuperview()
+        }
         stackView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.equalTo(promptLabel.snp.bottom).offset(12)
+            $0.left.right.bottom.equalToSuperview()
             $0.width.equalToSuperview()
         }
     }
