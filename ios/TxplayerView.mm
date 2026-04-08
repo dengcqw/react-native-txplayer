@@ -182,7 +182,7 @@ static int s_playerCount = 0;
 }
 
 - (void)seekTo:(NSNumber *)second {
-    if (second.integerValue < 1) {
+    if (!self.playerView.repeatBtn.isHidden) { // 播放停止后 seek 0 无效
         [self.playerView.repeatBtn sendActionsForControlEvents:(UIControlEventTouchUpInside)];
     } else {
         [self.playerView seekToTime:second.integerValue];
@@ -351,6 +351,34 @@ static int s_playerCount = 0;
 
 #pragma mark - SuperPlayerDelegate
 
+- (BOOL)superPlayerCanSeekTo:(CGFloat)position {
+    NSUInteger eventCount = self.videoEventPositions.count;
+    if (self.triggerPostion >= 0 && self.triggerPostion <= eventCount) {
+        if (self.triggerPostion < 1) { // 开头
+            NSInteger stopPostion = self.videoEventPositions[0].integerValue;
+            if (stopPostion < position) {
+                [self seekTo:@(0)];
+                return  NO;
+            }
+            return YES;
+        } else if (self.triggerPostion >= eventCount) { // 结尾
+            NSInteger stopPostion = self.videoEventPositions[eventCount - 1].integerValue;
+            if (stopPostion < position) {
+                [self seekTo:@(stopPostion)];
+                return  NO;
+            }
+            return YES;
+        } else { // 中间
+            NSInteger stopPostion = self.videoEventPositions[self.triggerPostion - 1].integerValue;
+            if (stopPostion < position) {
+                [self seekTo:@(stopPostion)];
+                return  NO;
+            }
+            return YES;
+        }
+    }
+    return YES;
+}
 
 - (void)superPlayerBackAction:(SuperPlayerView *)player {
 }
@@ -525,19 +553,20 @@ static int s_playerCount = 0;
 
 - (void)progressEvent{
     NSInteger current = (NSInteger)self.playerView.playCurrentTime;
+    NSUInteger eventCount = self.videoEventPositions.count;
     
-    if (self.videoEventPositions != nil) {
-        NSUInteger index = [self.videoEventPositions indexOfObject:@(current)];
-        if (index < 100) { // 最大不会超过这个吧
+    // 防止数组越界
+    if (self.triggerPostion >= 0 && self.triggerPostion < eventCount) { // 最后一段 seek 无法判断
+        NSInteger stopPostion = self.videoEventPositions[self.triggerPostion].integerValue;
+        if (stopPostion == current) { // 触发点暂停
             if (self.eventEmitter != nullptr) {
                 std::dynamic_pointer_cast<const facebook::react::TxplayerViewEventEmitter>(self.eventEmitter)
                 ->onPlayTimeTrigger(facebook::react::TxplayerViewEventEmitter::OnPlayTimeTrigger{
-                    .index = static_cast<int>(index)
+                    .index = static_cast<int>(self.triggerPostion)
                 });
-                if (index == self.triggerPostion) {
-                    [self.playerView pause];
-                }
+                [self.playerView pause];
             }
+     
         }
     }
     

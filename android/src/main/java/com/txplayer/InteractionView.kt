@@ -31,6 +31,8 @@ class InteractiveView @JvmOverloads constructor(
 
     var entity: InteractionEntity? = null
 
+    var lastPosition: Int = 0
+
     var delegate: WeakReference<InteractiveViewInterface>? = null
 
     private val binding: ViewInteractiveBinding =

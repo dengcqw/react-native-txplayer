@@ -41,7 +41,8 @@ using namespace facebook::react;
         _props = TxplayerViewShadowNode::defaultSharedProps();
         txplayerView = [[TxplayerView alloc] initWithFrame:self.bounds];
         txplayerView.timeEventDuration = @(5);
-        txplayerView.triggerPostion = 0;
+        txplayerView.triggerPostion = -1;
+        txplayerView.videoEventPositions = @[];
         self.contentView = txplayerView;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(answerNotif:) name:@"com.jt.sand.interaction.submit" object:nil];

@@ -1331,6 +1331,12 @@ TXLiveBaseDelegate,TXLivePlayListener,TXVodPlayListener>
     if (self.isLive) {
         [DataReport report:@"timeshift" param:nil];
     } else {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(superPlayerCanSeekTo:)]) {
+            if (![self.delegate superPlayerCanSeekTo:dragedSeconds]) {
+                [self fastViewUnavaliable];
+                return;
+            }
+        }
         if (!_vodPlayer) {
             [self setVodPlayConfig];
             [self restart];
@@ -1961,10 +1967,16 @@ TXLiveBaseDelegate,TXLivePlayListener,TXVodPlayListener>
 - (void)controlViewSeek:(SuperPlayerControlView *)controlView where:(CGFloat)pos {
     CGFloat dragedSeconds = [self sliderPosToTime:pos];
     if (_playerModel.action == PLAY_ACTION_PRELOAD) {
-        self->_isPrepare = NO;
-        self.isPauseByUser = NO;
         [self.controlView setPlayState:YES];
         self.centerPlayBtn.hidden = YES;
+        if (self.delegate && [self.delegate respondsToSelector:@selector(superPlayerCanSeekTo:)]) {
+            if (![self.delegate superPlayerCanSeekTo:dragedSeconds]) {
+                [self fastViewUnavaliable];
+                return;
+            }
+        }
+        self->_isPrepare = NO;
+        self.isPauseByUser = NO;
         [self.vodPlayer resume];
         [self.vodPlayer seek:dragedSeconds];
         if (self.delegate && [self.delegate respondsToSelector:@selector(superPlayerDidStart:)]) {

@@ -87,6 +87,7 @@ typedef NS_ENUM(NSInteger, SuperPlayerLayoutStyle) {
 - (void)superPlayerDidChangeState:(SuperPlayerState)state;
 /// Sandstalk 下载按钮点击事件
 - (void)superPlayerDidSelectDownload:(SuperPlayerView *)player;
+- (BOOL)superPlayerCanSeekTo:(CGFloat)pos;
 @end
 
 
