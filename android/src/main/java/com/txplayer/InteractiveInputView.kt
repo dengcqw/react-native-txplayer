@@ -31,6 +31,7 @@ class InteractiveInputView @JvmOverloads constructor(
     init {
         binding.llSubmit.setOnClickListener {
             entity?.let { it ->
+                binding.llSubmit.isEnabled = false
                 submit?.invoke(InteractionSubmitEntity(
                     it.interactionId,
                     it.interactionType,
@@ -51,7 +52,14 @@ class InteractiveInputView @JvmOverloads constructor(
         binding.llSubmit.isEnabled = true
 
         themeColor?.let { color ->
-            binding.llSubmit.setBackgroundColor(color)
+            val scale = resources.displayMetrics.density
+            val cornerRadius = 15 * scale
+
+            val backgroundDrawable = android.graphics.drawable.GradientDrawable()
+            backgroundDrawable.setColor(color)
+            backgroundDrawable.cornerRadius = cornerRadius
+
+            binding.llSubmit.background = backgroundDrawable
             binding.icTitle.setColorFilter(color, PorterDuff.Mode.SRC_IN);
         }
 
@@ -78,8 +86,11 @@ class InteractiveInputView @JvmOverloads constructor(
                 context.getColor(R.color.interaction_wrong)
         )
         binding.tvResultText.text = answer.hint
-        if (answer.isCorrect == 1 || answer.remainAttempts == 0) {
-            binding.llSubmit.isEnabled = false
+        if (answer.isCorrect == 0 && answer.isPractice == 1 && answer.remainAttempts == 0) {
+            binding.llSubmit.isEnabled = true
+            binding.etInput.setText(answer.correctAnswer)
+        } else if (answer.isCorrect == 0 && answer.remainAttempts > 0) {
+            binding.llSubmit.isEnabled = true
         }
     }
 }

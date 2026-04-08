@@ -78,14 +78,15 @@ data class InteractionSubmitEntity(
 
 // Answer result Entity
 data class InteractionAnswerEntity(
+    val isPractice: Int,
     val hint: String?,
     val correctAnswer: String?,
     /**
      * 是否正确：0-错误 1-正确
      */
-    val isCorrect: Int?,
+    val isCorrect: Int,
     /**
      * 剩余作答次数
      */
-    val remainAttempts: Int?
+    val remainAttempts: Int
 )

@@ -32,8 +32,18 @@ public class InteractionAudioView: UIView {
         icon.image = SourceHelper.image(with: "ic_play")?.withTintColor(themeColor)
         isHidden = false
         nextLabel.textColor = themeColor
-        titleLabel.text = data.actionTxt
-        loading.isHidden = false
+        nextLabel.text = ""
+        nextLabel.isHidden = true
+        icon.snp.remakeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.right.equalToSuperview().inset(20)
+            $0.height.equalTo(20)
+            $0.width.equalTo(20)
+        }
+        if let text = data.actionTxt.split(separator: ",").first {
+            titleLabel.text = String(text)
+        }
+        loading.isHidden = true
         loading.startAnimating()
     }
     
@@ -48,13 +58,33 @@ public class InteractionAudioView: UIView {
         loading.stopAnimating()
         if (answer.isCorrect == 1) {
             nextLabel.text = entity?.nextTxt
+            nextLabel.isHidden = false
+            icon.snp.remakeConstraints {
+                $0.centerY.equalToSuperview()
+                $0.right.equalTo(nextLabel.snp.left).offset(-16)
+                $0.height.equalTo(20)
+                $0.width.equalTo(20)
+            }
         } else {
             nextLabel.text = ""
+            nextLabel.isHidden = true
+            icon.snp.remakeConstraints {
+                $0.centerY.equalToSuperview()
+                $0.right.equalToSuperview().inset(20)
+                $0.height.equalTo(20)
+                $0.width.equalTo(20)
+            }
         }
         if (answer.remainAttempts == 1) {
             icon.image = SourceHelper.image(with: "ic_pause")?.withTintColor(themeColor)
+            if let text = entity?.actionTxt.split(separator: ",").last {
+                titleLabel.text = String(text)
+            }
         } else {
             icon.image = SourceHelper.image(with: "ic_play")?.withTintColor(themeColor)
+            if let text = entity?.actionTxt.split(separator: ",").first {
+                titleLabel.text = String(text)
+            }
         }
     }
 
@@ -136,6 +166,8 @@ public class InteractionAudioView: UIView {
                 let jsonData = try encoder.encode(it)
                 let jsonString = String(data: jsonData, encoding: .utf8)!
                 NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "com.jt.sand.interaction.submit"), object: jsonString)
+                loading.isHidden = false
+                loading.startAnimating()
             } catch {
                 print("编码失败: \(error)")
             }

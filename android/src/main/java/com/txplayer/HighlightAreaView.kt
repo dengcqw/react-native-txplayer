@@ -18,7 +18,7 @@ class HighlightAreaView @JvmOverloads constructor(
         return true
     }
 
-    val charList = listOf("A", "B", "C", "D", "E", "F", "G", "H", "I", "J")
+    val charList = listOf("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O")
 
     var hBlank: Int = 0
     var vBlank: Int = 0

@@ -106,7 +106,7 @@ class InteractiveView @JvmOverloads constructor(
 
             if (entity?.interactionType == 4) {
                 binding.audioPanel.root.visibility = View.VISIBLE
-                binding.audioPanel.tvInteractionTitle.text = entity?.actionTxt
+                binding.audioPanel.tvInteractionTitle.text = entity?.actionTxt?.split(",")?.getOrNull(0)
                 binding.audioPanel.tvNext.text = entity?.nextTxt
                 binding.audioPanel.tvNext.setTextColor(themeColor)
                 binding.audioPanel.icPlay.setColorFilter(themeColor, PorterDuff.Mode.SRC_IN);
@@ -145,6 +145,7 @@ class InteractiveView @JvmOverloads constructor(
                     binding.audioPanel.tvAudioTime.text = obj.hint
                     binding.audioPanel.tvNext.visibility = if (obj.isCorrect == 1) View.VISIBLE else View.GONE
                     binding.audioPanel.icPlay.setImageResource(if (obj.remainAttempts == 1) R.drawable.ic_pause else R.drawable.ic_play)
+                    binding.audioPanel.tvInteractionTitle.text = entity?.actionTxt?.split(",")?.getOrNull(obj.remainAttempts)
                 }
             } else if (entity?.interactionType == 1) {
                 binding.inputPanel.updateAnswer(jsonAdapter.fromJson(jsonString))

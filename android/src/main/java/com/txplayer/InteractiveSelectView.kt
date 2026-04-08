@@ -31,6 +31,7 @@ class InteractiveSelectView @JvmOverloads constructor(
     init {
         binding.llSubmit.setOnClickListener {
             entity?.let { it ->
+                binding.llSubmit.isEnabled = false
                 submit?.invoke(InteractionSubmitEntity(
                     it.interactionId,
                     it.interactionType,
@@ -41,7 +42,7 @@ class InteractiveSelectView @JvmOverloads constructor(
         }
     }
 
-    val charList = listOf("A", "B", "C", "D", "E", "F", "G", "H", "I", "J")
+    val charList = listOf("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O")
     val selected: MutableList<Int> = mutableListOf()
     val optionBindings: MutableList<ViewInteractiveOptionBinding> = mutableListOf()
 
@@ -54,7 +55,14 @@ class InteractiveSelectView @JvmOverloads constructor(
 
     fun updateSubmit(type: Int?) {
         themeColor?.let { color ->
-            binding.llSubmit.setBackgroundColor(color)
+            val scale = resources.displayMetrics.density
+            val cornerRadius = 15 * scale
+
+            val backgroundDrawable = android.graphics.drawable.GradientDrawable()
+            backgroundDrawable.setColor(color)
+            backgroundDrawable.cornerRadius = cornerRadius
+
+            binding.llSubmit.background = backgroundDrawable
         }
         if (type == 0 || type == 2) {
             binding.llSubmit.isEnabled = false
@@ -150,8 +158,38 @@ class InteractiveSelectView @JvmOverloads constructor(
                 context.getColor(R.color.interaction_wrong)
         )
         binding.tvResultText.text = answer.hint
-        if (answer.isCorrect == 1 || answer.remainAttempts == 0) {
-            binding.llSubmit.isEnabled = false
+        highlightAnswer(false)
+        if (answer.isCorrect == 0 && answer.isPractice == 1 && answer.remainAttempts == 0) {
+            binding.llSubmit.isEnabled = true
+            highlightAnswer(true)
+        } else if (answer.isCorrect == 0 && answer.remainAttempts > 0) {
+            binding.llSubmit.isEnabled = true
+        }
+    }
+
+    fun highlightAnswer(show: Boolean) {
+        val borderColor = context.getColor(R.color.interaction_correct)
+        val borderWidth = 1
+
+        entity?.dropdown?.options?.forEachIndexed { index, option ->
+            if (option.isAnswer == 1) {
+                optionBindings[index].let { optionBinding ->
+                    if (show) {
+                        val rootView = optionBinding.root
+                        val scale = resources.displayMetrics.density
+                        val borderWidthPx = (borderWidth * scale + 0.5f).toInt()
+
+                        val backgroundDrawable = android.graphics.drawable.GradientDrawable()
+                        backgroundDrawable.setStroke(borderWidthPx, borderColor)
+                        backgroundDrawable.cornerRadius = 0f
+
+                        rootView.background = backgroundDrawable
+                    } else {
+                        rootView.background = null
+                    }
+                }
+
+            }
         }
     }
 }
