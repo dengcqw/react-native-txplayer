@@ -233,18 +233,26 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener,
       @Override
       public void onStartFullScreenPlay() {
         removeFeedPlayFromItem();
-        if (interactiveView != null) interactiveView.setFullscreen(true);
         rootView().addView(superPlayerView , new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT , ViewGroup.LayoutParams.MATCH_PARENT));
         playerViewCallback.onFullscreen(TxplayerView.this, true);
         act.getWindow().getDecorView().setBackgroundColor(Color.BLACK);
+        if (interactiveView != null) {
+          interactiveView.setFullscreen(true);
+          superPlayerView.getFullscreenPlayer().setVisibility(interactiveView.getEntity() == null ? View.VISIBLE : View.INVISIBLE);
+          superPlayerView.getWindowPlayer().setVisibility(interactiveView.getEntity() == null ? View.VISIBLE : View.INVISIBLE);
+        }
       }
 
       @Override
       public void onStopFullScreenPlay() {
         addFeedPlayToItem();
-        if (interactiveView != null) interactiveView.setFullscreen(false);
         playerViewCallback.onFullscreen(TxplayerView.this, false);
         act.getWindow().getDecorView().setBackgroundColor(Color.WHITE);
+        if (interactiveView != null) {
+          interactiveView.setFullscreen(false);
+          superPlayerView.getFullscreenPlayer().setVisibility(interactiveView.getEntity() == null ? View.VISIBLE : View.INVISIBLE);
+          superPlayerView.getWindowPlayer().setVisibility(interactiveView.getEntity() == null ? View.VISIBLE : View.INVISIBLE);
+        }
       }
 
       @Override
@@ -488,12 +496,16 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener,
       return;
     }
 
+    // 做题时不允许旋转
+    if (interactiveView != null && interactiveView.getEntity() != null) {
+      return;
+    }
+
     Activity act = this.reactContext.getCurrentActivity();
     if (act == null) return;
     if (act.isInPictureInPictureMode()) {
       return;
     }
-
 
     if ("portrait".equals(oriention)) {
       if(!isFullScreenPlay()) return;

@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.children
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -32,6 +33,7 @@ class InteractiveInputView @JvmOverloads constructor(
         binding.llSubmit.setOnClickListener {
             entity?.let { it ->
                 binding.llSubmit.isEnabled = false
+                updateSubmitBg()
                 submit?.invoke(InteractionSubmitEntity(
                     it.interactionId,
                     it.interactionType,
@@ -50,16 +52,9 @@ class InteractiveInputView @JvmOverloads constructor(
         binding.llResult.visibility = GONE
         binding.etInput.setText("")
         binding.llSubmit.isEnabled = true
+        updateSubmitBg()
 
         themeColor?.let { color ->
-            val scale = resources.displayMetrics.density
-            val cornerRadius = 15 * scale
-
-            val backgroundDrawable = android.graphics.drawable.GradientDrawable()
-            backgroundDrawable.setColor(color)
-            backgroundDrawable.cornerRadius = cornerRadius
-
-            binding.llSubmit.background = backgroundDrawable
             binding.icTitle.setColorFilter(color, PorterDuff.Mode.SRC_IN);
         }
 
@@ -88,9 +83,29 @@ class InteractiveInputView @JvmOverloads constructor(
         binding.tvResultText.text = answer.hint
         if (answer.isCorrect == 0 && answer.isPractice == 1 && answer.remainAttempts == 0) {
             binding.llSubmit.isEnabled = true
+            updateSubmitBg()
             binding.etInput.setText(answer.correctAnswer)
         } else if (answer.isCorrect == 0 && answer.remainAttempts > 0) {
             binding.llSubmit.isEnabled = true
+            updateSubmitBg()
+        }
+    }
+
+    fun updateSubmitBg() {
+        themeColor?.let { color ->
+            val scale = resources.displayMetrics.density
+            val cornerRadius = 15 * scale
+
+            val backgroundDrawable = android.graphics.drawable.GradientDrawable()
+            if (binding.llSubmit.isEnabled) {
+                backgroundDrawable.setColor(color)
+            } else {
+                val newColor = ColorUtils.blendARGB(color, android.graphics.Color.GRAY, 0.6f)
+                backgroundDrawable.setColor(newColor)
+            }
+            backgroundDrawable.cornerRadius = cornerRadius
+
+            binding.llSubmit.background = backgroundDrawable
         }
     }
 }

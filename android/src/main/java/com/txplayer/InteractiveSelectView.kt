@@ -3,18 +3,12 @@ package com.txplayer
 import android.content.Context
 import android.graphics.PorterDuff
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import androidx.core.content.ContextCompat
-import androidx.core.view.children
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.txplayer.databinding.ViewInteractiveOptionBinding
 import com.txplayer.databinding.ViewInteractiveSelectBinding
-import kotlin.Exception
-
+import androidx.core.graphics.ColorUtils
 
 class InteractiveSelectView @JvmOverloads constructor(
     context: Context,
@@ -32,6 +26,7 @@ class InteractiveSelectView @JvmOverloads constructor(
         binding.llSubmit.setOnClickListener {
             entity?.let { it ->
                 binding.llSubmit.isEnabled = false
+                updateSubmitBg()
                 submit?.invoke(InteractionSubmitEntity(
                     it.interactionId,
                     it.interactionType,
@@ -54,27 +49,37 @@ class InteractiveSelectView @JvmOverloads constructor(
     }
 
     fun updateSubmit(type: Int?) {
-        themeColor?.let { color ->
-            val scale = resources.displayMetrics.density
-            val cornerRadius = 15 * scale
 
-            val backgroundDrawable = android.graphics.drawable.GradientDrawable()
-            backgroundDrawable.setColor(color)
-            backgroundDrawable.cornerRadius = cornerRadius
-
-            binding.llSubmit.background = backgroundDrawable
-        }
         if (type == 0 || type == 2) {
             binding.llSubmit.isEnabled = false
             binding.llSubmit.visibility = View.VISIBLE
+            updateSubmitBg()
         } else if (type == 3) {
             binding.llSubmit.isEnabled = true
             binding.llSubmit.visibility = View.VISIBLE
+            updateSubmitBg()
         } else if (type == 4) { // 语音播放
             binding.llSubmit.visibility = View.INVISIBLE
         }
     }
 
+    fun updateSubmitBg() {
+        themeColor?.let { color ->
+            val scale = resources.displayMetrics.density
+            val cornerRadius = 15 * scale
+
+            val backgroundDrawable = android.graphics.drawable.GradientDrawable()
+            if (binding.llSubmit.isEnabled) {
+                backgroundDrawable.setColor(color)
+            } else {
+                val newColor = ColorUtils.blendARGB(color, android.graphics.Color.GRAY, 0.6f)
+                backgroundDrawable.setColor(newColor)
+            }
+            backgroundDrawable.cornerRadius = cornerRadius
+
+            binding.llSubmit.background = backgroundDrawable
+        }
+    }
 
     fun update() {
         // 输入
@@ -109,6 +114,7 @@ class InteractiveSelectView @JvmOverloads constructor(
                     }
                     optionBinding.root.setOnClickListener {
                         binding.llSubmit.isEnabled = true
+                        updateSubmitBg()
                         if (interactionAttributes == 0 || interactionType == 0) { // 单选
                             if (selected.isNotEmpty()) {
                                 if (index == selected[0]) {
@@ -161,13 +167,15 @@ class InteractiveSelectView @JvmOverloads constructor(
         highlightAnswer(false)
         if (answer.isCorrect == 0 && answer.isPractice == 1 && answer.remainAttempts == 0) {
             binding.llSubmit.isEnabled = true
-            highlightAnswer(true)
+            updateSubmitBg()
+            highlightAnswer(true, answer.hint)
         } else if (answer.isCorrect == 0 && answer.remainAttempts > 0) {
             binding.llSubmit.isEnabled = true
+            updateSubmitBg()
         }
     }
 
-    fun highlightAnswer(show: Boolean) {
+    fun highlightAnswer(show: Boolean, hint: String? = null) {
         val borderColor = context.getColor(R.color.interaction_correct)
         val borderWidth = 1
 
@@ -184,6 +192,9 @@ class InteractiveSelectView @JvmOverloads constructor(
                         backgroundDrawable.cornerRadius = 0f
 
                         rootView.background = backgroundDrawable
+                        if (hint != null) {
+                            binding.tvResultText.text = hint.replace("$1", charList[index])
+                        }
                     } else {
                         rootView.background = null
                     }

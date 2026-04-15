@@ -92,7 +92,7 @@
     <LinearLayout
         android:id="@+id/ll_submit"
         android:background="@drawable/interactive_bg"
-        android:layout_marginVertical="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginRight="10dp"
         android:layout_gravity="right"
         android:gravity="center_vertical"
