@@ -129,6 +129,7 @@ public class InteractionSelectView: UIView {
                     } else {
                         aView.text.text = charList[index] + "、" + (element.value ?? "")
                     }
+                    aView.update()
                     
                     let tap = UITapGestureRecognizer(target: self, action: #selector(boxTapped(_:)))
                     isUserInteractionEnabled = true

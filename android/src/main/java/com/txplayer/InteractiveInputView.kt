@@ -1,33 +1,30 @@
 package com.txplayer
 
 import android.content.Context
+import android.graphics.Rect
 import android.graphics.PorterDuff
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.core.graphics.ColorUtils
-import androidx.core.view.children
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.txplayer.databinding.ViewInteractiveInputBinding
-import com.txplayer.databinding.ViewInteractiveOptionBinding
-import com.txplayer.databinding.ViewInteractiveSelectBinding
-import kotlin.Exception
+import kotlin.math.abs
 
 
 class InteractiveInputView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : FrameLayout(context, attrs, defStyleAttr) {
+) : LinearLayout(context, attrs, defStyleAttr) {
     var entity: InteractionEntity? = null
     var themeColor: Int? = null
     var submit: ((value: InteractionSubmitEntity) -> Unit)? = null
 
     private val binding: ViewInteractiveInputBinding =
         ViewInteractiveInputBinding.inflate(LayoutInflater.from(context), this, true)
+
+    private var usableHeightPrevious = 0
 
     init {
         binding.llSubmit.setOnClickListener {
@@ -42,6 +39,29 @@ class InteractiveInputView @JvmOverloads constructor(
                 ))
             }
         }
+
+        // 监听键盘弹出，调整布局使输入框跟随键盘弹起
+        viewTreeObserver.addOnGlobalLayoutListener {
+            val rect = Rect()
+            getWindowVisibleDisplayFrame(rect)
+            val usableHeightNow = rect.bottom - rect.top
+            if (usableHeightPrevious != usableHeightNow) {
+                val usableHeightSansKeyboard = rootView.height
+                val heightDifference = abs(usableHeightSansKeyboard - usableHeightNow)
+
+                var layoutParams: LinearLayout.LayoutParams = binding.llCon.layoutParams as LinearLayout.LayoutParams
+                if (heightDifference > usableHeightNow / 4) {
+                    // 键盘弹出，减少高度让输入框可见
+                    layoutParams.bottomMargin = heightDifference
+                } else {
+                    // 键盘收起，恢复高度
+                    layoutParams.bottomMargin = 0
+                }
+                this@InteractiveInputView.requestLayout()
+
+                usableHeightPrevious = usableHeightNow
+            }
+        }
     }
 
     fun update() {
@@ -51,6 +71,7 @@ class InteractiveInputView @JvmOverloads constructor(
         }
         binding.llResult.visibility = GONE
         binding.etInput.setText("")
+        binding.etInput.hint = entity?.inputTxt
         binding.llSubmit.isEnabled = true
         updateSubmitBg()
 
@@ -60,7 +81,6 @@ class InteractiveInputView @JvmOverloads constructor(
 
         entity?.apply {
             binding.tvInteractionTitle.text = actionTxt
-            binding.etInput.hint = ""
             binding.tvSubmit.text = submitTxt
             binding.tvPrompt.text = prompt
         }

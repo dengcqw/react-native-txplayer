@@ -48,6 +48,11 @@ public class InteractionInputView: UIView {
         submitBtn.isEnabled = false
         resultView.isHidden = true
         textField.text = ""
+        let attributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UIColor.white.withAlphaComponent(0.6)
+        ]
+        let attributedText = NSAttributedString(string: data.inputTxt, attributes: attributes)
+        textField.attributedPlaceholder = attributedText
         resultView.statusError = data.wrongTxt
         resultView.statusCorrect = data.correctTxt
 
@@ -77,6 +82,7 @@ public class InteractionInputView: UIView {
         } else if (answer.isCorrect == 0 && answer.remainAttempts > 0) {
             submitBtn.isEnabled = true
         } else {
+            submitBtn.isEnabled = false
             endEditing(true)
         }
     }

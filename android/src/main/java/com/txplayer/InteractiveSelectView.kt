@@ -112,6 +112,10 @@ class InteractiveSelectView @JvmOverloads constructor(
                     } else {
                         optionBinding.tvTitle.text = charList[index] + "、" + option.value
                     }
+
+                    if (interactionAttributes == 1) {
+                        optionBinding.icSelect.setImageResource(R.drawable.icon_uncheck)
+                    }
                     optionBinding.root.setOnClickListener {
                         binding.llSubmit.isEnabled = true
                         updateSubmitBg()

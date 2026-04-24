@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_con"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
@@ -83,7 +84,7 @@
         android:id="@+id/et_input"
         tools:hint="试试其他位置吧"
         android:paddingHorizontal="12dp"
-        android:textColorHint="#E1E1E1"
+        android:textColorHint="#a0a0a0"
         android:textSize="12sp"
         android:textColor="@color/white"
         android:background="@drawable/interactive_input_bg"

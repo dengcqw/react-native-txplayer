@@ -24,6 +24,7 @@ struct InteractionEntity: Codable {
     let knownTxt: String
     let wrongTxt: String
     let nextTxt: String
+    let inputTxt: String
     let vW: String?
     let vH: String?
 
