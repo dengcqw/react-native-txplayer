@@ -417,20 +417,12 @@ static int s_playerCount = 0;
 }
 
 - (void)changeToFullscreen:(BOOL)fullScreen {
-//     SPDefaultControlView *controlView = (SPDefaultControlView *)_playerView.controlView;
-//    if (controlView.danmakuBtn.selected) {
-//        if (fullScreen) {
-//            [self danmakuShow];
-//        } else {
-//            [self danmakuHidden];
-//        }
-//    }
     if (self.videoEventPositions.count > 0) {
         self.interactionView.fullscreen = fullScreen;
     }
     
    
-//    [[UIApplication sharedApplication] setStatusBarHidden:fullScreen];
+    [[UIApplication sharedApplication] setStatusBarHidden:fullScreen];
 }
 
 - (void)superPlayerDidSelectDownload:(SuperPlayerView *)player{

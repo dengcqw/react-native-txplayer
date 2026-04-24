@@ -127,17 +127,17 @@ class InteractiveSelectView @JvmOverloads constructor(
                             }
                             selected.clear()
 
-                            optionBinding.icSelect.setColorFilter(this@InteractiveSelectView.themeColor!!, PorterDuff.Mode.SRC_IN);
+                            optionBinding.icSelect.setColorFilter(this@InteractiveSelectView.themeColor!!, PorterDuff.Mode.SRC_IN)
                             optionBinding.icSelect.setImageResource(R.drawable.ic_select)
                             selected.add(index)
                         } else {
                             if (selected.contains(index)) {
                                 optionBinding.icSelect.clearColorFilter()
-                                optionBinding.icSelect.setImageResource(R.drawable.ic_unselect)
+                                optionBinding.icSelect.setImageResource(R.drawable.icon_uncheck)
                                 selected.remove(index)
                             } else {
-                                optionBinding.icSelect.setColorFilter(this@InteractiveSelectView.themeColor!!, PorterDuff.Mode.SRC_IN);
-                                optionBinding.icSelect.setImageResource(R.drawable.ic_select)
+                                optionBinding.icSelect.setColorFilter(this@InteractiveSelectView.themeColor!!, PorterDuff.Mode.SRC_IN)
+                                optionBinding.icSelect.setImageResource(R.drawable.icon_check)
                                 selected.add(index)
                             }
                         }

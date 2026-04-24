@@ -15,16 +15,25 @@ class OptionView: UIView {
     let text = UILabel()
     
     var selected = false
+    var single = false
     var index = 0
     var themeColor: UIColor?
     
     func update() {
         if (selected) {
-            icon.image = SourceHelper.image(with: "ic_select")?.withTintColor(themeColor!)
+            if (single) {
+                icon.image = SourceHelper.image(with: "ic_select")?.withTintColor(themeColor!)
+            } else {
+                icon.image = SourceHelper.image(with: "icon_check")?.withTintColor(themeColor!)
+            }
             text.textColor = themeColor!
         } else {
             text.textColor = UIColor.white
-            icon.image = SourceHelper.image(with: "ic_unselect")
+            if (single) {
+                icon.image = SourceHelper.image(with: "ic_unselect")
+            } else {
+                icon.image = SourceHelper.image(with: "icon_uncheck")
+            }
         }
     }
     

@@ -123,6 +123,7 @@ public class InteractionSelectView: UIView {
                     let aView = OptionView()
                     aView.index = index
                     aView.themeColor = themeColor
+                    aView.single = !multiSelect
                     if (element.value == nil || element.value!.isEmpty) {
                         aView.text.text = charList[index]
                     } else {
