@@ -31,7 +31,8 @@ public class InteractionAreaView: UIView {
     }
     
     // 字符列表
-    private let charList = ["A","B","C","D","E","F","G","H","I","J"]
+    private let charList = ["A","B","C","D","E","F","G","H","I","J","K","L"]
+    var hideChar = false
 
     var themeColor: UIColor?
     // 边框画笔
@@ -109,7 +110,7 @@ public class InteractionAreaView: UIView {
             ctx.fill(rect)
 
             // 文本
-            guard index < charList.count else { continue }
+            guard !hideChar && index < charList.count else { continue }
             let text = charList[index]
 
             let paragraphStyle = NSMutableParagraphStyle()

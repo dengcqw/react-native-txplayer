@@ -64,6 +64,11 @@ public class InteractionView: UIView {
             } else {
                 areaView.areaLayout = []
             }
+            if (entity.interactionType == .area) {
+                areaView.hideChar = false
+            } else {
+                areaView.hideChar = true
+            }
             if (fullscreen) {
                 selectView.showInteraction(data: entity)
                 editView.showInteraction(data: entity)
