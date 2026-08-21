@@ -77,11 +77,6 @@ class HighlightAreaView @JvmOverloads constructor(
     var areas:  List<AreaObj>? = null
         set(value) {
             field = value
-            showText = if (value != null && value.size > 1) {
-                true
-            } else {
-                false
-            }
             invalidate() // 数据变化时重绘
         }
 

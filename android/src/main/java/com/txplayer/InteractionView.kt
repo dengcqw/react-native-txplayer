@@ -104,6 +104,7 @@ class InteractiveView @JvmOverloads constructor(
             binding.inputPanel.visibility = View.INVISIBLE
             binding.audioPanel.root.visibility = View.INVISIBLE
 
+            binding.areaLayout.showText = false
             if (entity?.interactionType == 4) {
                 binding.audioPanel.root.visibility = View.VISIBLE
                 binding.audioPanel.tvInteractionTitle.text = entity?.actionTxt?.split(",")?.getOrNull(0)
@@ -120,6 +121,9 @@ class InteractiveView @JvmOverloads constructor(
                 binding.selectPanel.entity = entity
                 binding.selectPanel.themeColor = themeColor
                 binding.selectPanel.update()
+                if (entity?.interactionType == 0) {
+                    binding.areaLayout.showText = true
+                }
             }
 
             if (!fullscreen) {
