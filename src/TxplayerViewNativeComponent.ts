@@ -74,6 +74,7 @@ export interface NativeProps extends ViewProps {
   enableRotate: boolean;
   enablePIP: boolean;
   playStartTime: Int32;
+  fastForwardType: Int32; // 0 不展示 1 全部 2 部分
   language: string;
   enableLoop: boolean;
   timeEventDuration: Int32; // 时间时间发送间隔
