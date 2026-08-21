@@ -147,6 +147,7 @@ static int s_playerCount = 0;
         controlView.disableDownloadBtn = !self.enableDownload.boolValue;
         controlView.enableFullscreen = self.enableFullScreen.boolValue;
         controlView.disablePipBtn = !self.enablePIP.boolValue;
+        controlView.fastForwardType = self.fastForwardType.intValue;
         
 //        if(self.enableDanmaku.boolValue) {
 //            controlView.disableDanmakuBtn = NO;

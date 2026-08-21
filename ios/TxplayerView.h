@@ -56,6 +56,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy) NSNumber *timeEventDuration;
 @property(nonatomic, copy) NSNumber *enableRotate; // 屏幕旋转
 @property(nonatomic, copy) NSNumber *enablePIP; // 画中画
+@property(nonatomic, copy) NSNumber *fastForwardType; // 0 不展示 1 全部 2 部分
+
 @property(nonatomic, copy) NSArray<NSNumber *>* videoEventPositions;
 
 @property(nonatomic, assign) NSInteger triggerPostion; // 交互视频暂停位置

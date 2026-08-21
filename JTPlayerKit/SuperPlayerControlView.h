@@ -53,6 +53,10 @@
  * sandstalk 是否允许旋转屏幕， 默认为YES
  */
 @property (nonatomic, assign) BOOL enableFullscreen;
+/**
+ * sandstalk 是否允许旋转屏幕， 0 不展示 1 全部 2 部分
+ */
+@property (nonatomic, assign) int fastForwardType;
 
 /**
  * 回调delegate

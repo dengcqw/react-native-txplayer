@@ -27,6 +27,7 @@ RCT_EXPORT_MODULE(TxplayerView)
     view.hidePlayerControl = @NO;
     view.enableLoop = @YES;
     view.enablePIP = @NO;
+    view.fastForwardType = @1;
     
     view.playType = @0;
     view.playStartTime = @0;

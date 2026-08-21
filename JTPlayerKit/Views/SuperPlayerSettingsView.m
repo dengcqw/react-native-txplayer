@@ -100,6 +100,11 @@
         _speedCell.hidden  = YES;
         _mirrorCell.hidden = YES;
     }
+    
+    // sandstalk
+    if (self.controlView != nil && self.controlView.fastForwardType == 0) {
+        _speedCell.hidden = YES;
+    }
 
     _hwCell.m_top(_contentHeight);
     _contentHeight += _hwCell.mm_h;
@@ -208,65 +213,100 @@
         [_speedCell addSubview:speed];
         speed.m_top(0).m_height(40);
 
-        // 添加0.5倍速按钮
-        UIButton *speed05 = [UIButton buttonWithType:UIButtonTypeCustom];
-        [speed05 setTitle:@"0.5X" forState:UIControlStateNormal];
-        [speed05 setTitleColor:TintColor forState:UIControlStateSelected];
-        speed05.tag = TAG_5_SPEED;
-        [speed05 sizeToFit];
-        [_speedCell addSubview:speed05];
-        [speed05 addTarget:self action:@selector(changeSpeed:) forControlEvents:UIControlEventTouchUpInside];
-        speed05.m_left(speed.mm_maxX + 10).m_top(speed.mm_minY).m_height(40);
+        // sandstalk
+        if (self.controlView != nil || self.controlView.fastForwardType == 2) {
+            // 添加0.75倍速按钮
+            UIButton *speed075 = [UIButton buttonWithType:UIButtonTypeCustom];
+            [speed075 setTitle:@"0.75X" forState:UIControlStateNormal];
+            [speed075 setTitleColor:TintColor forState:UIControlStateSelected];
+            speed075.tag = TAG_75_SPEED;
+            [speed075 sizeToFit];
+            [_speedCell addSubview:speed075];
+            [speed075 addTarget:self action:@selector(changeSpeed:) forControlEvents:UIControlEventTouchUpInside];
+            speed075.m_left(speed.mm_maxX + 12).m_top(speed.mm_minY).m_height(40);
 
-        // 添加0.75倍速按钮
-        UIButton *speed075 = [UIButton buttonWithType:UIButtonTypeCustom];
-        [speed075 setTitle:@"0.75X" forState:UIControlStateNormal];
-        [speed075 setTitleColor:TintColor forState:UIControlStateSelected];
-        speed075.tag = TAG_75_SPEED;
-        [speed075 sizeToFit];
-        [_speedCell addSubview:speed075];
-        [speed075 addTarget:self action:@selector(changeSpeed:) forControlEvents:UIControlEventTouchUpInside];
-        speed075.m_left(speed05.mm_maxX + 12).m_top(speed.mm_minY).m_height(40);
+            // 原有的1.0倍速按钮
+            UIButton *speed1 = [UIButton buttonWithType:UIButtonTypeCustom];
+            [speed1 setTitle:superPlayerLocalized(@"SuperPlayer.speed1p0") forState:UIControlStateNormal];
+            [speed1 setTitleColor:TintColor forState:UIControlStateSelected];
+            speed1.selected = YES;
+            speed1.tag      = TAG_1_SPEED;
+            [speed1 sizeToFit];
+            [_speedCell addSubview:speed1];
+            [speed1 addTarget:self action:@selector(changeSpeed:) forControlEvents:UIControlEventTouchUpInside];
 
-        // 原有的1.0倍速按钮
-        UIButton *speed1 = [UIButton buttonWithType:UIButtonTypeCustom];
-        [speed1 setTitle:superPlayerLocalized(@"SuperPlayer.speed1p0") forState:UIControlStateNormal];
-        [speed1 setTitleColor:TintColor forState:UIControlStateSelected];
-        speed1.selected = YES;
-        speed1.tag      = TAG_1_SPEED;
-        [speed1 sizeToFit];
-        [_speedCell addSubview:speed1];
-        [speed1 addTarget:self action:@selector(changeSpeed:) forControlEvents:UIControlEventTouchUpInside];
+            speed1.m_left(speed075.mm_maxX + 12).m_top(speed.mm_minY).m_height(40);
 
-        speed1.m_left(speed075.mm_maxX + 12).m_top(speed.mm_minY).m_height(40);
+            UIButton *speed2 = [UIButton buttonWithType:UIButtonTypeCustom];
+            [speed2 setTitle:superPlayerLocalized(@"SuperPlayer.speed1p25") forState:UIControlStateNormal];
+            [speed2 setTitleColor:TintColor forState:UIControlStateSelected];
+            speed2.tag = TAG_2_SPEED;
+            [speed2 sizeToFit];
+            [_speedCell addSubview:speed2];
+            [speed2 addTarget:self action:@selector(changeSpeed:) forControlEvents:UIControlEventTouchUpInside];
 
-        UIButton *speed2 = [UIButton buttonWithType:UIButtonTypeCustom];
-        [speed2 setTitle:superPlayerLocalized(@"SuperPlayer.speed1p25") forState:UIControlStateNormal];
-        [speed2 setTitleColor:TintColor forState:UIControlStateSelected];
-        speed2.tag = TAG_2_SPEED;
-        [speed2 sizeToFit];
-        [_speedCell addSubview:speed2];
-        [speed2 addTarget:self action:@selector(changeSpeed:) forControlEvents:UIControlEventTouchUpInside];
-
-        speed2.m_left(speed1.mm_maxX + 12).m_top(speed.mm_minY).m_height(40);
-
-        UIButton *speed3 = [UIButton buttonWithType:UIButtonTypeCustom];
-        [speed3 setTitle:superPlayerLocalized(@"SuperPlayer.speed1p5") forState:UIControlStateNormal];
-        [speed3 setTitleColor:TintColor forState:UIControlStateSelected];
-        speed3.tag = TAG_3_SPEED;
-        [speed3 sizeToFit];
-        [_speedCell addSubview:speed3];
-        [speed3 addTarget:self action:@selector(changeSpeed:) forControlEvents:UIControlEventTouchUpInside];
-        speed3.m_left(speed.mm_maxX + 10).m_top(speed.mm_maxY).m_height(40);
-
-        UIButton *speed4 = [UIButton buttonWithType:UIButtonTypeCustom];
-        [speed4 setTitle:superPlayerLocalized(@"SuperPlayer.speed2p0") forState:UIControlStateNormal];
-        [speed4 setTitleColor:TintColor forState:UIControlStateSelected];
-        speed4.tag = TAG_4_SPEED;
-        [speed4 sizeToFit];
-        [_speedCell addSubview:speed4];
-        [speed4 addTarget:self action:@selector(changeSpeed:) forControlEvents:UIControlEventTouchUpInside];
-        speed4.m_left(speed3.mm_maxX + 12).m_top(speed.mm_maxY).m_height(40);
+            speed2.m_left(speed1.mm_maxX + 12).m_top(speed.mm_minY).m_height(40);
+        } else if (self.controlView != nil || self.controlView.fastForwardType == 1) {
+            // 添加0.5倍速按钮
+            UIButton *speed05 = [UIButton buttonWithType:UIButtonTypeCustom];
+            [speed05 setTitle:@"0.5X" forState:UIControlStateNormal];
+            [speed05 setTitleColor:TintColor forState:UIControlStateSelected];
+            speed05.tag = TAG_5_SPEED;
+            [speed05 sizeToFit];
+            [_speedCell addSubview:speed05];
+            [speed05 addTarget:self action:@selector(changeSpeed:) forControlEvents:UIControlEventTouchUpInside];
+            speed05.m_left(speed.mm_maxX + 10).m_top(speed.mm_minY).m_height(40);
+            
+            // 添加0.75倍速按钮
+            UIButton *speed075 = [UIButton buttonWithType:UIButtonTypeCustom];
+            [speed075 setTitle:@"0.75X" forState:UIControlStateNormal];
+            [speed075 setTitleColor:TintColor forState:UIControlStateSelected];
+            speed075.tag = TAG_75_SPEED;
+            [speed075 sizeToFit];
+            [_speedCell addSubview:speed075];
+            [speed075 addTarget:self action:@selector(changeSpeed:) forControlEvents:UIControlEventTouchUpInside];
+            speed075.m_left(speed05.mm_maxX + 12).m_top(speed.mm_minY).m_height(40);
+            
+            // 原有的1.0倍速按钮
+            UIButton *speed1 = [UIButton buttonWithType:UIButtonTypeCustom];
+            [speed1 setTitle:superPlayerLocalized(@"SuperPlayer.speed1p0") forState:UIControlStateNormal];
+            [speed1 setTitleColor:TintColor forState:UIControlStateSelected];
+            speed1.selected = YES;
+            speed1.tag      = TAG_1_SPEED;
+            [speed1 sizeToFit];
+            [_speedCell addSubview:speed1];
+            [speed1 addTarget:self action:@selector(changeSpeed:) forControlEvents:UIControlEventTouchUpInside];
+            
+            speed1.m_left(speed075.mm_maxX + 12).m_top(speed.mm_minY).m_height(40);
+            
+            UIButton *speed2 = [UIButton buttonWithType:UIButtonTypeCustom];
+            [speed2 setTitle:superPlayerLocalized(@"SuperPlayer.speed1p25") forState:UIControlStateNormal];
+            [speed2 setTitleColor:TintColor forState:UIControlStateSelected];
+            speed2.tag = TAG_2_SPEED;
+            [speed2 sizeToFit];
+            [_speedCell addSubview:speed2];
+            [speed2 addTarget:self action:@selector(changeSpeed:) forControlEvents:UIControlEventTouchUpInside];
+            
+            speed2.m_left(speed1.mm_maxX + 12).m_top(speed.mm_minY).m_height(40);
+            
+            UIButton *speed3 = [UIButton buttonWithType:UIButtonTypeCustom];
+            [speed3 setTitle:superPlayerLocalized(@"SuperPlayer.speed1p5") forState:UIControlStateNormal];
+            [speed3 setTitleColor:TintColor forState:UIControlStateSelected];
+            speed3.tag = TAG_3_SPEED;
+            [speed3 sizeToFit];
+            [_speedCell addSubview:speed3];
+            [speed3 addTarget:self action:@selector(changeSpeed:) forControlEvents:UIControlEventTouchUpInside];
+            speed3.m_left(speed.mm_maxX + 10).m_top(speed.mm_maxY).m_height(40);
+            
+            UIButton *speed4 = [UIButton buttonWithType:UIButtonTypeCustom];
+            [speed4 setTitle:superPlayerLocalized(@"SuperPlayer.speed2p0") forState:UIControlStateNormal];
+            [speed4 setTitleColor:TintColor forState:UIControlStateSelected];
+            speed4.tag = TAG_4_SPEED;
+            [speed4 sizeToFit];
+            [_speedCell addSubview:speed4];
+            [speed4 addTarget:self action:@selector(changeSpeed:) forControlEvents:UIControlEventTouchUpInside];
+            speed4.m_left(speed3.mm_maxX + 12).m_top(speed.mm_maxY).m_height(40);
+        }
     }
     return _speedCell;
 }

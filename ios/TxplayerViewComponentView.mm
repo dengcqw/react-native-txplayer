@@ -129,6 +129,9 @@ using namespace facebook::react;
     if (_oldProps.enablePIP != newProps.enablePIP) {
         txplayerView.enablePIP = @(newProps.enablePIP);
     }
+    if (_oldProps.fastForwardType != newProps.fastForwardType) {
+        txplayerView.fastForwardType = @(newProps.fastForwardType);
+    }
     if (_oldProps.videoEventPositions != newProps.videoEventPositions) {
         if (newProps.videoEventPositions.size() > 0) {
             NSMutableArray *array = [NSMutableArray arrayWithCapacity:newProps.videoEventPositions.size()];
