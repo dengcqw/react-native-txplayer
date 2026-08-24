@@ -371,6 +371,11 @@ public class TxplayerViewManager extends SimpleViewManager<TxplayerView> impleme
     view.setPlayStartTime(playStartTime);
   }
 
+  @Override
+  public void setFastForwardType(TxplayerView view, int value) {
+    view.setFastForwardType(value);
+  }
+
   @ReactProp(name = "hidePlayerControl")
   public void setHidePlayerControl(TxplayerView view, boolean hidePlayerControl) {
     view.setHidePlayerControl(hidePlayerControl);

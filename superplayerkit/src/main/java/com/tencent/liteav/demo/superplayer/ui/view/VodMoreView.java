@@ -72,8 +72,11 @@ public class VodMoreView extends RelativeLayout
     private RadioButton mRbSpeed15;
     private RadioButton mRbSpeed2;
     private LinearLayout mLayoutSpeed;
+    private LinearLayout mLayoutSpeedTitle;
     private LinearLayout mLayoutMirror;
     private VolumeBroadcastReceiver mVolumeBroadcastReceiver;
+    // sandstalk
+    private int fastForwardType = 1;
 
     public VodMoreView(Context context) {
         super(context);
@@ -95,6 +98,7 @@ public class VodMoreView extends RelativeLayout
         LayoutInflater.from(mContext).inflate(R.layout.superplayer_more_popup_view, this);
 
         mLayoutSpeed = (LinearLayout) findViewById(R.id.superplayer_ll_speed);
+        mLayoutSpeedTitle = (LinearLayout) findViewById(R.id.superplayer_ll_speed_title);
         mRadioGroup = (RadioGroup) findViewById(R.id.superplayer_rg);
 
         mRbSpeed05 = (RadioButton) findViewById(R.id.superplayer_rb_speed05);
@@ -124,6 +128,32 @@ public class VodMoreView extends RelativeLayout
         mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         updateCurrentVolume();
         updateCurrentLightProgress();
+    }
+
+    public void setFastForwardType(int type) {
+        this.fastForwardType = type;
+        if (type == 1) {
+            mLayoutSpeed.setVisibility(View.VISIBLE);
+            mLayoutSpeedTitle.setVisibility(View.VISIBLE);
+            mRbSpeed05.setVisibility(View.VISIBLE);
+            mRbSpeed075.setVisibility(View.VISIBLE);
+            mRbSpeed1.setVisibility(View.VISIBLE);
+            mRbSpeed125.setVisibility(View.VISIBLE);
+            mRbSpeed15.setVisibility(View.VISIBLE);
+            mRbSpeed2.setVisibility(View.VISIBLE);
+        } else if (type == 2) {
+            mLayoutSpeed.setVisibility(View.VISIBLE);
+            mLayoutSpeedTitle.setVisibility(View.VISIBLE);
+            mRbSpeed05.setVisibility(View.GONE);
+            mRbSpeed075.setVisibility(View.VISIBLE);
+            mRbSpeed1.setVisibility(View.VISIBLE);
+            mRbSpeed125.setVisibility(View.VISIBLE);
+            mRbSpeed15.setVisibility(View.GONE);
+            mRbSpeed2.setVisibility(View.GONE);
+        } else if (type == 0) {
+            mLayoutSpeed.setVisibility(View.GONE);
+            mLayoutSpeedTitle.setVisibility(View.GONE);
+        }
     }
 
     private void updateCurrentVolume() {

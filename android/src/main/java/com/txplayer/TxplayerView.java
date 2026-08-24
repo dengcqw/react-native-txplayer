@@ -85,6 +85,8 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener,
 
   private boolean isDirty = true;
 
+  private int fastForwardType = 1;
+
   // 是否需要预加载
   public boolean needAutoStart() {
     return isDirty && playType != 2;
@@ -165,6 +167,10 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener,
   public void setHidePlayerControl(boolean hidePlayerControl) {
     this.hidePlayerControl = hidePlayerControl;
   }
+  public void setFastForwardType(int type) {
+    this.fastForwardType = type;
+  }
+
 
   public void updateAnswer(String value) {
     if (interactiveView == null) {
@@ -413,6 +419,7 @@ public class TxplayerView extends FrameLayout implements LifecycleEventListener,
 
     FullScreenPlayer fullscreenPlayer = superPlayerView.getFullscreenPlayer();
     fullscreenPlayer.setEnableSlider(enableSlider);
+    fullscreenPlayer.setFastForwardType(fastForwardType);
     View mIvSnapshot = fullscreenPlayer.findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_iv_snapshot);
     mIvSnapshot.setVisibility(View.GONE);
     View mDanmu = fullscreenPlayer.findViewById(com.tencent.liteav.demo.superplayer.R.id.superplayer_iv_danmuku);

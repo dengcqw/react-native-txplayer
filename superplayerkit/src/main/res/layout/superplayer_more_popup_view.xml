@@ -97,6 +97,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/superplayer_ll_speed_title"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_weight="1"

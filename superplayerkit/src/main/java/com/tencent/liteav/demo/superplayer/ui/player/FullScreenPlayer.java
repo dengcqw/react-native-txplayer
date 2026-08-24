@@ -1235,6 +1235,9 @@ public class FullScreenPlayer extends AbsPlayer implements View.OnClickListener,
     public void setEnableSlider(boolean flag) {
       this.enableSlider = flag;
     }
+    public void setFastForwardType(int type) {
+        this.mVodMoreView.setFastForwardType(type);
+    }
 
 
     @Override
